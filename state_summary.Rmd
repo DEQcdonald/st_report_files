@@ -1,0 +1,524 @@
+---
+author: "Colin Donald"
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+output: 
+  word_document: 
+    fig_caption: yes
+    keep_md: yes
+    reference_docx: N:/Status_and_Trend_Reports/Report_Files/Report_Template.docx
+    toc: yes
+    fig_width: 12
+    fig_height: 6
+  html_document:
+    mode: selfcontained
+    number_sections: yes
+    template: N:/Status_and_Trend_Reports/Report_Files/report_template.html
+    toc: yes
+    toc_depth: 5
+    toc_float: 
+      collapsed: true
+      smooth_scroll: true
+    fig_width: 12
+  pdf_document:
+    toc: yes
+always_allow_html: yes
+# params: 
+#   basin: "placeholder"
+#   param_sum: "placeholder"
+#   param_sum_au: "placeholder"
+#   owri_summary: "placeholder"
+#   owri_version: "placeholder"
+#   complete_years: "placeholder"
+#   hucs: "placeholder"
+#   table_format: "placeholder"
+---
+
+```{r setup, include=FALSE}
+
+options(knitr.duplicate.label = 'allow')
+options(tinytex.verbose = TRUE)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning=FALSE,
+                      error = FALSE,
+                      cache = FALSE,
+                      include = TRUE,
+                      fig.keep='all',
+                      fig.path='Figures/',
+                      fig.width = 12, 
+                      fig.height = 6)
+
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(captioner)
+library(reshape2)
+library(leaflet)
+library(mapview)
+library(readxl)
+library(odeqstatusandtrends)
+library(odeqassessment)
+library(sf)
+library(rgdal)
+library(ggplot2)
+
+# param_sum <- params$param_sum
+# param_sum_au <- params$param_sum_au
+# basin <- params$basin
+# complete_years <- params$complete_years
+# hucs <- params$hucs
+# table_format <- params$table_format
+# name <- "Willamette"
+year <- "2019"
+start.date = "1999-01-01"
+end.date = "2018-12-30"
+complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
+figs <- captioner(prefix="\nFigure")
+tbls  <- captioner(prefix="Table")
+
+state_param_sum <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
+                               sheet = "station_summary")
+state_param_sum_au <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
+                                  sheet = "AU_summary")
+state_param_sum <- state_param_sum %>% dplyr::filter(!is.na(AU_ID))
+state_param_sum$Char_Name <- AWQMS_to_standard(state_param_sum$Char_Name)
+state_param_sum_au <- state_param_sum_au %>% dplyr::filter(!is.na(AU_ID))
+state_param_sum_au$Char_Name <- AWQMS_to_standard(state_param_sum_au$Char_Name)
+
+state_param_sum$AU_Type <- if_else(grepl("_SR_", state_param_sum$AU_ID),
+                             "Stream",
+                             if_else(grepl("_LK_", state_param_sum$AU_ID),
+                                     "Lake",
+                                     if_else(grepl("_WS_", state_param_sum$AU_ID),
+                                             "Watershed Unit",
+                                             if_else(grepl("_EB_", state_param_sum$AU_ID),
+                                                      "Estuary or Bay",
+                                                     if_else(grepl("_CL_", state_param_sum$AU_ID),
+                                                             "Coastline",
+                                                             NA_character_
+                                                     )
+                                             )
+                                     )
+                             )
+)
+state_param_sum_au$AU_Type <- if_else(grepl("_SR_", state_param_sum_au$AU_ID),
+                             "Stream",
+                             if_else(grepl("_LK_", state_param_sum_au$AU_ID),
+                                     "Lake",
+                                     if_else(grepl("_WS_", state_param_sum_au$AU_ID),
+                                             "Watershed Unit",
+                                             if_else(grepl("_EB_", state_param_sum_au$AU_ID),
+                                                      "Estuary or Bay",
+                                                     if_else(grepl("_CL_", state_param_sum_au$AU_ID),
+                                                             "Coastline",
+                                                             NA_character_
+                                                     )
+                                             )
+                                     )
+                             )
+)
+state_param_sum[state_param_sum$AU_ID == "Sru Lake", "AU_Name"] <- "Sru Lake"
+state_param_sum[state_param_sum$AU_ID == "Sru Lake", "AU_Type"] <- "Lake"
+state_param_sum_au[state_param_sum_au$AU_ID == "Sru Lake", "AU_Name"] <- "Sru Lake"
+state_param_sum_au[state_param_sum_au$AU_ID == "Sru Lake", "AU_Type"] <- "Lake"
+
+status_current <- as.symbol(colnames(state_param_sum)[grep("trend", colnames(state_param_sum)) - 1])
+
+basin_intro <- FALSE
+
+# project_dir <- paste0('N:/Status_and_Trend_Reports/2019/2019-', basin, '/')
+
+# area <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
+# area <- area[area$REPORT %in% c(name), ]
+# area <- sf::st_as_sf(area)
+# area <- st_transform(area, 4326)
+
+state_wql_streams <- sf::st_read(
+    dsn = "N:/Agriculture/Status_and_Trend_Analysis/R_support_files",
+    layer = "WQL_Streams_2012",
+    # query = paste0("SELECT * FROM WQL_Streams_2012 WHERE HUC_4TH_CO IN ('",
+    #                paste(unique(param_sum$HUC8), collapse = "', '"), "')"),
+    stringsAsFactors = FALSE, quiet = TRUE
+  )
+state_wql_streams$Char_Name <- unlist(sapply(state_wql_streams$POLLUTANT, AWQMS_Char_Names, USE.NAMES = FALSE))
+state_wql_streams$Char_Name <- AWQMS_to_standard(state_wql_streams$Char_Name)
+state_wql_streams <- sf::st_zm(state_wql_streams, what = "ZM")
+state_wql_streams <- st_transform(state_wql_streams, 4326)
+state_wql_streams <- filter(state_wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(state_param_sum$Char_Name))
+state_wql_streams_shp <- state_wql_streams %>% group_by(Char_Name) %>% summarise(geometry = st_union(geometry))
+# wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
+
+if(!dir.exists(paste0(state_project_dir, "Statewide Maps"))) {dir.create(paste0(state_project_dir, "Statewide Maps"))}
+
+state_map_dir <- paste0(state_project_dir, "Statewide Maps/")
+
+lgnd <- base64enc::base64encode("//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/map_overview_legend.png")
+
+```
+
+---
+title: "`r paste(year, 'Oregon Statewide Status and Trends Report')`"
+---
+
+# Introduction
+
+## Purpose
+
+The Oregon Department of Environmental Quality's (DEQ) Total Maximum Daily Load (TMDL) and Nonpoint Source (NPS) program staff conduct these reviews in order to assess the quality of surface water in water bodies across the state. DEQ's TMDL and NPS programs explicitly define water quality targets and goals and these reports define water quality relative to those benchmarks. The analysis of landscape conditions and water quality data is used for implementing and assessing effectiveness of these programs as well as identifying data gaps and monitoring needs.
+
+These reports will aid discussion of local and statewide water quality in relation to what's working and not working, source(s) and solutions, data needs and future monitoring to answer these questions. This report presents an analysis of water quality data readily accessible from public databases and available in sufficient quantity to indicate status and trends. Dependent on data availability, DEQ will use the available water quality data to answer the questions below.
+
+*	What is the status of water quality? 
+*	What is the trend in water quality? 
+*	When applicable, are TMDL load allocations being acheived?
+* What, if anything, is missing to answer these questions?
+
+# Methods
+
+## Data Sources
+
+Water quality data were retrieved from DEQ's [AWQMS Database][2.1.1] which may include data submitted to DEQ from many other organizations. Data were also retrieved from the U.S. Environmental Protection Agency ([WQX/Storet][2.1.2]) database via the [Water Quality Portal][2.1.4]). Data collected between `r min(complete_years)` and `r max(complete_years)` within Oregon were included in this report. Parameters included in the query were `r unique(state_param_sum$Char_Name)[1:length(unique(state_param_sum$Char_Name))-1]` and `r unique(state_param_sum$Char_Name)[length(unique(state_param_sum$Char_Name))]`. Stations located within tribal lands were not evaluated in this report. Each tribal government has jurisdiction to administer Clean Water Act programs within its land.
+
+The figure below shows the locations of all of the stations that were queried across the state.
+
+```{r stations_map, include=FALSE}
+
+HUC_shp <- readOGR(dsn = "N:/Status_and_Trend_Reports/GIS", layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
+basin_names <- sort(unique(HUC_shp$REPORT))
+
+stations_AWQMS <- get_stations_AWQMS(HUC_shp)
+huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")])
+
+HUC_shp <- sf::st_as_sf(HUC_shp)
+HUC_shp <- st_transform(HUC_shp, 4326)
+
+if(!file.exists(paste0(state_project_dir, "Oregon_query_stations.png"))){
+  query_map <- leaflet(stations_AWQMS, options = leafletOptions(zoomControl = FALSE)) %>% addProviderTiles("Esri.NatGeoWorldMap") %>% 
+    addPolygons(data = HUC_shp, fill = FALSE, opacity = 1, weight = 1.5, color = "black") %>% 
+    addCircleMarkers(lng = ~Long_DD, lat = ~Lat_DD, stroke = TRUE, weight = 1, opacity = 1, fillOpacity = 1, radius = 1.5,
+                     color = "black", fillColor = "green")
+  
+  mapview::mapshot(query_map, file = paste0(state_map_dir, "Oregon_query_stations.png"), remove_controls = c("zoomControl", "layersControl"))
+}
+
+```
+
+`r paste0("![", figs(name = "query_map", caption = "All stations queried across the state"), "](", paste0(state_project_dir, "Oregon_query_stations.png"), ")")`
+
+The data returned were evaluated for quality. Data that was rated under the [DEQ's Laboratory Quality Manual][2.1.5] (ODEQ 2013) guidelines were given a data quality grade of C or higher. EPA and USGS data were included unless result comments indicated problems with the data.
+
+[2.1.1]: http://www.oregon.gov/deq/wq/Pages/WQdata.aspx
+[2.1.2]: https://www.epa.gov/waterdata/water-quality-data-wqx
+[2.1.3]: https://qwwebservices.usgs.gov/
+[2.1.4]: https://www.waterqualitydata.us/
+[2.1.5]: http://www.oregon.gov/deq/FilterDocs/DEQ91LAB0006QMP.pdf
+
+## Analysis
+
+The status of water quality standards attainment for dissolved oxygen, *E. coli*, *Enterococcus*, pH, and temperature samples were made in relation to the applicable numeric water quality criterion. Attainment determination was made following the Oregon Department of Environmental Quality's [Integrated Report Methodology](https://www.oregon.gov/deq/FilterDocs/ir2018assessMethod.pdf). For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined. Total suspended solids and total phosphorus have no applicable water quality criteria. In some areas, TMDL allocations exist for these parameters and were used to determine attainment. A status assessment for a monitoring station requires data be available within two whole years in the status period.
+
+The Willamette/Lower Willamette, Columbia Slough, Yamhill, Tualatin, and Molalla-Pudding Subbasin TMDLs are applicable to areas of the Willamette Basin. Pollutants addressed in the TMDLs include: chlorophyll a, dissolved oxygen, phosphorus, bacteria, DDE/DDT, lead, temperature, and Dieldrin. Applicable loading capacities written in these TMDLs are as follows:
+
+Toxics
+
+* DDT (Johnson Creek):
+    + TSS was identified as a surrogate measure for DDT. The TMDL established an instream TSS concentration of 15 mg/L in order to achieve a DDT reduction of 94%
+    + Separate allocations for DDT and DDE apply to the Columbia Slough TMDL
+* Dieldrin (Johnson Creek):
+    + ODEQ believes that achieving DDT criteria will also result in the attainment of Dieldrin criteria
+    + Separate targets for Dieldrin apply to the Columbia Slough TMDL
+* DDT & Dieldrin (Molalla-Pudding)
+    + The Molalla-Pudding Subbasin pesticides TMDL established instream TSS concentration targets of 15 mg/L for the Pudding River, 15 mg/L for Zollner Creek, and 7 mg/L for the Little Pudding River
+    
+Lead
+
+* In the Columbia Slough TMDL, DEQ developed specific allocations for lead from several sources that took into account four different flow rates.
+
+Iron
+
+* Instream TSS concentrations of 6 mg/L and 3 mg/L are necessary to meet the iron criterion in the Pudding River and Zollner Creek, respectively.
+
+Nutrients and pH Criteria 
+
+* Chlorophyll a action level is 15 ug/L based on a three month average with a minimum of three samples. Total phosphate TMDL allocations address pH and chlorophyll a impairments. The presence of too much phosphorus in waterbodies can increase plant and algal production, which can cause pH levels to be too high or too low.
+    + The total phosphorus interim target for the TMDLs in Columbia Slough and Fairview Creek is 0.1 mg/L, ortho-phosphate interim target is 0.02 mg/L based on EPA guidelines and DEQ best professional judgment.
+    + The Yamhill River TMDL target for total phosphorus is defined as 0.07 mg/L.
+    + The Tualatin Subbasin TMDL includes total phosphorus targets for the Tualatin River and its tributaries. TP targets are also defined for tributaries to Oswego Lake. The following tables describe these targets.
+
+`r cat("\n")`    
+`r tbls(name="TualatinTribs", caption="Total phosphorus targets in Tualatin River and tributaries")`  
+
+`r knitr::include_graphics(path = "N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/TualatinTribs.jpg")`  
+
+`r tbls(name="OswegoLake", caption="Total phosphorus targets in Oswego Lake and tributaries")`  
+
+`r knitr::include_graphics(path = "N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/OswegoLake.jpg")`  
+
+Trends were calculated for dissolved oxygen, bacteria, pH, temperature, total phosphorus, and total suspended solids using a Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel and Hirsch 2002). A Seasonal Kendall test removes the influence of seasonal fluctuations by calculating a Mann Kendall test (Mann 1945) on each season separately and then comparing the slopes. A significant positive, negative, or steady trend was determined across all seasons and years when the significance of the seasonal slopes had a two-tailed p <= 0.20. A steady trend had a slope equal to zero.   Prior to applying the Seasonal Kendall test data were grouped into monthly "seasons." Multiple observations within any given month were collapsed into a single value using the median. A trend assessment was made at a monitoring station if data were available in a minimum of eight different years in the period from `r min(complete_years)` to `r max(complete_years)`. The observations must have beeen made with an underlying regularity (e.g. samples were taken in the same months for at least eight years).
+
+Stations that met the status or trend data requirements were assessed with the results presented in this report. In some cases a station had sufficient data for trend but not status because data were not available anytime in the last two years.
+
+Results for pH from both grab and continuous sample data were compared to the applicable water quality criterion as found in [OAR 340-041-0021][2.2.1].
+
+Results for bacteria samples were compared to the applicable bacteria criterion as found in [OAR 340-041-0009][2.2.2]. The bacteria standard for freshwater contact recreation is based on the presence of *E. coli* compared to a single sample maximum and a geometric mean of five or more samples in a 90 day period. The bacteria standard for coastal water contact recreation is based on the presence of *Enterococcus* compared to a single sample maximum and a geometric mean of five or more samples in a 90 day period.
+
+Dissolved oxygen status was assessed by comparing the observed concentration values to the applicable daily minimum water quality criterion found in [OAR 340-041-0016][2.2.3]. If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion.
+
+Results for continuous temperature data were compared against the applicable temperature criteria found in [OAR 340-041-0028][2.2.4]. The applicable temperature criteria is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
+
+[2.2.1]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68713
+[2.2.2]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68695
+[2.2.3]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68706
+[2.2.4]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=244176
+
+# Statewide Summary
+
+```{r stateStatus, include = TRUE, results = 'asis'}
+
+types <- unique(state_param_sum_au$AU_Type)
+n_types <- length(unique(state_param_sum_au$AU_Type))
+parameters <- odeqstatusandtrends::AWQMS_to_standard(unique(state_param_sum_au$Char_Name))
+n_params <- length(unique(state_param_sum_au$Char_Name))
+list_fun <- function(x){paste(x, collapse = "s', '")}
+
+cat(paste0("The state of Oregon is listed for ", length(unique(state_wql_streams$Char_Name)), " parameters among its water bodies. Available data was sufficient to assess status and/or trend at ", length(unique(state_param_sum$MLocID)), " stations within the state. These stations were located across ", length(unique(state_param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
+           gsub("'", "", 
+                paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
+                       , "'")
+           ), " were available for analysis and included in this report. The following section summarizes the results of the analysis state wide.\n\n"))
+
+# cat(paste("The maps below show the stations included in the analysis for each parameter. Stations are color coded by current status. The Water Quality Listed streams for each parameter are included in the maps as red lines."), "\n\n")
+# 
+# cat(paste0("![](", project_dir, "GIS/", "state_param_summary_map.png)"), "\n\n")
+
+cat("## Parameter Summary Maps\n\n")
+# fignum <- 1
+
+for(i in unique(state_param_sum$Char_Name)){
+  if(i != "pH"){
+    parameter_name <- simpleCap(i)
+  } else {parameter_name <- "pH"}
+  
+  # cat(paste(i, "map"))
+  # cat("\n\n")
+  
+  if(!file.exists(paste0(state_map_dir, "Oregon_", gsub(",| ", "_", i), ".png"))){
+    wql_streams_i <- filter(state_wql_streams_shp, Char_Name == i)
+    # wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
+    
+    map_df <- state_param_sum %>% filter(Char_Name == i) %>% mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
+                                                                                    "lightgray",
+                                                                                    if_else(!!status_current == "Not Attaining",
+                                                                                            "orange",
+                                                                                            "green")
+    ))
+    
+    map <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>% 
+      addProviderTiles("Esri.NatGeoWorldMap") %>%
+      addPolylines(data = wql_streams_i,
+                   opacity = 1,
+                   weight = 2,
+                   color = "red"
+                   # ,
+                   # popup = ~paste0("<b>", STREAM_NAM,
+                   #                 "<br>Parameter:</b> ", Char_Name,
+                   #                 "<br><b>Listing:</b> ", LISTING_ST),
+                   # popup = ~paste0("<b>", STREAM_NAM,
+                   #                 # "<br>Parameter:</b> ", Char_Name,
+                   #                 "<br></b><br>",
+                   #                 sapply(SEGMENT_ID, WQLpopupTable, param = i, USE.NAMES = FALSE)),
+                   # popupOptions = popupOptions(maxWidth = 1200),
+                   # highlightOptions = highlightOptions(color = "red", weight = 8, opacity = 1),
+                   # label = ~STREAM_NAM,
+                   # smoothFactor = 2
+                   # ,
+                   # group = "WQ Listed Streams"
+      ) %>%
+      addPolygons(data = HUC_shp, fill = FALSE, opacity = 1, weight = 1.5, color = "black") %>%
+      addCircleMarkers(data = map_df, lng = ~Long_DD, lat = ~Lat_DD,
+                       fillColor = ~color, stroke = TRUE, weight = 0.5,
+                       opacity = 1, fillOpacity = 1, color = 'black', radius = 2.5) %>% 
+      addControl(position = "bottomright", className = "legend",
+               html = sprintf('<html><body><div style="opacity:0.95">
+                                        <img width="150" height="140" src="data:image/png;base64,%s">
+                            </div></body></html>', lgnd)) %>% 
+      addControl(html = paste('<div style="opacity:0.95; background:white; padding:0px 6px; border-radius: 8px; font-size:18px"><b>', 
+                              "Oregon", parameter_name, "Status</b></div>"), 
+                 position = "topleft", className = "map_title")
+    # %>%
+    #   leafem::addLogo(img = "N:/Status_and_Trend_Reports/Figures/map_overview_legend.png", src = "local", alpha = 1, position = "bottomleft",
+    #                   offset.x = 10, offset.y = 10, width = 150, height = 150)
+    
+    # maps[[i]] <- map
+    mapview::mapshot(map, file = paste0(state_map_dir, "Oregon_", gsub(",| ", "_", i), ".png")
+                     # , remove_controls = c("zoomControl", "layersControl")
+                     )
+  }
+  
+  cat(paste0("![", figs(name = paste0("state_", i, "_map"), 
+                        caption = paste0("Summary map of the status of ", i, " across the state")),
+             "](", state_map_dir, "Oregon_", gsub(",| ", "_", i), ".png)"), "\n")
+  # cat()
+  # fignum <- fignum + 1
+  cat("\n\n")
+}
+
+cat("## Status\n\n")
+
+cat(paste0("The table below shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+
+au_sum <- state_param_sum_au %>% group_by(Char_Name) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+# cat(tbls(name = "au_sum", caption = "Summary of assessment unit status across the state."))
+
+knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             ,
+             caption = tbls(name = "au_sum", caption = "Summary of assessment unit status across the state.")
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+
+au_sum_plot <- ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
+  geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
+  xlab("Pollutant")+
+  ylab("# of Assessment Units")+
+  scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
+  theme_bw()+
+  ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
+
+au_sum_plot
+cat(paste0("\n![", figs(name = paste0("state_au_sum_plot"), caption = paste0("Summary plot of assessment unit status across the state by parameter.")),
+           "]()"))
+
+cat(paste0("\n\nBelow is a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
+
+au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+# cat(tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type."))
+
+knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             ,
+             caption = tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type.")
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             
+
+cat("\n\n")
+
+cat(paste0("\n\nThe following table summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
+
+stn_sum <- state_param_sum %>% group_by(Char_Name) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed"))%>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+# cat(tbls(name = "stn_sum", caption = "Summary of the status of stations across the state."))
+
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             ,
+             caption = tbls(name = "stn_sum", caption = "Summary of the status of stations across the state.")
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+
+stn_sum_plot <- ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
+  geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
+  xlab("Pollutant")+
+  ylab("# of Stations")+
+  scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
+  theme_bw()+
+  ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
+
+stn_sum_plot
+cat(paste0("\n![", figs(name = paste0("state_stn_sum_plot"), caption = paste0("Summary plot of station status across the state by parameter.")),
+           "]()"))
+
+# fignum <- fignum + 1
+
+cat("\n\n")
+cat("## Trend\n\n")
+
+cat(paste0("\n\nA summary of the trends across parameters is shown in the table below. Note that trend requires significantly more data than status and may result in many stations with sufficient data for assessing status, but insuffient data for assessing trend.\n\n"))
+
+stn_sum <- state_param_sum %>% group_by(Char_Name) %>% 
+  summarise(Improving = sum(trend == "Improving"),
+            Degrading = sum(trend == "Degrading"),
+            Steady = sum(trend == "Steady"),
+            "No Significant Trend" = sum(trend == "No Significant Trend"),
+            "Insufficient Data" = sum(trend == "Insufficient Data"),
+  ) %>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+# cat(tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state."))
+
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             ,
+             caption = tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state.")
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+
+# cat("## OWRI Watershed Restoration Actions")
+# cat("\n\n")
+
+# owri_basin <- owri_summary %>% group_by(ActivityType, Treatment_Unit) %>% summarise_at(colnames(owri_summary)[5:10], sum)
+# action_df <- owri_basin[owri_basin$Total != 0,]
+# actions <- unique(action_df$ActivityType)
+# n_action <- length(actions)
+# n_units <- length(unique(action_df$Treatment_Unit))
+# 
+# cat(paste0("According to the Oregon Watershed Restoration Inventory (OWRI), ", n_action, " types of restoration actions have been implemented across the ", basin, " basin including '", paste(actions[1:(n_action-1)], collapse = "', '"), "' and '", paste(actions[n_action], collapse = "', '"), "' activities encompassing ", n_units, " different forms of treatment units. ", tbls(paste0(basin, "_owriTab"), display = "cite"), " summarizes reported treatment outputs reported to the Oregon Watershed Restoration Inventory (owri) for numerous watershed restoration projects within the  ", basin, " basin. Basin Treatment summaries are grouped into yearly periods. The year refers to the year the project was completed."))
+#   
+# cat("\n\n")
+# 
+# colnames(owri_basin) <- sapply(gsub("_", " ", colnames(owri_basin)), simpleCap, USE.NAMES = FALSE)
+# 
+# cat(tbls(name = paste0(basin, "_owriTab"), 
+#          caption = paste("Summary of watershed restoration actions implemented and reported to the Oregon Watershed Restoration Inventory in the ",
+#                          basin, " basin. Source: OWEB OWRI ", owri_version)
+# )
+# )
+# capnum <- tbls(paste0(basin, "_owriTab"), display = "num")
+# 
+# t <- knitr::kable(owri_basin, format = table_format, padding = 0, digits = 1, row.names = FALSE
+# ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+# 
+# print(t)
+# 
+# cat("\n\n")
+
+```
+
+
+```{r Basins, include=FALSE}
+
+basin_output <- NULL
+# capnum <- 6
+  
+for(i in basin_names){
+  name <- i
+
+  basin_output <- c(basin_output, knitr::knit_child(input = "state_basin_summary.Rmd", envir = globalenv()))
+}
+
+```
+
+`r paste(basin_output, collapse = "\n")`

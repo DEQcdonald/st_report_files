@@ -1,0 +1,93 @@
+---
+output: 
+  word_document:
+    fig_caption: yes
+    toc: yes  
+    fig_height: 7
+  html_document:
+    mode: selfcontained
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{r global-setup, include=FALSE}
+
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning=FALSE,
+                      error = TRUE,
+                      cache = FALSE,
+                      cache.comments = FALSE,
+                      include = TRUE,
+                      autodep = TRUE,
+                      fig.height = 7,
+                      eval = TRUE
+                      )
+
+landuse_map_check <- if(name %in% c("Black Rock Desert-Humboldt", "Columbia River", "Goose Lake", "Oregon Closed Basins", "Snake River")){FALSE}else{TRUE}
+
+```
+
+## Land Use
+
+```{r landuse-table, include=FALSE, results='asis'}
+
+lu_dir <- "N:/Status_and_Trend_Reports"
+nlcd_huc8_df <- read.csv(paste0(lu_dir,"/Lookups_Statewide/NLCD_2016_LU_sqm_by_HUC8_ReportUnit.txt"), quote="", stringsAsFactors=FALSE)
+
+#Reclass the NLCD
+landuse.huc8.df <- nlcd_huc8_df %>% 
+  filter(ReportUnit %in% name) %>% 
+  group_by(HUC_8_NAME) %>% 
+  dplyr::summarise(WsAreaSqKm = round(sum(VALUE_11,VALUE_12,
+                                          VALUE_21,VALUE_22,VALUE_23,VALUE_24,
+                                          VALUE_31,VALUE_41,VALUE_42,VALUE_43,
+                                          VALUE_52,VALUE_71,VALUE_81,VALUE_82,
+                                          VALUE_90,VALUE_95) * 0.001),
+                   PerUrbanWs = round(sum(VALUE_21,
+                                          VALUE_22,
+                                          VALUE_23,
+                                          VALUE_24) * 0.001 / WsAreaSqKm * 100, 1),
+                   PerForestWs = round(sum(VALUE_41,
+                                           VALUE_42,
+                                           VALUE_43,
+                                           VALUE_90) * 0.001 / WsAreaSqKm * 100, 1),
+                   PerAgWs = round(sum(VALUE_81,
+                                       VALUE_82) * 0.001 / WsAreaSqKm * 100, 1),
+                   PerRangeWs = round(sum(VALUE_52,
+                                          VALUE_71) * 0.001 / WsAreaSqKm * 100, 1),
+                   PerOtherWs = round(sum(VALUE_11,
+                                          VALUE_12,
+                                          VALUE_31,
+                                          VALUE_95) * 0.001 / WsAreaSqKm * 100, 1))
+
+landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_names$HUC8),]$HUC8_Name
+
+colnames(landuse.huc8.df) <- c("Subbasin", "Watershed Area (km2)", "% Urban/Roads", "% Forest", "% Cultivated"," % Range/Forest Disturbance", " %Other")
+
+landuse_table <- knitr::kable(landuse.huc8.df, format = table_format, padding = 0, digits = 1, row.names = FALSE
+) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+
+```{r lancover-map,eval.after="fig.cap", fig.cap=landmap.cap, results='asis', cache=FALSE, eval=landuse_map_check, fig.height=7, out.height='720px'}
+landmap.cap <- figs(name="figs.landcover_map", caption = paste0("Land use in the ", name, " administrative basin."))
+
+# knitr::include_graphics(path = paste0(lu_dir, "/LULC_Maps/Landcover_",basin,".png"))
+knitr::include_graphics(path = paste0(lu_dir, "/LULC_Maps/Landcover_", gsub(" ", "_", name), ".png"))
+
+cat("\n\n")
+
+```
+
+
+`r tbls(name = paste0(name, "_landuse_tab"), caption = paste("Land use within the ", name, " Basin"))`
+
+`r landuse_table`
+
+`r cat("\n\n")`

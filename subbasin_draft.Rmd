@@ -1,0 +1,287 @@
+---
+output: 
+  html_document:
+    mode: selfcontained
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    fig_width: 12
+  word_document: 
+    fig_caption: yes
+    reference_docx: N:/Status_and_Trend_Reports/Report_Files/Subbasin_Template.docx
+    toc: yes 
+    fig_width: 12
+    fig_height: 6
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      error = TRUE,
+                      cache = FALSE,
+                      cache.comments = FALSE,
+                      include = TRUE,
+                      autodep = TRUE,
+                      eval = TRUE,
+                      fig.width = 12, 
+                      fig.height = 6
+                      )
+
+options(kableExtra.auto_format = F)
+
+# for(k in 1:capnum){
+#   tbls(name = paste0("p", k), display = FALSE)
+# }
+
+```
+
+
+### `r paste(subbasin_name)`
+
+
+```{r sub_sum_map, include = FALSE, eval=FALSE, results = 'asis'}
+
+cat("#### Parameter Maps\n\n")
+
+for(j in unique(map_df$Pollutant)){
+  
+  # wql_streams_i <- filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name == i)
+  # wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
+  
+  cat(paste(j, "map"))
+  cat("\n\n")
+  sub_map_df <- map_df %>% filter(Pollutant == j) %>% mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
+                                                                                "lightgray",
+                                                                                if_else(!!status_current == "Not Attaining",
+                                                                                        "orange",
+                                                                                        "green")
+  ))
+  
+  map <- leaflet(sub_map_df, options = leafletOptions(zoomControl = FALSE)) %>% 
+    addProviderTiles("Esri.NatGeoWorldMap") %>% 
+    addWMSTiles("https://basemap.nationalmap.gov/arcgis/services/USGSHydroCached/MapServer/WmsServer",
+                group = "Hydrography",
+                options = WMSTileOptions(format = "image/png",
+                                         transparent = TRUE),
+                layers = "0") %>%
+    # addPolylines(data = wql_streams_i,
+    #                opacity = 1,
+    #                weight = 2,
+    #                color = "red",
+    #                # popup = ~paste0("<b>", STREAM_NAM,
+    #                #                 "<br>Parameter:</b> ", Char_Name,
+    #                #                 "<br><b>Listing:</b> ", LISTING_ST),
+    #                # popup = ~paste0("<b>", STREAM_NAM,
+    #                #                 # "<br>Parameter:</b> ", Char_Name,
+    #                #                 "<br></b><br>",
+    #                #                 sapply(SEGMENT_ID, WQLpopupTable, param = i, USE.NAMES = FALSE)),
+    #                # popupOptions = popupOptions(maxWidth = 1200),
+    #                # highlightOptions = highlightOptions(color = "red", weight = 8, opacity = 1),
+    #                # label = ~STREAM_NAM,
+    #                smoothFactor = 2,
+    #                group = "WQ Listed Streams"
+    #   ) %>% 
+    addPolygons(data = sub_area, fill = FALSE, group = "subbasin", opacity = 1, weight = 3, color = "black", label = paste(basin, "subbasin")) %>%
+    addCircleMarkers(lng = ~Long_DD, lat = ~Lat_DD, fillColor = ~color, stroke = TRUE, weight = 1, 
+                     opacity = 1, fillOpacity = 1, color = 'black', radius = 4.5, label = ~color)
+  
+ # maps[[i]] <- map
+  mapview::mapshot(map, file = paste0(project_dir, "Maps/", subbasin_name, "_", gsub(",| ", "_", j), ".png"), remove_controls = c("zoomControl", "layersControl"))
+  
+  cat(paste0("![](", project_dir, "Maps/", subbasin_name, "_", gsub(",| ", "_", j), ".png)"), "\n")
+  
+  cat("\n\n")
+}
+
+
+```
+
+
+#### Water Quality Limited Stream Segments 
+
+```{r wql_streams, include= TRUE, results= 'asis'}
+
+wql_sub <- wql_data[grep(i, wql_data$HUC_4TH_CO), c('STREAM_LAK', 'LLID_STREA', 
+                                                    'MILES', 'POLLUTANT', 'SEASON', 
+                                                    'ASSESSME_1', 'CRITERIA', 
+                                                    'LISTING_ST', 'TMDL_INFO')] %>% 
+  plyr::rename(c('STREAM_LAK' = 'Waterbody',
+                 'LLID_STREA' = 'LLID',
+                 'ASSESSME_1' = 'Year Assessed',
+                 'LISTING_ST' = 'Listing Status',
+                 'POLLUTANT' = 'Pollutant'))
+if(nrow(wql_sub) > 0){
+  
+wql_sub <- wql_sub[grep("Cat 5|Cat 4A", wql_sub$`Listing Status`, ignore.case = TRUE), 
+                   c('Waterbody', 'MILES', 'Pollutant', 'SEASON', 'Year Assessed', 'CRITERIA', 'Listing Status')] %>% 
+  dplyr::arrange(Waterbody)
+
+wql_sub$`Listing Status` <- gsub("Cat 4A: Water quality limited, TMDL approved", "Cat 4A", wql_sub$`Listing Status`)
+wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing Status"] <- "Cat 5"
+
+cat(tbls(name = paste0(subbasin_name, "_wql"), 
+           caption = paste0("Summary of Integrated Report listings for parameters included in the ", subbasin_name,
+                            " Subbasin. Table based on the approved (and partially disapproved) 2012 Integrated Report Listings by the EPA.")
+))
+
+wql_sub <- wql_sub %>% group_by(Pollutant) %>% summarise('Segments Impaired' = n())
+
+knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE
+#              # ,
+#              # caption = tbls(name = paste0(subbasin_name, "_wql_streams"), caption = paste0("Category 4A or Category 5 stream segments within the ", subbasin_name, " Subbasin."))
+#              ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+} else {cat("There are no Category 4A or Category 5 stream segments in this subbasin.")}
+
+```
+
+
+#### Status
+
+```{r status, include = TRUE, results = 'asis'}
+
+cat(paste0("There are ", length(unique(par_sum_au$AU_ID)), " assessment units within the ", subbasin_name, " subbasin that were included in this report. The following table summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+
+au_sum <- par_sum_au %>% group_by(Char_Name) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+cat(tbls(name = paste0(subbasin_name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", subbasin_name, " Subbasin.")))
+
+knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             # , 
+             # caption = tbls(name = paste0(subbasin_name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", subbasin_name, " Subbasin."))
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+
+ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
+  geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
+  xlab("Pollutant")+
+  ylab("# of Assessment Units")+
+  scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
+  theme_bw()+
+  ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
+
+cat(paste0("\n![", figs(name = paste0(subbasin_name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", subbasin_name, " Subbasin by parameter.")),
+           "]()"))
+
+# cat("\n")
+# 
+# cat(figs(name = paste0(subbasin_name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", subbasin_name, " Subbasin by parameter.")))
+# fignum <- fignum + 1
+
+cat(paste0("\n\nOregon DEQ groups assessment units into four types; streams, lakes, watershed units, or estuaries and bays. Below is a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
+
+au_sum_type <- par_sum_au %>% group_by(AU_Type, Char_Name) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  rename(Pollutant = Char_Name)
+
+cat(tbls(name = paste0(subbasin_name, "_au_type_sum"), caption = paste0(subbasin_name, " Subbasin status summary of assessment units by type.")))
+
+knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             # ,
+             # caption = tbls(name = paste0(subbasin_name, "_au_type_sum"), caption = paste0(subbasin_name, " Subbasin status summary of assessment units by type."))
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             
+
+cat("\n\n")
+
+cat(paste0("\n\nThere are ", length(unique(par_sum$MLocID)), " stations within the ", subbasin_name, " subbasin that were included in this report. The following table summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
+
+stn_sum <- par_sum %>% group_by(Pollutant) %>% 
+  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+            "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
+            Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
+
+cat(tbls(name = paste0(subbasin_name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", subbasin_name, " Subbasin.")))
+
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             # ,
+             # caption = tbls(name = paste0(subbasin_name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", subbasin_name, " Subbasin."))
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+
+ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
+  geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
+  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
+  xlab("Pollutant")+
+  ylab("# of Stations")+
+  scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
+  theme_bw()+
+  ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
+
+cat(paste0("\n![", figs(name = paste0(subbasin_name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", subbasin_name, " Subbasin by parameter.")),
+           "]()"))
+
+# cat("\n")
+# 
+# cat(figs(name = paste0(subbasin_name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", subbasin_name, " Subbasin by parameter.")))
+# fignum <- fignum + 1
+
+```
+
+#### Trend
+
+```{r trend, include = TRUE, results = 'asis'}
+cat(paste0("\n\nA summary of the trends within parameters is shown in the table below. Note that trend requires significantly more data than status and may result in many stations with insuffient data for trend analysis.\n\n"))
+
+stn_sum <- par_sum %>% group_by(Pollutant) %>% 
+  summarise(Improving = sum(trend == "Improving"),
+            Degrading = sum(trend == "Degrading"),
+            Steady = sum(trend == "Steady"),
+            "No Significant Trend" = sum(trend == "No Significant Trend"),
+            "Insufficient Data" = sum(trend == "Insufficient Data"),
+  ) %>% 
+  mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
+
+cat(tbls(name = paste0(subbasin_name, "_stn_trend_sum"), caption = paste0(subbasin_name, " Subbasin summary of trends at stations across the state.")))
+
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
+             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+cat("\n\n")
+```
+
+
+```{r OWRI, include=FALSE, eval=FALSE, results = 'asis'}
+cat("## OWRI Watershed Restoration Actions")
+cat("\n\n")
+
+  cat(paste(tbls(paste0(subbasin_name, "_owriTab"), display = "cite"), 
+            "summarizes reported treatment outputs reported to the Oregon Watershed Restoration Inventory (owri) for numerous watershed restoration projects within the ", subbasin_name, " Subbasin. Treatment summaries are grouped into yearly periods. The year refers to the year the project was completed."))
+  cat("\n\n")
+  
+  colnames(owri_huc8) <- sapply(gsub("_", " ", colnames(owri_huc8)), simpleCap, USE.NAMES = FALSE)
+  
+  cat(tbls(name = paste0(subbasin_name, "_owriTab"), 
+             caption = paste("Summary of watershed restoration actions implemented and reported to the Oregon Watershed Restoration Inventory in the ",
+                             subbasin_name, " Subbasin. Source: OWEB OWRI ", owri_version)
+                              )
+  )
+  capnum <- tbls(paste0(subbasin_name, "_owriTab"), display = "num")
+
+  t <- knitr::kable(owri_huc8, format = table_format, padding = 0, digits = 1, row.names = FALSE
+                    ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+  
+  print(t)
+  
+  cat("\n\n")
+
+```
