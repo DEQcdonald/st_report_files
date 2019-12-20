@@ -69,8 +69,9 @@ landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_na
 
 colnames(landuse.huc8.df) <- c("Subbasin", "Watershed Area (km2)", "% Urban/Roads", "% Forest", "% Cultivated"," % Range/Forest Disturbance", " %Other")
 
-landuse_table <- knitr::kable(landuse.huc8.df, format = table_format, padding = 0, digits = 1, row.names = FALSE
-) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+landuse_table <- knitr::kable(landuse.huc8.df, format = table_format, padding = 0, digits = 1, row.names = FALSE,
+                              caption = tbls(name = paste0(name, "_landuse_tab"), caption = paste("Land use within the ", name, " Basin"))
+) %>% table_style()
 
 ```
 
@@ -84,9 +85,6 @@ knitr::include_graphics(path = paste0(lu_dir, "/LULC_Maps/Landcover_", gsub(" ",
 cat("\n\n")
 
 ```
-
-
-`r tbls(name = paste0(name, "_landuse_tab"), caption = paste("Land use within the ", name, " Basin"))`
 
 `r landuse_table`
 
