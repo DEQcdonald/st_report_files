@@ -156,6 +156,11 @@ state_map_dir <- paste0(state_project_dir, "Statewide Maps/")
 
 lgnd <- base64enc::base64encode("//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/map_overview_legend.png")
 
+table_style <- function(x){
+  kableExtra::kable_styling(x, latex_options = "repeat_header", repeat_header_continued = T,
+                            bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+}
+
 ```
 
 ---
@@ -248,13 +253,11 @@ Nutrients and pH Criteria
     + The Tualatin Subbasin TMDL includes total phosphorus targets for the Tualatin River and its tributaries. TP targets are also defined for tributaries to Oswego Lake. The following tables describe these targets.
 
 `r cat("\n")`    
-`r tbls(name="TualatinTribs", caption="Total phosphorus targets in Tualatin River and tributaries")`  
+`r paste0("![", figs(name="TualatinTribs", caption="Total phosphorus targets in Tualatin River and tributaries"), "](N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/TualatinTribs.jpg)")`
 
-`r knitr::include_graphics(path = "N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/TualatinTribs.jpg")`  
+`r cat("\n\n")`
 
-`r tbls(name="OswegoLake", caption="Total phosphorus targets in Oswego Lake and tributaries")`  
-
-`r knitr::include_graphics(path = "N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/OswegoLake.jpg")`  
+`r paste0("![", figs(name="OswegoLake", caption="Total phosphorus targets in Oswego Lake and tributaries"), "](N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/OswegoLake.jpg)")`  
 
 Trends were calculated for dissolved oxygen, bacteria, pH, temperature, total phosphorus, and total suspended solids using a Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel and Hirsch 2002). A Seasonal Kendall test removes the influence of seasonal fluctuations by calculating a Mann Kendall test (Mann 1945) on each season separately and then comparing the slopes. A significant positive, negative, or steady trend was determined across all seasons and years when the significance of the seasonal slopes had a two-tailed p <= 0.20. A steady trend had a slope equal to zero.   Prior to applying the Seasonal Kendall test data were grouped into monthly "seasons." Multiple observations within any given month were collapsed into a single value using the median. A trend assessment was made at a monitoring station if data were available in a minimum of eight different years in the period from `r min(complete_years)` to `r max(complete_years)`. The observations must have beeen made with an underlying regularity (e.g. samples were taken in the same months for at least eight years).
 
@@ -275,13 +278,14 @@ Results for continuous temperature data were compared against the applicable tem
 
 # Statewide Summary
 
-```{r stateStatus, include = TRUE, results = 'asis'}
+```{r stateStatus, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
 
 types <- unique(state_param_sum_au$AU_Type)
 n_types <- length(unique(state_param_sum_au$AU_Type))
 parameters <- odeqstatusandtrends::AWQMS_to_standard(unique(state_param_sum_au$Char_Name))
 n_params <- length(unique(state_param_sum_au$Char_Name))
 list_fun <- function(x){paste(x, collapse = "s', '")}
+cap_list <- list()
 
 cat(paste0("The state of Oregon is listed for ", length(unique(state_wql_streams$Char_Name)), " parameters among its water bodies. Available data was sufficient to assess status and/or trend at ", length(unique(state_param_sum$MLocID)), " stations within the state. These stations were located across ", length(unique(state_param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
            gsub("'", "", 
@@ -381,7 +385,7 @@ au_sum <- state_param_sum_au %>% group_by(Char_Name) %>%
 knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = "au_sum", caption = "Summary of assessment unit status across the state.")
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -396,8 +400,9 @@ au_sum_plot <- ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.nam
   ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
 
 au_sum_plot
-cat(paste0("\n![", figs(name = paste0("state_au_sum_plot"), caption = paste0("Summary plot of assessment unit status across the state by parameter.")),
-           "]()"))
+cap_list[[1]] <- figs(name = paste0("state_au_sum_plot"), caption = paste0("Summary plot of assessment unit status across the state by parameter."))
+# cat(paste0("![", figs(name = paste0("state_au_sum_plot"), caption = paste0("Summary plot of assessment unit status across the state by parameter.")),
+#            "]()"))
 
 cat(paste0("\n\nBelow is a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
 
@@ -413,7 +418,7 @@ au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>%
 knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type.")
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ) %>% table_style()
              
 
 cat("\n\n")
@@ -432,7 +437,7 @@ stn_sum <- state_param_sum %>% group_by(Char_Name) %>%
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = "stn_sum", caption = "Summary of the status of stations across the state.")
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -447,8 +452,9 @@ stn_sum_plot <- ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.n
   ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
 
 stn_sum_plot
-cat(paste0("\n![", figs(name = paste0("state_stn_sum_plot"), caption = paste0("Summary plot of station status across the state by parameter.")),
-           "]()"))
+cap_list[[2]] <- figs(name = paste0("state_stn_sum_plot"), caption = paste0("Summary plot of station status across the state by parameter."))
+# cat(paste0("![", figs(name = paste0("state_stn_sum_plot"), caption = paste0("Summary plot of station status across the state by parameter.")),
+#            "]()"))
 
 # fignum <- fignum + 1
 
@@ -472,7 +478,7 @@ stn_sum <- state_param_sum %>% group_by(Char_Name) %>%
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state.")
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -499,7 +505,7 @@ cat("\n\n")
 # capnum <- tbls(paste0(basin, "_owriTab"), display = "num")
 # 
 # t <- knitr::kable(owri_basin, format = table_format, padding = 0, digits = 1, row.names = FALSE
-# ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+# ) %>% table_style()
 # 
 # print(t)
 # 
