@@ -122,7 +122,9 @@ landuse_output <- knitr::knit_child("N:/Status_and_Trend_Reports/Report_Files/st
 
 `r paste(landuse_output, collapse = "\n")`
 
-```{r basinStatus, include = TRUE, results = 'asis', fig.height=6}
+```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}
+
+cap_list <- list()
 
 wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/wq_limited_2012_df_temp_bact_ph_DO_TP_Sediment.csv',
                      stringsAsFactors = FALSE)
@@ -268,7 +270,7 @@ au_sum <- param_sum_au %>% group_by(Char_Name) %>%
 knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin."))
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -282,8 +284,7 @@ ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
   theme_bw()+
   ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
 
-cat(paste0("\n![", figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " Basin by parameter.")),
-           "]()"))
+cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " Basin by parameter."))
 
 # cat("\n")
 # 
@@ -299,12 +300,12 @@ au_sum_type <- param_sum_au %>% group_by(AU_Type, Char_Name) %>%
   mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   rename(Pollutant = Char_Name)
 
-cat(tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type.")))
+# cat(tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type.")))
 
 knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             # ,
-             # caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type."))
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ,
+             caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type."))
+             ) %>% table_style()
              
 
 cat("\n\n")
@@ -317,12 +318,12 @@ stn_sum <- param_sum %>% group_by(Pollutant) %>%
             Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
   mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
-cat(tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin.")))
+# cat(tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin.")))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             # ,
-             # caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin."))
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ,
+             caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin."))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -336,8 +337,7 @@ ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))
   theme_bw()+
   ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
 
-cat(paste0("\n![", figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " Basin by parameter.")),
-           "]()"))
+cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " Basin by parameter."))
 
 # cat("\n")
 # 
@@ -358,12 +358,12 @@ stn_sum <- param_sum %>% group_by(Pollutant) %>%
   ) %>% 
   mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
-cat(tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state.")))
+# cat(tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state.")))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             # ,
-             # caption = tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state."))
-             ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+             ,
+             caption = tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state."))
+             ) %>% table_style()
 
 cat("\n\n")
 
@@ -390,7 +390,7 @@ cat("\n\n")
 # capnum <- tbls(paste0(basin, "_owriTab"), display = "num")
 # 
 # t <- knitr::kable(owri_basin, format = table_format, padding = 0, digits = 1, row.names = FALSE
-# ) %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+# ) %>% table_style()
 # 
 # print(t)
 # 
