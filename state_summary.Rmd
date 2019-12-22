@@ -75,6 +75,7 @@ start.date = "1999-01-01"
 end.date = "2018-12-30"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
+
 figs <- captioner(prefix="\nFigure")
 tbls  <- captioner(prefix="Table")
 
@@ -186,7 +187,7 @@ These reports will aid discussion of local and statewide water quality in relati
 
 Water quality data were retrieved from DEQ's [AWQMS Database][2.1.1] which may include data submitted to DEQ from many other organizations. Data were also retrieved from the U.S. Environmental Protection Agency ([WQX/Storet][2.1.2]) database via the [Water Quality Portal][2.1.4]). Data collected between `r min(complete_years)` and `r max(complete_years)` within Oregon were included in this report. Parameters included in the query were `r unique(state_param_sum$Char_Name)[1:length(unique(state_param_sum$Char_Name))-1]` and `r unique(state_param_sum$Char_Name)[length(unique(state_param_sum$Char_Name))]`. Stations located within tribal lands were not evaluated in this report. Each tribal government has jurisdiction to administer Clean Water Act programs within its land.
 
-The figure below shows the locations of all of the stations that were queried across the state.
+The map in `r figs(name = "query_map", cite="display")` shows the locations of all of the stations that were queried across the state.
 
 ```{r stations_map, include=FALSE}
 
@@ -287,7 +288,7 @@ n_params <- length(unique(state_param_sum_au$Char_Name))
 list_fun <- function(x){paste(x, collapse = "s', '")}
 cap_list <- list()
 
-cat(paste0("The state of Oregon is listed for ", length(unique(state_wql_streams$Char_Name)), " parameters among its water bodies. Available data was sufficient to assess status and/or trend at ", length(unique(state_param_sum$MLocID)), " stations within the state. These stations were located across ", length(unique(state_param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
+cat(paste0("Available data were sufficient to assess status and/or trend at ", length(unique(state_param_sum$MLocID)), " stations within the state. These stations were located across ", length(unique(state_param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
@@ -371,7 +372,7 @@ for(i in unique(state_param_sum$Char_Name)){
 
 cat("## Status\n\n")
 
-cat(paste0("The table below shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+cat(paste0(tbls("au_sum", display = 'cite')," shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
 au_sum <- state_param_sum_au %>% group_by(Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -404,7 +405,7 @@ cap_list[[1]] <- figs(name = paste0("state_au_sum_plot"), caption = paste0("Summ
 # cat(paste0("![", figs(name = paste0("state_au_sum_plot"), caption = paste0("Summary plot of assessment unit status across the state by parameter.")),
 #            "]()"))
 
-cat(paste0("\n\nBelow is a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
+cat(paste0("\n\n", tbls("au_type_sum", display = 'cite')," contains a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
 
 au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -423,7 +424,7 @@ knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = t
 
 cat("\n\n")
 
-cat(paste0("\n\nThe following table summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
+cat(paste0("\n\n", tbls("stn_sum", display = 'cite') ," summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
 
 stn_sum <- state_param_sum %>% group_by(Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -461,7 +462,7 @@ cap_list[[2]] <- figs(name = paste0("state_stn_sum_plot"), caption = paste0("Sum
 cat("\n\n")
 cat("## Trend\n\n")
 
-cat(paste0("\n\nA summary of the trends across parameters is shown in the table below. Note that trend requires significantly more data than status and may result in many stations with sufficient data for assessing status, but insuffient data for assessing trend.\n\n"))
+cat(paste0("\n\nA summary of the trends across parameters is shown in ", tbls("stn_trend_sum", display = 'cite'),". Note that trend requires significantly more data than status and may result in many stations with sufficient data for assessing status, but insufficient data for assessing trend.\n\n"))
 
 stn_sum <- state_param_sum %>% group_by(Char_Name) %>% 
   summarise(Improving = sum(trend == "Improving"),
