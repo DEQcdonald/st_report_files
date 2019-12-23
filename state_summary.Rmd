@@ -45,7 +45,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       cache = FALSE,
                       include = TRUE,
                       fig.keep='all',
-                      fig.path='Figures/',
+                      fig.path=paste0(out_dir, "/Figures/"),
                       fig.width = 12, 
                       fig.height = 6)
 
@@ -76,7 +76,7 @@ end.date = "2018-12-30"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
 
-figs <- captioner(prefix="\nFigure")
+figs <- captioner(prefix="Figure")
 tbls  <- captioner(prefix="Table")
 
 state_param_sum <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
@@ -187,7 +187,7 @@ These reports will aid discussion of local and statewide water quality in relati
 
 Water quality data were retrieved from DEQ's [AWQMS Database][2.1.1] which may include data submitted to DEQ from many other organizations. Data were also retrieved from the U.S. Environmental Protection Agency ([WQX/Storet][2.1.2]) database via the [Water Quality Portal][2.1.4]). Data collected between `r min(complete_years)` and `r max(complete_years)` within Oregon were included in this report. Parameters included in the query were `r unique(state_param_sum$Char_Name)[1:length(unique(state_param_sum$Char_Name))-1]` and `r unique(state_param_sum$Char_Name)[length(unique(state_param_sum$Char_Name))]`. Stations located within tribal lands were not evaluated in this report. Each tribal government has jurisdiction to administer Clean Water Act programs within its land.
 
-The map in `r figs(name = "query_map", cite="display")` shows the locations of all of the stations that were queried across the state.
+The map in `r figs(name = "query_map", display="cite")` shows the locations of all of the stations that were queried across the state.
 
 ```{r stations_map, include=FALSE}
 

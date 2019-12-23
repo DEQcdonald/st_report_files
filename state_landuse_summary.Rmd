@@ -24,6 +24,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       cache.comments = FALSE,
                       include = TRUE,
                       autodep = TRUE,
+                      fig.keep = 'all',
+                      fig.path = paste0(out_dir, "/Figures/"),
                       fig.height = 7,
                       eval = TRUE
                       )

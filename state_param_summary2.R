@@ -357,3 +357,23 @@ for (i in basin_names){
                           title = paste(name, "Status and Trends Map"), 
                           background = "grey", selfcontained = FALSE)
 }
+
+table_format <- "pandoc"
+out_dir <- "N:/Status_and_Trend_Reports/2019/Statewide Report"
+
+rmarkdown::render(input = "N:/Status_and_Trend_Reports/Report_Files/st_report_files/state_summary.Rmd",
+                  # params = list(
+                  #   basin = basin,
+                  #   param_sum = param_sum_stn,
+                  #   param_sum_au = param_sum_au,
+                  #   complete_years = complete_years,
+                  #   hucs = hucs,
+                  #   table_format = "html"),
+                  output_format = "word_document",
+                  output_file = paste0("Oregon_SandT_report"),
+                  output_dir = out_dir,
+                  # output_dir = "C:/workspace/StatusAndTrends",
+                  # output_dir = project_dir,
+                  # intermediates_dir = "C:/workspace/StatusAndTrends",
+                  # intermediates_dir = out_path,
+                  envir = globalenv())
