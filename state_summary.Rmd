@@ -84,8 +84,10 @@ state_param_sum <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_pa
 state_param_sum_au <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
                                   sheet = "AU_summary")
 state_param_sum <- state_param_sum %>% dplyr::filter(!is.na(AU_ID))
+state_param_sum <- state_param_sum %>% dplyr::filter(AU_ID != "")
 state_param_sum$Char_Name <- AWQMS_to_standard(state_param_sum$Char_Name)
 state_param_sum_au <- state_param_sum_au %>% dplyr::filter(!is.na(AU_ID))
+state_param_sum_au <- state_param_sum_au %>% dplyr::filter(AU_ID != "")
 state_param_sum_au$Char_Name <- AWQMS_to_standard(state_param_sum_au$Char_Name)
 
 state_param_sum$AU_Type <- if_else(grepl("_SR_", state_param_sum$AU_ID),

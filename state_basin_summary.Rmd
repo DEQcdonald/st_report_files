@@ -57,8 +57,10 @@ load(paste0(project_dir, name, "_param_summary_by_station.RData"))
 param_sum <- param_sum_stn
 load(paste0(project_dir, name, "_param_summary_by_au.RData"))
 param_sum <- param_sum %>% dplyr::filter(!is.na(AU_ID))
+param_sum <- param_sum %>% dplyr::filter(AU_ID != "")
 param_sum$Char_Name <- AWQMS_to_standard(param_sum$Char_Name)
-param_sum_au <- param_sum %>% dplyr::filter(!is.na(AU_ID))
+param_sum_au <- param_sum_au %>% dplyr::filter(!is.na(AU_ID))
+param_sum_au <- param_sum_au %>% dplyr::filter(AU_ID != "")
 param_sum_au$Char_Name <- AWQMS_to_standard(param_sum_au$Char_Name)
 status_current <- as.symbol(colnames(param_sum)[grep("trend", colnames(param_sum)) - 1])
 
@@ -96,36 +98,7 @@ if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/
 
 # `r name` Basin
 
-
-```{r landuse, include = FALSE, results = 'asis', eval=TRUE, fig.height=7}
-
-# rmarkdown::render("//deqhq1/WQNPS/Agriculture/Status_and_Trend_Analysis/StatusAndTrends_Package/odeqstatusandtrends/R/subbasin.Rmd",
-#                   params = list(
-#                     subbasin = subbasin,
-#                     par_sum = par_sum))
-landuse_output <- NULL
-
-# data <- param_sum %>% filter(HUC8 == i)
-# par_sum <- data %>% select(-Lat_DD, -Long_DD, -HUC8, -HUC8_Name, -X)
-# subbasin <- if(any(!is.na(data$HUC8_Name)) & length(unique(data$HUC8_Name)) == 1){unique(data$HUC8_Name)} else {unique(data$HUC8)}
-
-# sub_rmd <- knitr::knit_child(
-#   rmarkdown::render("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/2019-Willamette/", output_format = "html_document",
-#                     params = list(
-#                       subbasin = i,
-#                       par_sum = data))
-# )
-
-landuse_output <- knitr::knit_child("state_landuse_summary.Rmd", envir = globalenv())
-
-```
-
-`r paste(landuse_output, collapse = "\n")`
-
-```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}
-
-cap_list <- list()
-
+```{r basinIntro, include = TRUE, results = 'asis'}
 wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/wq_limited_2012_df_temp_bact_ph_DO_TP_Sediment.csv',
                      stringsAsFactors = FALSE)
 
@@ -188,6 +161,37 @@ cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTA
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
            ), " were available for analysis and included in this report. The following section summarizes the results of the analysis basin wide.\n\n"))
+```
+
+
+```{r landuse, include = FALSE, results = 'asis', eval=TRUE, fig.height=7}
+
+# rmarkdown::render("//deqhq1/WQNPS/Agriculture/Status_and_Trend_Analysis/StatusAndTrends_Package/odeqstatusandtrends/R/subbasin.Rmd",
+#                   params = list(
+#                     subbasin = subbasin,
+#                     par_sum = par_sum))
+landuse_output <- NULL
+
+# data <- param_sum %>% filter(HUC8 == i)
+# par_sum <- data %>% select(-Lat_DD, -Long_DD, -HUC8, -HUC8_Name, -X)
+# subbasin <- if(any(!is.na(data$HUC8_Name)) & length(unique(data$HUC8_Name)) == 1){unique(data$HUC8_Name)} else {unique(data$HUC8)}
+
+# sub_rmd <- knitr::knit_child(
+#   rmarkdown::render("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/2019-Willamette/", output_format = "html_document",
+#                     params = list(
+#                       subbasin = i,
+#                       par_sum = data))
+# )
+
+landuse_output <- knitr::knit_child("state_landuse_summary.Rmd", envir = globalenv())
+
+```
+
+`r paste(landuse_output, collapse = "\n")`
+
+```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}
+
+cap_list <- list()
 
 cat("## Parameter Maps\n\n")
 
