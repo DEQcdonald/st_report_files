@@ -130,17 +130,17 @@ wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing St
 wql_sub <- wql_sub %>% group_by(Pollutant) %>% summarise('Segments Impaired' = n())
 
 knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE,
-             caption = tbls(name = paste0(subbasin_name, "_wql"), 
-                            caption = paste0("Summary of Integrated Report listings for parameters included in the ", subbasin_name,
-                                             " Subbasin. Table based on the approved (and partially disapproved) 2012 Integrated Report Listings by the EPA.")
-             )
-) %>% table_style()
+             caption = tbls(name = paste0(subbasin_name, "_wql"),
+                            caption = paste0("Number of water quality impaired stream segments in the ", 
+                                             subbasin_name,
+                                             " Subbasin for the parameters assessed in this report. Impairments are summarized from the final 2012 303(d) integrated report."))) %>% 
+  table_style()
 
 # knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE
 #              # ,
 #              # caption = tbls(name = paste0(subbasin_name, "_wql_streams"), caption = paste0("Category 4A or Category 5 stream segments within the ", subbasin_name, " Subbasin."))
 #              ) %>% table_style()
-} else {cat("There are no Category 4A or Category 5 stream segments in this subbasin.")}
+} else {cat("There are no water quality impaired Category 4A or Category 5 stream segments in this subbasin.")}
 
 ```
 
@@ -151,7 +151,7 @@ knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names 
 
 cap_list <- list()
 
-cat(paste0("There are ", length(unique(par_sum_au$AU_ID)), " assessment units within the ", subbasin_name, " subbasin that were included in this report. The following table summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+cat(paste0("There are ", length(unique(par_sum_au$AU_ID)), " assessment units within the ", subbasin_name, " subbasin that were included in this report. ", tbls(name = paste0(subbasin_name, "_au_sum"), cite="display"), "and ", figs(name = paste0(subbasin_name, "_au_sum_plot"), cite="display"), " summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
 au_sum <- par_sum_au %>% group_by(Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -186,7 +186,7 @@ cap_list[[1]] <- figs(name = paste0(subbasin_name, "_au_sum_plot"), caption = pa
 # cat(figs(name = paste0(subbasin_name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", subbasin_name, " Subbasin by parameter.")))
 # fignum <- fignum + 1
 
-cat(paste0("\n\nOregon DEQ groups assessment units into four types; streams, lakes, watershed units, or estuaries and bays. Below is a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
+cat(paste0("\n\nOregon DEQ groups assessment units into four types; streams, lakes, watershed units, or estuaries and bays. ", tbls(name = paste0(subbasin_name, "_au_type_sum"), cite="display"), " summarizes of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
 
 au_sum_type <- par_sum_au %>% group_by(AU_Type, Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -205,7 +205,7 @@ knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = t
 
 cat("\n\n")
 
-cat(paste0("\n\nThere are ", length(unique(par_sum$MLocID)), " stations within the ", subbasin_name, " subbasin that were included in this report. The following table summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
+cat(paste0("\n\nThere are ", length(unique(par_sum$MLocID)), " stations within the ", subbasin_name, " subbasin that were included in this report. ", tbls(name = paste0(subbasin_name, "_stn_sum"), cite="display"), " and ", figs(name = paste0(subbasin_name, "_stn_sum_plot"), cite="display"), " summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
 
 stn_sum <- par_sum %>% group_by(Pollutant) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),
@@ -244,7 +244,7 @@ cap_list[[2]] <- figs(name = paste0(subbasin_name, "_stn_sum_plot"), caption = p
 #### Trend
 
 ```{r trend, include = TRUE, results = 'asis'}
-cat(paste0("\n\nA summary of the trends within parameters is shown in the table below. Note that trend requires significantly more data than status and may result in many stations with insuffient data for trend analysis.\n\n"))
+cat(paste0("\n\nA summary of the trends within parameters is shown in ", tbls(name = paste0(subbasin_name, "_stn_trend_sum"), cite="display"), ". Note that trend requires significantly more data than status and may result in many stations with insufficient data for trend analysis.\n\n"))
 
 stn_sum <- par_sum %>% group_by(Pollutant) %>% 
   summarise(Improving = sum(trend == "Improving"),
