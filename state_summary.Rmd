@@ -414,7 +414,7 @@ au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>%
             'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
             Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
   mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
-  rename(Pollutant = Char_Name)
+  rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
 # cat(tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type."))
 
