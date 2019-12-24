@@ -68,6 +68,7 @@ landuse.huc8.df <- nlcd_huc8_df %>%
                                           VALUE_95) * 0.001 / WsAreaSqKm * 100, 1))
 
 landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_names$HUC8),]$HUC8_Name
+landuse.huc8.df <- landuse.huc8.df %>% filter(!is.na(HUC_8_NAME))
 
 colnames(landuse.huc8.df) <- c("Subbasin", "Watershed Area (km2)", "% Urban/Roads", "% Forest", "% Cultivated"," % Range/Forest Disturbance", " %Other")
 
@@ -78,15 +79,15 @@ landuse_table <- knitr::kable(landuse.huc8.df, format = table_format, padding = 
 ```
 
 
-```{r lancover-map,eval.after="fig.cap", fig.cap=landmap.cap, results='asis', cache=FALSE, eval=landuse_map_check, fig.height=7, out.height='720px'}
+```{r lancover-map,eval.after="fig.cap", fig.cap=landmap.cap, results='asis', cache=FALSE, eval=landuse_map_check, fig.height=7, out.height='615px'}
 landmap.cap <- figs(name="figs.landcover_map", caption = paste0("Land use in the ", name, " administrative basin."))
 
 # knitr::include_graphics(path = paste0(lu_dir, "/LULC_Maps/Landcover_",basin,".png"))
 knitr::include_graphics(path = paste0(lu_dir, "/LULC_Maps/Landcover_", gsub(" ", "_", name), ".png"))
 
-cat("\n\n")
-
 ```
+
+`r cat("\n\n")`
 
 `r landuse_table`
 

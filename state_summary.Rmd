@@ -197,7 +197,7 @@ HUC_shp <- readOGR(dsn = "N:/Status_and_Trend_Reports/GIS", layer = 'Report_Unit
 basin_names <- sort(unique(HUC_shp$REPORT))
 
 stations_AWQMS <- get_stations_AWQMS(HUC_shp)
-huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")])
+huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")]) %>% filter(HUC8_Name != "-9999")
 
 HUC_shp <- sf::st_as_sf(HUC_shp)
 HUC_shp <- st_transform(HUC_shp, 4326)
