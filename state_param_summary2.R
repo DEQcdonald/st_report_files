@@ -61,6 +61,8 @@ missing_AUs <- NULL
 wqp_stns <- NULL
 state_param_sum_au <- NULL
 state_param_sum_stn <- NULL
+state_org_sums <- NULL
+state_station_sums <- NULL
 
 basin_names <- sort(unique(HUC_shp$REPORT))
 
@@ -304,17 +306,45 @@ for (i in basin_names){
   
   print(paste0("Saving parameter summary tables..."))
   
+  stn_orgs <- data_assessed %>% group_by(MLocID, Char_Name) %>% summarise(Organizations = paste(unique(Org_Name), collapse = ", "))
   param_sum_stn <- parameter_summary_by_station(status, seaKen, stations_AWQMS)
+  param_sum_stn <- merge(param_sum_stn, stn_orgs, by = c("Char_Name", "MLocID"), all.x = TRUE, all.y = FALSE)
   param_sum_au <- parameter_summary_by_au(status, seaKen, stations_AWQMS)
   
   state_param_sum_stn <- bind_rows(state_param_sum_stn, param_sum_stn)
   state_param_sum_au <- bind_rows(state_param_sum_au, param_sum_au)
   
+  # Creating appendices -------------------------------------------
+  
+  print("Creating Appendices...")
+  
+  org_sums <- data_assessed %>% mutate(Basin = name) %>% group_by(Org_Name, Basin) %>% 
+    summarise('Unique Stations' = length(unique(MLocID)),
+              'Temperature Results' = sum(Char_Name == "Temperature, water"),
+              'DO Results' = sum(Char_Name == "Dissolved oxygen (DO)"),
+              'pH Results' = sum(Char_Name == "pH"),
+              'TSS Results' = sum(Char_Name == "Total suspended solids"),
+              'TP Results' = sum(Char_Name == "Phosphate-phosphorus"),
+              'E. Coli Results' = sum(Char_Name == "Escherichia coli"),
+              'Fecal Coliform Results' = sum(Char_Name == "Fecal Coliform"),
+              'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>% 
+    rename(Organization = Org_Name)
+  
+  state_org_sums <- bind_rows(state_org_sums, org_sums)
+  
+  station_sums <- data_assessed %>% mutate(Year = year(sample_datetime)) %>% group_by(MLocID, Char_Name, Year) %>% 
+    summarise(Results = n()) %>% pivot_wider(names_from = "Year", values_from = "Results")
+  
+  state_station_sums <- bind_rows(state_station_sums, station_sums)
+      
   writexl::write_xlsx(list(summary_by_station=param_sum_stn,
                            summary_by_AU=param_sum_au,
                            excursion_stats=excur_stats,
                            trend_stats=seaKen,
-                           owri_summary=owri_summary), path=paste0(project_dir, name,"_WQS&T_results_DRAFT_", eval_date, ".xlsx"))
+                           owri_summary=owri_summary,
+                           orgs=org_sums,
+                           stations=station_sums), 
+                      path=paste0(project_dir, name,"_WQS&T_results_DRAFT_", eval_date, ".xlsx"))
   
   save(param_sum_stn, file = paste0(project_dir, name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(project_dir, name, "_param_summary_by_AU.RData"))
@@ -324,7 +354,9 @@ for (i in basin_names){
 writexl::write_xlsx(list(station_summary = state_param_sum_stn,
                          AU_summary = state_param_sum_au,
                          missing_AUs = missing_AUs,
-                         wqp_stations = wqp_stns),
+                         wqp_stations = wqp_stns,
+                         orgs = state_org_sums,
+                         stations = state_station_sums),
                          path=paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/", "Oregon", "_parameter_summary.xlsx"))
                          
 # write.csv(state_param_sum_stn, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/", "Oregon", "_param_summary_by_station.csv"), row.names = FALSE)
