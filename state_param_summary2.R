@@ -328,12 +328,16 @@ for (i in basin_names){
               'E. Coli Results' = sum(Char_Name == "Escherichia coli"),
               'Fecal Coliform Results' = sum(Char_Name == "Fecal Coliform"),
               'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>% 
-    rename(Organization = Org_Name)
+    rename('Sampling Organization' = Org_Name)
   
   state_org_sums <- bind_rows(state_org_sums, org_sums)
   
-  station_sums <- data_assessed %>% mutate(Year = year(sample_datetime)) %>% group_by(MLocID, Char_Name, Year) %>% 
-    summarise(Results = n()) %>% pivot_wider(names_from = "Year", values_from = "Results")
+  station_sums <- data_assessed %>% mutate(Basin = name, 
+                                           Year = year(sample_datetime), 
+                                           Subbasin = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>% 
+    group_by(MLocID, StationDes, Basin, Subbasin, AU_ID, Char_Name, Year) %>% 
+    summarise(Results = n()) %>% pivot_wider(names_from = "Year", values_from = "Results") %>% 
+    rename('Station ID' = MLocID, 'Station Name' = StationDes, 'Assessment Unit ID' = AU_ID, "Parameter" = Char_Name)
   
   state_station_sums <- bind_rows(state_station_sums, station_sums)
       
