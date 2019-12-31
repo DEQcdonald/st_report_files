@@ -104,8 +104,7 @@ for (name in report_names){
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
   }
   
-
-  plot_dir <- paste0(project_dir, output_dir,'/Plots/')
+  plot_dir <- paste0(output_dir,'/Plots/')
   
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
@@ -115,13 +114,13 @@ for (name in report_names){
   if(dir.exists(plot_dir)) {
   } else {dir.create(plot_dir, recursive = TRUE)}
 
-  load(file = paste0(project_dir, name, "_data_assessed.RData"))
+  load(file = paste0(data_dir, "/", name, "_data_assessed.RData"))
 
-  if(file.exists(paste0(project_dir, name, "_seaken.RData"))){
-    load(file = paste0(project_dir, name, "_seaken.RData"))
+  if(file.exists(paste0(data_dir, "/", name, "_seaken.RData"))){
+    load(file = paste0(data_dir, "/", name, "_seaken.RData"))
   } else {seaKen <- data.frame()}
 
-  load(paste0(project_dir, name, "_param_summary_by_station.RData"))
+  load(paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   
   # Temperature plots -------------------------------------------------------
 
