@@ -133,10 +133,10 @@ for (name in report_names){
   
   if(web_output) {
     output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
-    xlsx_name <- paste0("Appendix_",a.letter,"_",name_abr,"_results.xlsx")
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results.xlsx")
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
-    xlsx_name <- paste0("Appendix_",a.letter,"_",name_abr,"_results_DRAFT_", eval_date, ".xlsx")
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results_DRAFT_", eval_date, ".xlsx")
   }
   
   eval_date <- Sys.Date()
@@ -163,8 +163,8 @@ for (name in report_names){
     wqp_stns <- bind_rows(wqp_stns, stations_wqp)
   } else {stations_wqp <- NULL}
 
-  if(file.exists(paste0(data_dir, name, "_data_raw_", start.date, "-", end.date, ".RData"))){
-    load(paste0(data_dir, name, "_data_raw_", start.date, "-", end.date, ".RData"))
+  if(file.exists(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))){
+    load(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   } else {
     data_raw <- GetData(parameters = c("Temperature", "Bacteria", "TSS", "DO", "TP", "pH"),
                         stations_AWQMS = stations_AWQMS,
@@ -175,7 +175,7 @@ for (name in report_names){
     
     print(paste0("Saving raw data from query..."))
     
-    save(data_raw, file = paste0(data_dir, name, "_data_raw_", start.date, "-", end.date, ".RData"))
+    save(data_raw, file = paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   }
   
   data_raw[, c("StationDes", "HUC8", "HUC8_Name", "HUC10", "HUC12", "HUC12_Name",
@@ -314,8 +314,8 @@ for (name in report_names){
   
   print(paste0("Saving assessed data..."))
   
-  save(data_assessed, file = paste0(data_dir, name, "_data_assessed.RData"))
-  save(status, trend, excur_stats, file = paste0(data_dir, name, "_status_trend_excur_stats.RData"))
+  save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
+  save(status, trend, excur_stats, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
   
   # Assess status by parameter ----------------------------------------------
   
@@ -349,7 +349,7 @@ for (name in report_names){
     seaKen <- sea_ken(data = seaken_data)
     seaKen_sample_size <- attributes(seaKen)$sample_size
     
-    save(seaKen, file = paste0(data_dir, name, "_seaken.RData"))
+    save(seaKen, file = paste0(data_dir, "/", name, "_seaken.RData"))
   } else {
     print("There were no stations with data that qualified for trend analysis...")
     seaKen <- NULL
@@ -441,6 +441,10 @@ for (name in report_names){
     rename('Station ID' = MLocID, 'Station Name' = StationDes, 'Assessment Unit ID' = AU_ID, "Parameter" = Char_Name)
   
   state_station_sums <- bind_rows(state_station_sums, station_sums)
+
+  if(is.null(seaKen)){
+    seaKen <- data.frame(Comment = "There were no stations with data that qualified for trend analysis")
+  }
       
   writexl::write_xlsx(list(Summary_by_Station=param_sum_stn,
                            Summary_by_AU=param_sum_au,
@@ -449,9 +453,9 @@ for (name in report_names){
                            OWRI_Summary=owri_summary,
                            Results_by_Org=org_sums,
                            Results_by_Year=station_sums), 
-                      path=paste0(output_dir, xlsx_name))
+                      path=paste0(output_dir, "/", xlsx_name))
   
-  save(owri_summary, file = paste0(data_dir, name, "_owri_summary_by_subbasin.RData"))
+  save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
 }
 
 if(dir.exists(paste0(top_dir, "/Statewide Report/"))) {
@@ -463,7 +467,7 @@ writexl::write_xlsx(list(Summary_by_Station = state_param_sum_stn,
                          WQP_Stations = wqp_stns,
                          Results_by_Org = state_org_sums,
                          Results_by_Year = state_station_sums),
-                         path=paste0(top_dir, "/Statewide Report/Statewide_results", eval_date, ".xlsx"))
+                         path=paste0(top_dir, "/Statewide Report/Statewide_results_", eval_date, ".xlsx"))
                          
 # write.csv(state_param_sum_stn, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/", "Oregon", "_param_summary_by_station.csv"), row.names = FALSE)
 # write.csv(state_param_sum_au, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/", "Oregon", "_param_summary_by_AU.csv"), row.names = FALSE)
@@ -473,13 +477,40 @@ writexl::write_xlsx(list(Summary_by_Station = state_param_sum_stn,
 
 # Web Maps  -------------------------------------------
 
+map_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
+                     "Columbia River"="columbiariv",
+                     "Deschutes"="deschutes",
+                     "Goose Lake"="gooselake",
+                     "Grande Ronde"="granderonde",
+                     "John Day"="johnday",
+                     "Klamath"="klamath",
+                     "Malheur"="malheur",
+                     "Mid-Coast"="midcoast",
+                     "Middle Columbia-Hood"="midcohood",
+                     "North Coast-Lower Columbia"="ncoast",
+                     "Oregon Closed Basins"="orclosed",
+                     "Owyhee"="owyhee",
+                     "Powder-Burnt"="powderburnt",
+                     "Rogue"="rogue",
+                     "Sandy"="sandy",
+                     "Snake River"="snakeriv",
+                     "South Coast"="scoast",
+                     "Umatilla"="umatilla",
+                     "Umpqua"="umpqua",
+                     "Willamette-Clackamas"="will_clack",
+                     "Willamette-Lower"="will_lower",
+                     "Willamette-McKenzie-Forks"="will_mck_forks",
+                     "Willamette-Middle"="will_middle",
+                     "Willamette-Santiam-Upper"="will_san_upper",
+                     "Willamette-Tualatin"="will_tualatin")
+
 for (name in report_names){
   
   name_abr <- report_name_abr[[name]]
 
   print(paste0("Creating parameter summary map for the ", name, " Basin..."))
   
-  load(file = paste0(data_dir, name, "_eval_date.RData"))
+  load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   
   if(web_output) {
     output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
@@ -490,14 +521,25 @@ for (name in report_names){
   if(dir.exists(output_dir)) {
   } else {dir.create(output_dir, recursive = TRUE)}
   
-  load(paste0(data_dir, name, "_param_summary_by_station.RData"))
-  load(paste0(data_dir, name, "_param_summary_by_AU.RData"))
+  load(paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
+  load(paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   
-  basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
+  report_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
-  map <- parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = basin_shp)
+  map_names <- sort(unique(report_shp$MAP))
   
-  htmlwidgets::saveWidget(map, paste0(output_dir, name_abr, "_map.html"), 
-                          title = paste(name, "Status and Trends Map"), 
-                          background = "grey", selfcontained = FALSE)
+  #m <- "Willamette-Clackamas"
+  
+  for(m in map_names){
+    
+    m_abr <- map_name_abr[[m]]
+    
+    print(paste0(m, "..."))
+    
+    map <- parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = report_shp[report_shp$MAP == m,])
+    
+    htmlwidgets::saveWidget(map, paste0(output_dir, "/", m_abr, "_map.html"), 
+                            title = paste(m, "Status and Trends Map"), 
+                            background = "grey", selfcontained = FALSE)
+  }
 }
