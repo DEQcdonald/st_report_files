@@ -48,6 +48,12 @@ gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 HUC_shp <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 # HUC_shp <- HUC_shp[!(HUC_shp$REPORT %in% c("Klamath","Willamette")),]
 
+charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)", "pH", "Total suspended solids", "Phosphate-phosphorus",
+                                  "Fecal Coliform", "Escherichia coli", "Enterococcus"),
+                        folder = c("Temperature", "DO", "pH", "TSS", "TP", "Fecal_Coliform", "Ecoli", "Enterococcus"),
+                        file = c("temp", "DO", "pH", "TSS", "TP", "FeColi", "Ecoli", "Enterococcus"),
+                        stringsAsFactors = FALSE)
+
 # stations_AWQMS <- get_stations_AWQMS(HUC_shp)
 
 report_names <- sort(unique(HUC_shp$REPORT))
@@ -229,7 +235,7 @@ for (name in report_names){
       p <- plot_bacteria(data = plot_data, seaKen = seaKen[seaKen$Char_Name == bact_param,], station = bact_station)
 
       ggsave(plot = p,
-             filename = paste0(plot_dir, subbasin, "/", bact_param, "/", bact_param, "_", bact_station, ".jpeg"),
+             filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
              device = "jpeg",
              width = 8, height = 6)
       count <- count + 1

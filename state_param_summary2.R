@@ -79,6 +79,8 @@ for (i in basin_names){
   eval_date <- Sys.Date()
   save(eval_date, file = paste0(project_dir, name, "_eval_date.RData"))
   
+  draft_dir <- paste0(project_dir,'WQST_2019-',name,'_DRAFT_', eval_date, '/')
+  
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% i, ]
   
   # print("Checking for TMDLs...")
@@ -378,7 +380,11 @@ for (i in basin_names){
     rename('Station ID' = MLocID, 'Station Name' = StationDes, 'Assessment Unit ID' = AU_ID, "Parameter" = Char_Name)
   
   state_station_sums <- bind_rows(state_station_sums, station_sums)
-      
+  
+  if(is.null(seaKen)){
+    seaKen <- data.frame(Comment = "There were no stations with data that qualified for trend analysis")
+  }
+  
   writexl::write_xlsx(list(summary_by_station=param_sum_stn,
                            summary_by_AU=param_sum_au,
                            excursion_stats=excur_stats,
@@ -386,7 +392,7 @@ for (i in basin_names){
                            owri_summary=owri_summary,
                            orgs=org_sums,
                            stations=station_sums), 
-                      path=paste0(project_dir, name,"_WQS&T_results_DRAFT_", eval_date, ".xlsx"))
+                      path=paste0(draft_dir, name,"_WQS&T_results_DRAFT_", eval_date, ".xlsx"))
   
   save(owri_summary, file = paste0(project_dir, name, "_owri_summary_by_subbasin.RData"))
 }
@@ -413,7 +419,7 @@ for (i in basin_names){
   
   load(file = paste0(project_dir, name, "_eval_date.RData"))
   
-  draft_dir <- paste0(project_dir,'WQST_2019-',name,'_DRAFT_', eval_date, '/')
+  draft_dir <- paste0(project_dir,'WQST_2019-', name,'_DRAFT_', eval_date, '/')
   
   if(dir.exists(draft_dir)) {
   } else {dir.create(draft_dir, recursive = TRUE)}
@@ -423,9 +429,12 @@ for (i in basin_names){
   
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% i, ]
   
-  map <- parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = basin_shp)
-  
-  htmlwidgets::saveWidget(map, paste0(draft_dir, name, "_param_map.html"), 
-                          title = paste(name, "Status and Trends Map"), 
-                          background = "grey", selfcontained = FALSE)
+  for(m in unique(basin_shp$MAP)){
+    print(paste0(m, "..."))
+    map <- parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = basin_shp[basin_shp$MAP == m,])
+    
+    htmlwidgets::saveWidget(map, paste0(draft_dir, m, "_param_map.html"), 
+                            title = paste(name, "Status and Trends Map"), 
+                            background = "grey", selfcontained = FALSE)
+  }
 }
