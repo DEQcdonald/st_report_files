@@ -309,7 +309,45 @@ for (i in basin_names){
   stn_orgs <- data_assessed %>% group_by(MLocID, Char_Name) %>% summarise(Organizations = paste(unique(Org_Name), collapse = ", "))
   param_sum_stn <- parameter_summary_by_station(status, seaKen, stations_AWQMS)
   param_sum_stn <- merge(param_sum_stn, stn_orgs, by = c("Char_Name", "MLocID"), all.x = TRUE, all.y = FALSE)
+  
+  au_orgs <- data_assessed %>% group_by(AU_ID, Char_Name) %>% summarise(Stations = paste(unique(MLocID), collapse = ", "),
+                                                                        Organizations = paste(unique(Org_Name), collapse = ", "))
   param_sum_au <- parameter_summary_by_au(status, seaKen, stations_AWQMS)
+  param_sum_au <- merge(param_sum_au, au_orgs, by = c("Char_Name", "AU_ID"), all.x = TRUE, all.y = FALSE)
+  
+  save(param_sum_stn, file = paste0(project_dir, name, "_param_summary_by_station.RData"))
+  save(param_sum_au, file = paste0(project_dir, name, "_param_summary_by_AU.RData"))
+  
+  param_sum_stn <- param_sum_stn %>% dplyr::select('Station ID' = MLocID, 
+                                                   'Station Name' = StationDes,
+                                                   "Subbasin Name" = HUC8_Name,
+                                                   HUC8,
+                                                   'Assessment Unit ID' = AU_ID,
+                                                   "Latitude" = Lat_DD,
+                                                   "Longitude" = Long_DD,
+                                                   "Parameter" = Char_Name,
+                                                   "Sampling Organizations" = Organizations,
+                                                   grep('status', colnames(param_sum_stn), value = TRUE),
+                                                   'Trend' = trend
+  )
+  
+  colnames(param_sum_stn) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(param_sum_stn), perl = TRUE)
+  colnames(param_sum_stn) <- gsub("_", " ", colnames(param_sum_stn), perl = TRUE)
+  colnames(param_sum_stn) <- sapply(colnames(param_sum_stn), simpleCap, USE.NAMES = FALSE)
+  
+  param_sum_au <- param_sum_au %>% dplyr::select('Assessment Unit ID' = AU_ID,
+                                                 'Assessment Unit Name' = AU_Name,
+                                                 "Subbasin Name" = HUC8_Name,
+                                                 HUC8,
+                                                 "Parameter" = Char_Name,
+                                                 'Station IDs' = Stations,
+                                                 "Sampling Organizations" = Organizations,
+                                                 grep('status', colnames(param_sum_au), value = TRUE)
+  )
+  
+  colnames(param_sum_au) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(param_sum_au), perl = TRUE)
+  colnames(param_sum_au) <- gsub("_", " ", colnames(param_sum_au), perl = TRUE)
+  colnames(param_sum_au) <- sapply(colnames(param_sum_au), simpleCap, USE.NAMES = FALSE)
   
   state_param_sum_stn <- bind_rows(state_param_sum_stn, param_sum_stn)
   state_param_sum_au <- bind_rows(state_param_sum_au, param_sum_au)
@@ -350,8 +388,6 @@ for (i in basin_names){
                            stations=station_sums), 
                       path=paste0(project_dir, name,"_WQS&T_results_DRAFT_", eval_date, ".xlsx"))
   
-  save(param_sum_stn, file = paste0(project_dir, name, "_param_summary_by_station.RData"))
-  save(param_sum_au, file = paste0(project_dir, name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(project_dir, name, "_owri_summary_by_subbasin.RData"))
 }
 
