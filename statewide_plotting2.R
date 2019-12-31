@@ -37,13 +37,19 @@ library(Rcpp)
 # library(gridExtra)
 # webshot::install_phantomjs()
 
+# Inputs ----
+
 start.date = "1999-01-01"
 end.date = "2018-12-30"
-complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+web_output <- TRUE
 
-query_dates <- c(start.date, end.date)
-
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
+
+# ----
+
+complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+query_dates <- c(start.date, end.date)
 
 HUC_shp <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 # HUC_shp <- HUC_shp[!(HUC_shp$REPORT %in% c("Klamath","Willamette")),]
@@ -52,17 +58,48 @@ HUC_shp <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
+report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
+                        "Columbia River"="columbiariv",
+                        "Deschutes"="deschutes",
+                        "Goose Lake"="gooselake",
+                        "Grande Ronde"="granderonde",
+                        "John Day"="johnday",
+                        "Klamath"="klamath",
+                        "Malheur"="malheur",
+                        "Mid-Coast"="midcoast",
+                        "Middle Columbia-Hood"="midcohood",
+                        "North Coast-Lower Columbia"="ncoast",
+                        "Oregon Closed Basins"="orclosed",
+                        "Owyhee"="owyhee",
+                        "Powder-Burnt"="powderburnt",
+                        "Rogue"="rogue",
+                        "Sandy"="sandy",
+                        "Snake River"="snakeriv",
+                        "South Coast"="scoast",
+                        "Umatilla"="umatilla",
+                        "Umpqua"="umpqua",
+                        "Willamette"="willamette")
+
 #name <- "Willamette"
 
 for (name in report_names){
+  
+  name_abr <- report_name_abr[[name]]
 
   print(paste0("Creating plots for the ", name, " Basin..."))
-
-  project_dir <- paste0('//deqhq1/WQNPS/Status_and_Trend_Reports/2019/2019-', name, '/')
   
-  load(file = paste0(project_dir, name, "_eval_date.RData"))
+  data_dir <- paste0(top_dir,'/2019-', name)
+  
+  load(file = paste0(data_dir,'/', name,'_eval_date.RData'))
 
-  plot_dir <- paste0(project_dir,'WQST_2019-',name,'_DRAFT_', eval_date, '/Plots/')
+  if(web_output) {
+    output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
+  } else {
+    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
+  }
+  
+
+  plot_dir <- paste0(project_dir, output_dir,'/Plots/')
   
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
