@@ -82,7 +82,7 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
                         "Sandy"="sandy",
                         "Snake River"="snakeriv",
                         "South Coast"="scoast",
-                        "Umatilla"="umatilla",
+                        "Umatilla-Walla Walla-Willow"="umatilla",
                         "Umpqua"="umpqua",
                         "Willamette"="willamette")
 
