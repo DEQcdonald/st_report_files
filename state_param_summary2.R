@@ -132,12 +132,17 @@ for (name in report_names){
   } else {dir.create(data_dir)}
   
   if(web_output) {
+    if(dir.exists(paste0(top_dir,'/web_wqst_2019'))) {
+    } else {dir.create(paste0(top_dir,'/web_wqst_2019'))}
     output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
     xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results.xlsx")
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
     xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results_DRAFT_", eval_date, ".xlsx")
   }
+  
+  if(dir.exists(output_dir)) {
+  } else {dir.create(output_dir)}
   
   eval_date <- Sys.Date()
   save(eval_date, file = paste0(data_dir, name, "_eval_date.RData"))
