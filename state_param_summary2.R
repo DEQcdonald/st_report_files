@@ -70,6 +70,8 @@ state_param_sum_au <- NULL
 state_param_sum_stn <- NULL
 state_org_sums <- NULL
 state_station_sums <- NULL
+state_param_sum_stn_data <- NULL
+state_param_sum_au_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -385,6 +387,8 @@ for (name in report_names){
   
   save(param_sum_stn, file = paste0(data_dir, name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, name, "_param_summary_by_AU.RData"))
+  state_param_sum_stn_data <- bind_rows(state_param_sum_stn_data, param_sum_stn)
+  state_param_sum_au_data <- bind_rows(state_param_sum_au_data, param_sum_au)
   
   param_sum_stn <- param_sum_stn %>% dplyr::select('Station ID' = MLocID, 
                                                    'Station Name' = StationDes,
@@ -466,6 +470,9 @@ for (name in report_names){
 if(dir.exists(paste0(top_dir, "/Statewide Report/"))) {
 } else {dir.create(paste0(top_dir, "/Statewide Report/"))}
 
+save(state_param_sum_stn_data, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))
+save(state_param_sum_au_data, file = paste0(top_dir, "/Oregon_param_summary_by_au.RData"))
+
 writexl::write_xlsx(list(Summary_by_Station = state_param_sum_stn,
                          Summary_by_AU = state_param_sum_au,
                          Missing_AUs = missing_AUs,
@@ -512,19 +519,26 @@ map_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
 for (name in report_names){
   
   name_abr <- report_name_abr[[name]]
+  a.letter <- appendix_letter[[name]]
 
   print(paste0("Creating parameter summary map for the ", name, " Basin..."))
+  
+  data_dir <- paste0(top_dir,'/2019-', name)
   
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   
   if(web_output) {
+    if(dir.exists(paste0(top_dir,'/web_wqst_2019'))) {
+    } else {dir.create(paste0(top_dir,'/web_wqst_2019'))}
     output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results.xlsx")
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results_DRAFT_", eval_date, ".xlsx")
   }
   
   if(dir.exists(output_dir)) {
-  } else {dir.create(output_dir, recursive = TRUE)}
+  } else {dir.create(output_dir)}
   
   load(paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   load(paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
