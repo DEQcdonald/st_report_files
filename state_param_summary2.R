@@ -512,19 +512,26 @@ map_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
 for (name in report_names){
   
   name_abr <- report_name_abr[[name]]
+  a.letter <- appendix_letter[[name]]
 
   print(paste0("Creating parameter summary map for the ", name, " Basin..."))
+  
+  data_dir <- paste0(top_dir,'/2019-', name)
   
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   
   if(web_output) {
+    if(dir.exists(paste0(top_dir,'/web_wqst_2019'))) {
+    } else {dir.create(paste0(top_dir,'/web_wqst_2019'))}
     output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results.xlsx")
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
+    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results_DRAFT_", eval_date, ".xlsx")
   }
   
   if(dir.exists(output_dir)) {
-  } else {dir.create(output_dir, recursive = TRUE)}
+  } else {dir.create(output_dir)}
   
   load(paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   load(paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
