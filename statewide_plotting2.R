@@ -82,7 +82,7 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
                         "Sandy"="sandy",
                         "Snake River"="snakeriv",
                         "South Coast"="scoast",
-                        "Umatilla"="umatilla",
+                        "Umatilla-Walla Walla-Willow"="umatilla",
                         "Umpqua"="umpqua",
                         "Willamette"="willamette")
 
@@ -265,8 +265,8 @@ for (name in report_names){
       huc <- unique(plot_data$HUC8)
       subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
       
-      if(dir.exists(paste0(plot_dir, subbasin, "/", bact_param))) {
-      } else {dir.create(paste0(plot_dir, subbasin, "/", bact_param), recursive = TRUE)}
+      if(dir.exists(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]))) {
+      } else {dir.create(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]), recursive = TRUE)}
 
       p <- plot_bacteria(data = plot_data, seaKen = seaKen[seaKen$Char_Name == bact_param,], station = bact_station)
 
