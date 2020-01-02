@@ -79,10 +79,16 @@ state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
 figs <- captioner(prefix="Figure")
 tbls  <- captioner(prefix="Table")
 
-state_param_sum <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
-                               sheet = "station_summary")
-state_param_sum_au <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
-                                  sheet = "AU_summary")
+load(file = paste0(state_project_dir, "Oregon_param_summary_by_station.RData"))
+load(file = paste0(state_project_dir, "Oregon_param_summary_by_au.RData"))
+state_param_sum <- state_param_sum_stn_data
+state_param_sum_au <- state_param_sum_au_data
+rm(state_param_sum_stn_data)
+rm(state_param_sum_au_data)
+# state_param_sum <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
+#                                sheet = "station_summary")
+# state_param_sum_au <- readxl::read_xlsx(path = paste0(state_project_dir, "Oregon_parameter_summary.xlsx"), 
+#                                   sheet = "AU_summary")
 state_param_sum <- state_param_sum %>% dplyr::filter(!is.na(AU_ID))
 state_param_sum <- state_param_sum %>% dplyr::filter(AU_ID != "")
 state_param_sum$Char_Name <- AWQMS_to_standard(state_param_sum$Char_Name)

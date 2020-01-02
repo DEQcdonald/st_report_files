@@ -70,6 +70,8 @@ state_param_sum_au <- NULL
 state_param_sum_stn <- NULL
 state_org_sums <- NULL
 state_station_sums <- NULL
+state_param_sum_stn_data <- NULL
+state_param_sum_au_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -385,6 +387,8 @@ for (name in report_names){
   
   save(param_sum_stn, file = paste0(data_dir, name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, name, "_param_summary_by_AU.RData"))
+  state_param_sum_stn_data <- bind_rows(state_param_sum_stn_data, param_sum_stn)
+  state_param_sum_au_data <- bind_rows(state_param_sum_au_data, param_sum_au)
   
   param_sum_stn <- param_sum_stn %>% dplyr::select('Station ID' = MLocID, 
                                                    'Station Name' = StationDes,
@@ -465,6 +469,9 @@ for (name in report_names){
 
 if(dir.exists(paste0(top_dir, "/Statewide Report/"))) {
 } else {dir.create(paste0(top_dir, "/Statewide Report/"))}
+
+save(state_param_sum_stn_data, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))
+save(state_param_sum_au_data, file = paste0(top_dir, "/Oregon_param_summary_by_au.RData"))
 
 writexl::write_xlsx(list(Summary_by_Station = state_param_sum_stn,
                          Summary_by_AU = state_param_sum_au,
