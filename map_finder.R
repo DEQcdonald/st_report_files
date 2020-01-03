@@ -63,7 +63,7 @@ map_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
                      "Willamette-Tualatin"="will_tualatin")
 
 basin_shp <- report_areas %>% group_by(REPORT) %>% summarise(basin = unique(REPORT))
-map_shp <- report_areas %>% group_by(MAP) %>% summarise(basin = unique(MAP),
+map_shp <- report_areas %>% group_by(MAP) %>% summarise(basin = unique(REPORT),
                                                         subbasins = paste(unique(HU_8_NAME), collapse = "<br>"))
 
 pal <- colorFactor(palette = "Paired",
