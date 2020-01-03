@@ -72,7 +72,7 @@ library(ggplot2)
 # name <- "Willamette"
 year <- "2019"
 start.date = "1999-01-01"
-end.date = "2018-12-30"
+end.date = "2018-12-31"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
 
@@ -178,22 +178,509 @@ title: "`r paste(year, 'Oregon Statewide Status and Trends Report')`"
 
 # Introduction
 
-## Purpose
-
-The Oregon Department of Environmental Quality's (DEQ) Total Maximum Daily Load (TMDL) and Nonpoint Source (NPS) program staff conduct these reviews in order to assess the quality of surface water in water bodies across the state. DEQ's TMDL and NPS programs explicitly define water quality targets and goals and these reports define water quality relative to those benchmarks. The analysis of landscape conditions and water quality data is used for implementing and assessing effectiveness of these programs as well as identifying data gaps and monitoring needs.
+This report presents the results of a statewide water quality status and trends analysis as well as a summary of best management practices implemented. The analysis is intended to answer these four questions:
 
 These reports will aid discussion of local and statewide water quality in relation to what's working and not working, source(s) and solutions, data needs and future monitoring to answer these questions. This report presents an analysis of water quality data readily accessible from public databases and available in sufficient quantity to indicate status and trends. Dependent on data availability, DEQ will use the available water quality data to answer the questions below.
 
-*	What is the status of water quality? 
-*	What is the trend in water quality? 
-*	When applicable, are TMDL load allocations being acheived?
-* What, if anything, is missing to answer these questions?
+*	What is the status of water quality in Oregon? Are waterbodies attaining water quality standards for bacteria, dissolved oxygen, pH, and temperature? 
+*	Where applicable, are Total Maximum Daily Load (TMDL) targets established for total phosphorus or total suspended solids attained? 
+*	What are the trends in water quality?
+* What best management practices have been implemented?
+
+DEQ conducts this analysis by assembling surface water quality data and information about best management practices implemented from readily accessible public databases, comparing these water quality data to the appropriate Oregon water quality standards or TMDL targets, and determining the status and trends where data and information of sufficient quality and quantity are available. Results are summarized for each of the 19 basins in Oregon as well as the Columbia and Snake Rivers.
+
+The results of this analysis informs DEQ, other state and federal agencies, and the public on the condition of waters; if water quality is improving or degrading; the pace of improvement or degradation; what actions, if any, are being taken to improve water quality, and where water quality data is and is not being collected.
+
+# Analysis Area and Tribal Waters
+
+Only those waters that are under the State of Oregon’s jurisdiction are evaluated in this report. The State of Oregon communicates with Oregon's nine federally-recognized Tribes in a government-to-government relationship to develop and implement agency programs that may affect the Tribes. Oregon DEQ does not assume jurisdiction to designate beneficial uses, apply water quality standards, list impaired waters, or develop TMDLs within tribal territory, except by cooperative agreement with Tribal governments. In 2017, DEQ conducted a water quality standards georeferencing project to map the extent of designated beneficial uses, water quality standards, and assessment units for reporting of the Clean Water Act section 303(d) impaired waters list. As part of this effort, DEQ collected the best available information on the location of Tribal Reservation and off Reservation Trust Lands. For this analysis, DEQ only assessed waterbodies and data collected outside of Tribal Reservation or off Reservation Trust Land boundaries.
 
 # Methods
 
 ## Data Sources
 
-Water quality data were retrieved from DEQ's [AWQMS Database][2.1.1] which may include data submitted to DEQ from many other organizations. Data were also retrieved from the U.S. Environmental Protection Agency ([WQX/Storet][2.1.2]) database via the [Water Quality Portal][2.1.4]). Data collected between `r min(complete_years)` and `r max(complete_years)` within Oregon were included in this report. Parameters included in the query were `r unique(state_param_sum$Char_Name)[1:length(unique(state_param_sum$Char_Name))-1]` and `r unique(state_param_sum$Char_Name)[length(unique(state_param_sum$Char_Name))]`. Stations located within tribal lands were not evaluated in this report. Each tribal government has jurisdiction to administer Clean Water Act programs within its land.
+Water quality data were retrieved from DEQ's [Ambient Water Quality Monitoring System (AWQMS)][3.1.1] which integrates DEQ water quality data with other publically available data sources (including the now retired DEQ LASAR database); the [Water Quality Portal][3.1.2]) which includes data from the U.S. Environmental Protection Agency ([WQX/Storet][3.1.3]) database, USGS's [NWIS][3.1.4], and other federal agencies, Tribes, and various third parties; NOAA’s [National Estuarine Research Reserve System][3.1.5]; [EIM][3.1.6] (Washington Department of Ecology database); and data obtained during DEQ’s Integrated Report “call for data” process. 
+
+Information about watershed improvement projects and the associated on the ground treatments that were implemented were obtained from the [Oregon Watershed Restoration Inventory][3.1.7] (OWRI) database maintained by the Oregon Watershed Enhancement Board (OWEB).
+
+[3.1.1]: https://www.oregon.gov/deq/wq/pages/wqdata.aspx
+[3.1.2]: https://www.waterqualitydata.us
+[3.1.3]: https://www.epa.gov/waterdata/water-quality-data-wqx
+[3.1.4]: https://waterdata.usgs.gov/nwis
+[3.1.5]: https://coast.noaa.gov/nerrs
+[3.1.6]: https://ecology.wa.gov/Research-Data/Data-resources/Environmental-Information-Management-database
+[3.1.7]: https://www.oregon.gov/oweb/data-reporting/Pages/owri.aspx
+
+## QA/QC Requirements
+
+All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ and data collected through the Volunteer Monitoring Program must have data quality level of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the integrated report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. Any data with a result measure qualifier code that indicated problems with the data were removed. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
+
+Additional checks included reviewing for inconsistences in the station description and station location (latitude and longitude). Any inconsistences were corrected. If the sampling location could not be determined, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned. Results in units of ug/l were converted to mg/l and temperature data measured in degrees Fahrenheit were converted to degrees Celsius.
+
+For samples that were taken for the purpose of auditing the field data (often called replicates or duplicates) the field samples were prioritized and the replicate removed if the DQL for both the field sample and duplicate were the same. If the DQLs were different the sample with the higher DQL was used.
+
+For samples that appear to be replicates or samples made at various depths (i.e. the sample date/time, sample location, and sample parameter were the same) but were not labeled as replicates or depth samples, we took the mean of the samples.
+
+[3.2.1]: http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
+
+## Period of Analysis
+
+Water quality data collected over a twenty year period starting `r format(lubridate::ymd(start.date), format="%B %d, %Y")` and ending on `r format(lubridate::ymd(end.date), format="%B %d, %Y")` were retrieved from the data sources identified in section 3.1.
+
+For assessment of status, the twenty year period of analysis was divided into five shorter periods with each shorter period spanning four years. Only data collected within the four year period were used to determine status for that period. The five status periods are defined by the following calendar years:
+
+*	1999 – 2002
+*	2003 – 2006
+*	2007 – 2010
+*	2011 – 2014
+*	2015 - 2018
+
+Trends were evaluated over the entire twenty year period. Minimum data requirements to assess trend are discussed in section XX.
+
+## Water Quality Status Assessment
+
+The status assessment is an evaluation of water quality data to determine if a waterbody attains water quality standards or TMDL targets. An attainment assessment was made for bacteria (*E. coli*, *Enterococcus*, and Fecal Coliform), dissolved oxygen, pH, and temperature in relation to the applicable numeric water quality criterion. For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined.
+
+Oregon does not have explicit water quality standards for total phosphorus (TP) or total suspended solids (TSS) however sometimes these parameters are pollutants that contribute to non-attainment of water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, sediment, or other chemicals. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters. The following sections describe the water quality standards or applicable TMDL targets for each parameter assessed.
+
+### Assessment Units
+
+The water quality status were assessed at monitoring stations and waterbody-based assessment units (AUs). The AUs incorporate the High Resolution National Hydrography (NHDH) framework with environmentally and hydrologically relevant breaks of water bodies, and remain the same over time (fixed units). The NHDH is a digital geospatial dataset that represents the surface water of the entire United States at a scale of 1:24K or better. It is now the national and state hydrologic framework standard, replacing the LLID system. The AUs in this report consist of “Streams”, “Watershed Units”, “Lakes”, “Coastlines” and “Estuary or Bays”.
+
+### Status Reporting and Defintions
+
+The status assessment results are reported and presented in a number of ways. For each station or AU we report the status result in the following way:
+* __Attaining__: When results demonstrate attainment of the water quality criteria or TMDL target.
+* __Not Attaining__: When results do not attain the water quality criteria or TMDL target.
+* __Insufficient Data__: When there are results available but the results do not meet QA/QC objectives including minimum Data Quality Levels (DQLs); or the results do not meet minimum requirements to evaluate attainment of the water quality criteria or TMDL target.
+* __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL target to evaluate attainment against. The later condition occurs where there are total suspended solids or total phosphorus data available in an area but no TMDL targets established in that area.
+
+We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An "excursion" occurs when a result is worse than the water quality standard or TMDL target. For each paramater and within each status period, we calculate and report on the total number of results, total excursions, the percent excursion (=total excursions / total number of results X 100), and the minimum, maximum, and median excursion result value. Results are also ploted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Exursions are noted.
+
+### Bacteria
+
+#### Water Quality Criteria
+
+Results for bacteria samples were compared to the applicable bacteria criterion as found in [OAR 340-041-0009][3.4.3]. 
+
+OAR 340-041-0009
+Bacteria
+
+| (1)	Numeric Criteria: Organisms commonly associated with fecal sources may not exceed the criteria in subsections (a)-(c) of this section:
+|   (a)	Freshwater contact recreation:
+|     (A)	A 90-day geometric mean of 126 E. coli organisms per 100 mL;
+|     (B)	No single sample may exceed 406 E. coli organisms per 100 mL.
+|   (b)	Coastal water contact recreation, as designated in OAR 340-041-0101, 340-041-220, 340-041-230, 340-041-300 and 340-041-0320:
+|     (A)	A 90-day geometric mean of 35 enterococcus organisms per 100 mL;
+|     (B)	Not more than ten percent of the samples may exceed 130 organisms per 100 mL.
+|   (c)	Shellfish harvesting, as designated in 340-041-0101, 340-041-220, 340-041-230, 340-041-300 and 340-041-0320:
+|     (A)	A fecal coliform median concentration of 14 organisms per 100 mL;
+|     (B)	Not more than ten percent of the samples may exceed 43 organisms per 100 mL.
+| (2)	A minimum of five samples in a 90-day period is required for calculating the criteria in sections (1)(a)(A) and (1)(b)(A) and (B) of this rule.
+| (3)	Raw Sewage Prohibition: No sewage may be discharged into or in any other manner be allowed to enter the waters of the State, unless such sewage has been treated in a manner the Department approved or otherwise allowed by these rules.
+| (4)	Animal Waste: Runoff contaminated with domesticated animal wastes must be minimized and treated to the maximum extent practicable before it is allowed to enter waters of the State.
+| (5)	Bacterial pollution or other conditions deleterious to waters used for domestic purposes, livestock watering, irrigation, bathing, or shellfish propagation, or otherwise injurious to public health may not be allowed.
+
+[3.4.3]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68695
+
+#### Assessment Protocal
+
+Bacteria related to fecal sources can impair beneficial uses of water for recreation and fishing use by shellfish harvesting. Oregon has established water quality standards for relevant bacterial indicators for specific designated uses and various water types (`r tbls(name = "bacteriaIndicators", display="cite")`).
+
+The indicators are:
+* *E. coli* for contact recreation in freshwater lakes, rivers, and streams;
+* *Enterococcus* for contact recreation in coastal marine and estuary waters; and
+* Fecal coliform for shellfish harvesting in marine and estuarine waters.
+
+As salinity increases in estuarine waters, *E. coli* tend to die-off while *Enterococci* remain viable. When data and information for the applicable bacterial indicator in a marine, estuarine, or freshwater location are available, the corresponding criteria are applied to assess each use designated for the water.
+
+```{r tbl-bacteria-indicators}
+
+bacteria.indicators.tbl <- data.frame(du=c("Freshwater contact recreation","Coastal water contact recreation","Shellfish harvesting"),
+                                      indicator=c("*E. coli*","*Enterococcus*","Fecal coliform"),
+                                      critera=c("Geometric mean^[1] <= 126","Geometric mean <= 35", "Median^[2] <= 14"),
+                                      thresh=c("No more than 10% > 406","No more than 10% > 130", "No more than 10% > 43"))
+
+colnames(bacteria.indicators.tbl) <- c("Designated use", 
+                                       "Bacterial indicator",
+                                       "Criteria metric (CFU / 100 mL)", 
+                                       "Threshold Value (CFU / 100 mL)")
+
+knitr::kable(bacteria.indicators.tbl, 
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "bacteriaIndicators", 
+                            caption = "Bacterial Indicators and Criteria."))
+
+```
+
+
+Insert Geometric Mean Equation
+
+^[1]: {A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean.
+The 90-day geometric mean (GM90) of bacteria concentration is calculated by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which n ≥ 5}
+
+^[2]: {The median sample concentration is calculated for the entire analysis period once there are at least five samples available.}
+
+### Dissolved Oxygen
+
+Dissolved oxygen status was assessed by comparing the observed concentration values to the applicable water quality criterion found in [OAR 340-041-0016][3.4.4]. If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion.
+
+OAR 340-041-0016
+Dissolved Oxygen
+
+Dissolved oxygen (DO): No wastes may be discharged and no activities may be conducted that either alone or in combination with other wastes or activities will cause violation of the following standards: The changes adopted by the Commission on January 11, 1996, become effective July 1, 1996. Until that time, the requirements of this rule that were in effect on January 10, 1996, apply:
+
+| (1)	For water bodies identified as active spawning areas in the places and times indicated on the following Tables and Figures set out in OAR 340-041-0101 to 340-041-0340: Tables 101B, 121B, and 190B, and Figures 130B, 151B, 160B, 170B, 180A, 201A, 220B, 230B, 260A, 271B, 286B, 300B, 310B, 320B, and 340B, (as well as any active spawning area used by resident trout species), the following criteria apply during the applicable spawning through fry emergence periods set forth in the tables and figures and, where resident trout spawning occurs, during the time trout spawning through fry emergence occurs:
+|  (a)	The dissolved oxygen may not be less than 11.0 mg/l. However, if the minimum intergravel dissolved oxygen, measured as a spatial median, is 8.0 mg/l or greater, then the DO criterion is 9.0 mg/l;
+|  (b)	Where conditions of barometric pressure, altitude, and temperature preclude attainment of the 11.0 mg/l or 9.0 mg/l criteria, dissolved oxygen levels must not be less than 95 percent of saturation;
+|  (c)	The spatial median intergravel dissolved oxygen concentration must not fall below 8.0 mg/l.
+| (2)	For water bodies identified by the Department as providing cold-water aquatic life, the dissolved oxygen may not be less than 8.0 mg/l as an absolute minimum. Where conditions of barometric pressure, altitude, and temperature preclude attainment of the 8.0 mg/l, dissolved oxygen may not be less than 90 percent of saturation. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 8.0 mg/l as a 30-day mean minimum, 6.5 mg/l as a seven-day minimum mean, and may not fall below 6.0 mg/l as an absolute minimum (Table 21);
+| (3)	For water bodies identified by the Department as providing cool-water aquatic life, the dissolved oxygen may not be less than 6.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 6.5 mg/l as a 30-day mean minimum, 5.0 mg/l as a seven-day minimum mean, and may not fall below 4.0 mg/l as an absolute minimum (Table 21);
+| (4)	For water bodies identified by the Department as providing warm-water aquatic life, the dissolved oxygen may not be less than 5.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 5.5 mg/l as a 30-day mean minimum, and may not fall below 4.0 mg/l as an absolute minimum (Table 21);
+| (5)	For estuarine water, the dissolved oxygen concentrations may not be less than 6.5 mg/l (for coastal water bodies);
+| (6)	For ocean waters, no measurable reduction in dissolved oxygen concentration may be allowed.
+
+OAR 340-041-0006 
+Definitions
+
+(15) "Daily Mean" for dissolved oxygen means the numeric average of an adequate number of data to describe the variation in dissolved oxygen concentration throughout a day, including daily maximums and minimums. For calculating the mean, concentrations in excess of 100 percent of saturation are valued at the saturation concentration.
+
+(22) “Estuarine Waters” means all mixed fresh and oceanic waters in estuaries or bays from the point of oceanic water intrusion inland to a line connecting the outermost points of the headlands or protective jetties.
+
+(27) "Intergravel Dissolved Oxygen" (IGDO) means the concentration of oxygen measured in the water within the stream bed gravels. Measurements should be taken within a limited time period before emergence of fry.
+
+(34) “Marine Waters” means all oceanic, offshore waters outside of estuaries or bays and within the territorial limits of the State of Oregon.
+
+(38) "Minimum" (Min) for dissolved oxygen means the minimum recorded concentration including seasonal and diurnal minimums.
+
+(39) "Monthly (30-D) Mean Minimum" for dissolved oxygen means the minimum of the 30 consecutive-day floating averages of the calculated daily mean dissolved oxygen concentration.
+
+(59) "Spatial Median" means the value that falls in the middle of a data set of multiple intergravel dissolved oxygen (IGDO) measurements taken within a spawning area. Half the samples should be greater than and half the samples should be less than the spatial median.
+
+(73) "Weekly (7-D) Mean Minimum" for dissolved oxygen means the minimum of the seven consecutive-day floating average of the calculated daily mean dissolved oxygen concentration.
+
+(74) "Weekly (7-Mi) Minimum Mean" for dissolved oxygen means the minimum of the seven consecutive-day floating average of the daily minimum concentration. For application of the criteria, this value is the reference for diurnal minimums.
+
+[3.4.4]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68706
+
+
+#### Assessment Protocal
+
+The application of the various dissolved oxygen criteria is based on designated fish use as described in OAR 340-041-016 and Table 21. The time periods for assessing compliance with the dissolved oxygen standards are defined as the following:
+
+* __Spawning Time-Period__: The spawning criteria shall be applied for places and times indicated, in the tables and figures referenced in OAR-340-041-0016 (1), as having active salmon and steelhead spawning, or any additional assumed spawning by resident trout species. Listed status of waterbodies in violation of the spawning criteria is in effect only during the applicable spawning date range for the waterbody.
+* __Year-round__: The year-round dissolved oxygen criteria apply year round. For some locations, a more stringent spawning criteria may apply in addition to the year round criterion for part of the year. Listed status of waterbodies in violation of the year-round criteria are in effect year-round.
+
+If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using below equations. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
+
+
+### pH
+
+#### Water Quality Criteria
+
+Results for pH from both grab and continuous sample data were compared to the applicable water quality criterion as found in [OAR 340-041-0021][3.4.5].
+
+OAR 340-041-0021
+pH
+| (1)	Unless otherwise specified in OAR 340-041-0101 through 340-041-0350, pH values (Hydrogen ion concentrations) may not fall outside the following ranges:
+|   (a)	Marine waters: 7.0-8.5;
+|   (b)	Estuarine and fresh waters: See basin specific criteria (OAR 340-041-0101 through 340-041-0350).
+| (2)	Waters impounded by dams existing on January 1, 1996, which have pHs that exceed the criteria are not in violation of the standard, if the Department determines that the exceedance would not occur without the impoundment and that all practicable measures have been taken to bring the pH in the impounded waters into compliance with the criteria.
+
+[3.4.5]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68713
+
+OAR 340-041-0101 through 340-041-0350
+Basin-Specific Criteria
+
+```{r tbl-ph}
+
+tbl.ph<- data.frame(basin=c("replace with table"),
+                           OAR=c("replace with table"),
+                           Water=c("replace with table"),
+                           criteria=c("replace with table"))
+
+knitr::kable(tbl.ph, 
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "tbl.ph", 
+                            caption = "Summary of pH Basin-Specific Criteria."))
+
+```
+
+### Temperature
+
+#### Water Quality Criteria
+
+Results for continuous temperature data were compared against the applicable temperature criteria found in [OAR 340-041-0028][3.4.6]. The applicable temperature criteria is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
+
+[3.4.6]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=244176
+
+OAR 340-041-0028
+Temperature
+[…]
+| (4)	Biologically Based Numeric Criteria. Unless superseded by the natural conditions criteria described in section (8) of this rule, or by subsequently adopted site-specific criteria approved by EPA, the temperature criteria for State waters supporting salmonid fishes are as follows:
+|   (a)	The seven-day-average maximum temperature of a stream identified as having salmon and steelhead spawning use on subbasin maps and tables set out in OAR 340-041-0101 to 340-041-0340: Tables 101B, and 121B, and Figures 130B, 151B, 160B, 170B, 220B, 230B, 271B, 286B, 300B, 310B, 320B, and 340B, may not exceed 13.0 degrees Celsius (55.4 degrees Fahrenheit) at the times indicated on these maps and tables;
+|   (b)	The seven-day-average maximum temperature of a stream identified as having core cold water habitat use on subbasin maps set out in OAR 340-041-101 to 340-041-340: Figures 130A, 151A, 160A, 170A, 220A, 230A, 271A, 286A, 300A, 310A, 320A, and 340A, may not exceed 16.0 degrees Celsius (60.8 degrees Fahrenheit);
+|   (c)	The seven-day-average maximum temperature of a stream identified as having salmon and trout rearing and migration use on subbasin maps set out at OAR 340-041-0101 to 340-041-0340: Figures 130A, 151A, 160A, 170A, 220A, 230A, 271A, 286A, 300A, 310A, 320A, and 340A, may not exceed 18.0 degrees Celsius (64.4 degrees Fahrenheit);
+|   (d)	The seven-day-average maximum temperature of a stream identified as having a migration corridor use on subbasin maps and tables OAR 340-041-0101 to 340-041-0340: Tables 101B, and 121B, and Figures 151A, 170A, and 340A, may not exceed 20.0 degrees Celsius (68.0 degrees Fahrenheit). In addition, these water bodies must have coldwater refugia that are sufficiently distributed so as to allow salmon and steelhead migration without significant adverse effects from higher water temperatures elsewhere in the water body. Finally, the seasonal thermal pattern in Columbia and Snake Rivers must reflect the natural seasonal thermal pattern;
+|   (e)	The seven-day-average maximum temperature of a stream identified as having Lahontan cutthroat trout or redband trout use on subbasin maps and tables set out in OAR 340-041-0101 to 340-041-0340: Tables 120B, 140B, 190B, and 250B, and Figures 180A, 201A, and 260A may not exceed 20.0 degrees Celsius (68.0 degrees Fahrenheit);
+|   (f)	The seven-day-average maximum temperature of a stream identified as having bull trout spawning and juvenile rearing use on subbasin maps set out at OAR 340-041-0101 to 340-041-0340: Figures 130B, 151B, 160B, 170B, 180A, 201A, 260A, 310B, and 340B, may not exceed 12.0 degrees Celsius (53.6 degrees Fahrenheit). From August 15 through May 15, in bull trout spawning waters below Clear Creek and Mehlhorn reservoirs on Upper Clear Creek (Pine Subbasin), below Laurance Lake on the Middle Fork Hood River, and below Carmen reservoir on the Upper McKenzie River, there may be no more than a 0.3 degrees Celsius (0.5 Fahrenheit) increase between the water temperature immediately upstream of the reservoir and the water temperature immediately downstream of the spillway when the ambient seven-day-average maximum stream temperature is 9.0 degrees Celsius (48 degrees Fahrenheit) or greater, and no more than a 1.0 degree Celsius (1.8 degrees Fahrenheit) increase when the seven-day-average stream temperature is less than 9 degrees Celsius.
+[…]
+| (6)	Natural Lakes. Natural lakes may not be warmed by more than 0.3 degrees Celsius (0.5 degrees Fahrenheit) above the natural condition unless a greater increase would not reasonably be expected to adversely affect fish or other aquatic life. Absent a discharge or human modification that would reasonably be expected to increase temperature, DEQ will presume that the ambient temperature of a natural lake is the same as its natural thermal condition.
+| (7)	Oceans and Bays. Except for the Columbia River above river mile 7, ocean and bay waters may not be warmed by more than 0.3 degrees Celsius (0.5 degrees Fahrenheit) above the natural condition unless a greater increase would not reasonably be expected to adversely affect fish or other aquatic life. Absent a discharge or human modification that would reasonably be expected to increase temperature, DEQ will presume that the ambient temperature of the ocean or bay is the same as its natural thermal condition.
+[…]
+| (9)	Cool Water Species.
+|   (a)	No increase in temperature is allowed that would reasonably be expected to impair cool water species. Waters of the State that support cool water species are identified on subbasin tables and figures set out in OAR 340-041-0101 to 340-041-0340; Tables 140B, 190B and 250B, and Figures 180A, 201A and 340A
+|   (b)	See OAR 340-041-0185 for a basin-specific criterion for the Klamath River.
+| (10)	 Borax Lake Chub. State waters in the Malheur Lake Basin supporting the Borax Lake chub may not be cooled more than 0.3 degrees Celsius (0.5 degrees Fahrenheit) below the natural condition.
+[…]
+| (12)	 Implementation of the Temperature Criteria
+|   (c)	Air Temperature Exclusion. A water body that only exceeds the criteria set out in this rule when the exceedance is attributed to daily maximum air temperatures that exceed the 90th percentile value of annual maximum seven-day average maximum air temperatures calculated using at least 10 years of air temperature data, will not be listed on the section 303(d) list of impaired waters and sources will not be considered in violation of this rule.
+|   (d)	Low Flow Conditions. An exceedance of the biologically-based numeric criteria in section (4) of this rule… will not be considered a permit violation during stream flows that are less than the 7Q10 low flow condition for that water body.
+
+OAR 340-041-0002
+Definitions
+
+| (57) "Seven-Day Average Maximum Temperature" means a calculation of the average of the daily maximum temperatures from seven consecutive days made on a rolling basis.
+
+
+#### Assessment Protocal
+
+The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
+
+The seven-day average daily maximum (7dAM) stream temperature is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7dAM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7dAM for August 10 is calculated from Tmax for August 4 to August 10; the 7dAM for August 11 is calculated from August 5 to 11, etc.
+
+INSERT EQUATION
+
+When spawning criteria apply, the first 7-day averaging period begins on the date the spawning period begins. The first 7dAM value will be assigned to the 7th calendar day following the start date of the spawning period. Therefore, the 7th calendar day of the spawning period is the first day that the 7dAM is required to meet the spawning criteria.
+
+INSERT TABLE
+
+```{r tbl-temp}
+
+tbl.temp.criteria <- data.frame(du=c("Salmon & trout rearing & migration", 
+                                     "Core cold water habitat",
+                                     "Migration corridor (salmon & steelhead)",
+                                     "Lahontan cutthroat or redband trout",
+                                     "Bull trout spawning & juvenile rearing",
+                                     "Salmon & steelhead spawning"),
+                                crit=c(18.0, 16.0, 20.0, 20.0, 12.0, 13.0))
+
+colnames(tbl.temp.criteria) <- c("Designated Fish Use", "Temperature Criterion, deg-C")
+
+knitr::kable(tbl.temp.criteria, 
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "tbl.temp.criteria", 
+                            caption = "Numeric Temperature Criteria."))
+
+
+```
+
+**Designated Fish Uses**
+
+The year-round fish uses designated for protection of fish and aquatic life are indicated in in OAR 340-041-0101 to 340-041-0340: Figures 130A, 151A, 160A, 170A, 180A, 201A, 220A, 230A, 260A, 271A, 286A, 300A, 310A, 320A, and 340A; Tables 101B, 120B, 121B, 130B 140B,151B, 160B, 170B, 180A, 190B, 201A, 250B, 260A, 310B, and 340B. For convenience, the information from the fish use figures and tables are also reproduced on the DEQ water quality standards maps web tool (under development).
+
+**Designated Spawning Time Periods**
+
+In streams designated as salmon and steelhead spawning areas, the salmon & steelhead spawning criterion (13°C) shall be applied ONLY during the time periods indicated in tables and figures referenced in OAR 340-041-0101 to 340-041-0340: Tables 101B, and 121B, and Figures 130B, 151B, 160B, 170B, 220B, 230B, 271B, 286B, 300B, 310B, 320B, and 340B. Outside of these designated spawning time periods, the year-round criteria shall apply. For convenience, the information from the spawning use tables and figures are also reproduced on the DEQ water quality standards maps web tool (under development).
+
+**Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(b) in the Upper Klamath and Lost Subbasins**
+
+To ensure the protection of Lost River and Shortnose Suckers in the Klamath River, Link River, and Lost River, the Upper Klamath and Lost Subbasin Temperature TMDL (DEQ 2019) developted TMDL targets to implmented the Cool Water Species narrative criterion. If daily maximum results exceed 28 deg-C in these reaches DEQ will determine that the cool water species narrative criterion is not being attained.
+
+**Applicability**
+For tributary waters that are not identified on the “Fish Use Designations” maps referenced in section (4) of the rule, the applicable criteria for these waters are the same criteria as is applicable to the nearest downstream water body depicted on the applicable map. This does not apply to the “Salmon and Steelhead Spawning Use Designations” maps.
+
+
+### Parameters Assessed based on numeric TMDL targets
+
+Oregon does not have explicit water quality standards for total phosphorus (TP) or total suspended solids (TSS) however sometimes these parameters are pollutants that contribute to an impairment of water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, sediment, or other chemicals. 
+
+In this report, we evaluated status for total phosphorus or total suspended solids in the Willamette Basin where a Total Maximum Daily Load has been established and identifies total phosphorus or total suspended solids as a pollutant with specific concentration targets. Other TMDLs established in other parts of the state with total phosphorus or total suspended solids concentration targets were not evaluated.
+
+### Total Phosphorus
+
+Oregon does not have explicit water quality standards for total phosphorus (TP) however total phosphorus can be a pollutant that contribute to an impairment of water quality standards. Often the impairment is for standards established for dissolved oxygen, pH, or algae. 
+
+In this report, we evaluated status for total phosphorus in the Willamette Basin where a Total Maximum Daily Load has been established and identifies total phosphorus as a pollutant with specific concentration targets. Other TMDLs established in other parts of the state with total phosphorus concentration targets were not evaluated. `r tbls(name="tp.tmdls", display="cite")` summarizes the TMDLs evaluted in this report.
+
+```{r tbl-TP-tmdls}
+
+tbl.tp.tmdls <- data.frame(tmdl=c("Tualatin Subbasin TMDL and WQMP",
+                                  "Columbia Slough TMDL",
+                                  "TMDLs for the Yamhill River"),
+                           year=c(2012,1998,1992),
+                           impairments=c("pH and Chlorophyll a",
+                                         "Algae and pH",
+                                         "Algae and pH "),
+                           geoarea=c("Tualatin Subbasin (HUC 17090010), Tributaries to Oswego Lake (HUC 170900120104)",
+                                     "Columbia Slough, Fairview Creek (HUC 170900120201)",
+                                     "Yamhill River (HUC 17090008)"))
+
+
+colnames(tbl.tp.tmdls) <- c("TMDL Document Name", "Year Approved", "Impairments", "Applicable Geographic Area")
+
+knitr::kable(tbl.tp.tmdls,
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "tp.tmdls", 
+                            caption = "Summary of TMDLs with total phosphorus targets that were evaluated in this report."))
+
+```
+
+The total phosphorus interim target established in the Columbia Slough TMDL (DEQ 1998) for Columbia Slough and Fairview Creek is 0.1 mg/L.
+
+The Yamhill River TMDL (DEQ 1992) target for total phosphorus is defined as 0.07 mg/L.
+
+The Tualatin Subbasin TMDL (DEQ 2012) established summer median total phosphorus targets for the Tualatin River and its tributaries. Summer is defined as May 1 – October 3. Total phosphorus targets are also defined for tributaries to Oswego Lake. `r tbls(name="tualatin.targets", display="cite")` and `r tbls(name="oswego.targets",display="cite")` describe these targets.
+
+```{r tbl-tualatin-targets}
+
+tbl.tualatin <- data.frame(Segment=c("Mainstem Tualatin River @ Stafford Rd. (RM 5.5)",
+                                     "Mainstem Tualatin River @ Hwy 99W (RM 11.6)",
+                                     "Mainstem Tualatin River @ Elsner (RM 16.2)",
+                                     "Mainstem Tualatin River @ Farmington (RM 33.3)",
+                                     "Mainstem Tualatin River @ Rood Rd. (RM 38.4)",
+                                     "All Tributaries to the Mainstem Tualatin above Dairy Creek (Unless otherwise specified below)",
+                                     "All Tributaries to the Mainstem Tualatin below Dairy Creek (Unless otherwise specified below)",
+                                     "Mainstem Tualatin River @ Golf Course Rd. (RM 51.5)",
+                                     "Bronson Creek @ Mouth (205th)",
+                                     "Burris Cr./ Baker Cr./ McFee Cr./ Christensen Cr./ (all @ Month)",
+                                     "Cedar Cr./ Chicken Cr/ /Rock Cr. (South)/ Nyberg Cr./ Hedges Cr./ Saum Cr. (all @ Mouth)",
+                                     "Dairy Creek @ Mouth",
+                                     "Fanno Creek @ Mouth",
+                                     "Gales Creek @ Mouth",
+                                     "Rock Creek @ Mouth"), 
+                           target=c(0.10,
+                                    0.11,
+                                    0.11,
+                                    0.10,
+                                    0.09,
+                                    0.04,
+                                    0.14,
+                                    0.04,
+                                    0.13,
+                                    0.12,
+                                    0.14,
+                                    0.09,
+                                    0.13,
+                                    0.04,
+                                    0.19))
+
+colnames(tbl.tualatin) <- c("Stream Segment","Total Phosphorus Concentrations (Summer Median – mg/L)")
+
+knitr::kable(tbl.tualatin, 
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "tualatin.targets", 
+                            caption = "Total phosphorus targets in Tualatin River and tributaries."))
+
+```
+
+```{r tbl-oswego-targets}
+
+tbl.oswego <- data.frame(event=c("Base Flow","Storm","Base Flow"), 
+                         period=c("May 1 through October 31 (Summer)",
+                                  "November 1 through April 30 (Winter)",
+                                  "November 1 through April 30 (Winter)"),
+                         target=c(0.11,0.19,0.08))
+
+colnames(tbl.oswego) <- c("Flow Type", "Period", "Maximum Total Phosphorus Concentrations (mg/L)")
+
+knitr::kable(tbl.oswego, 
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "oswego.targets", 
+                            caption = "Total phosphorus targets in Oswego Lake and tributaries."))
+
+```
+
+### Total Suspended Solids
+
+Oregon does not have explicit water quality standards for total suspended solids (TSS) however TSS has been identified as a pollutant that contributes to impairment of water quality standards. Often the impairment is based on standards established for sediment, metals, or other toxic chemicals. 
+
+In this report, we evaluated status for total suspended solids in the Willamette Basin where a Total Maximum Daily Load has been established and identifiestotal suspended solids as a pollutant with specific concentration targets. Other TMDLs established in other parts of the state with total suspended solids concentration targets were not evaluated. `r tbls(name="tss.tmdls", display="cite")` summarizes the TMDLs evaluted in this report.
+
+```{r tbl-TSS-tmdls}
+
+tbl.tss.tmdls <- data.frame(tmdl=c("Molalla-Pudding Subbasin TMDL and WQMP",
+                                  "Willamette Basin TMDL"),
+                           year=c(2008,2006),
+                           impairments=c("Iron and dichlorodiphenyltrichloroethane (DDT)",
+                                         "dichlorodiphenyltrichloroethane (DDT)"),
+                           geoarea=c("Pudding River, Little Pudding River, and Zollner Creek (HUC 17090009)",
+                                     "Johnson Creek Watershed (HUC 1709001201)"))
+
+
+colnames(tbl.tss.tmdls) <- c("TMDL Document Name", "Year Approved", "Impairments", "Applicable Geographic Area")
+
+knitr::kable(tbl.tp.tmdls,
+             padding = 2, digits = 3,
+             row.names = FALSE,
+             caption = tbls(name = "tss.tmdls", 
+                            caption = "Summary of TMDLs with total suspends solids targets that were evaluated in this report."))
+
+```
+
+
+The Molalla-Pudding Subbasin TMDL established instream TSS concentration targets of 15 mg/L and 6 mg/L for the Pudding River to attain the DDT and Iron criteria respectively. On Zollner Creek the targets for TSS are 15 mg/L and 3 mg/L to attain the DDT and Iron criteria respectively. On the Little Pudding River the TSS target is 7 mg/L to attain the DDT criterion.
+
+The Willamette Basin TMDL (DEQ 2006) TSS was identified as a surrogate measure for DDT in the Johnson Creek Watershed. The TMDL established an instream TSS concentration of 15 mg/L in order to achieve a DDT reduction of 94%.
+
+## Waster Quality Trend Evaluation
+
+### Assessment Scale
+
+Water quality trends were evaluated on monitoring stations. 
+
+### Trend Result Categories
+
+The trends are reported based on the stations over the entire evaluation period in the following categories.
+
+* __Improving__: When result demonstrates a statistically significant trend in advancement of water quality conditions
+* __Degrading__: When result shows a statistically significant trend in deterioration of water quality conditions
+* __Steady__: When result has a statistically significant slope that equals to zero, which indications neither improving or degrading in water quality conditions
+* __No Significant Trend__: When there is no consistent overall trend
+* __Insufficient Data__: When there are results available but the results do not meet QA/QC objectives including minimum Data Quality Levels (DQLs); or the results do not meet minimum requirements to evaluate attainment of the water quality criteria or TMDL target.
+
+### Parameters Evaluated
+
+Trends were calculated for dissolved oxygen, bacteria, pH, temperature, total phosphorus, and total suspended solids. 
+
+### Statistical Method
+
+A Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel and Hirsch 2002) was used for the trend evaluation. A Seasonal Kendall test is a nonparametic method used to test for a monotonic trend and can account for the influence of seasonal fluctuations by calculating a Mann-Kendall test (Mann 1945) on each defined season separately. A season can be any time period. In this analysis each calendar month defined a season. Multiple observations within any given month were collapsed into a single value using the median. There are twelve seasons in a year. After computing the Mann-Kendall for each season, the seasonal statics are summed, and the variance and Z statistic are computed.
+
+For each parameter at each station where there were sufficient data to evaluate trend, the null hypothesis is that there is no monotonic trend over time. The alternative hypothesis is that for one or more seasons, there is an upward, downward, or steady monotonic trend over time. The null hypothesis is rejected (and we determine there is a trend) if the Z statistic (two-tailed p value) <= 0.20.
+
+A trend assessment using Seasonal Kendall cannot be made at a monitoring station unless the results there have an underlying regularity and there is sufficient data over time. We did not attempt to calculate trend unless there were water quality results in the same month for at least eight different years over the entire twenty year analysis period. We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). If there were insufficient data, “Insufficient Data” is assigned as the result. At stations with sufficient data, a significant positive, negative, or steady trend was determined across all seasons and years when the significance of the trend slopes had a two-tailed p <= 0.20. “Improving” or “Degrading” are assigned to a positive or negative slopes depending on the water quality standards and if an increasing or decreasing values were an improvement or derogation of water quality. For example, a positive result (increasing value with time) is considered an improving trend for dissolved oxygen but degrading trend for temperature. A steady trend had a slope equal to zero. “No significant Trend” is assigned when the null hypothesis is not rejected and indicates there is no consistent overall trends during the evaluation period.
+
+
+### Ass
+# Results
+
+## Statewide
+
+```{r stateIntro, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
+
+au_types <- unique(state_param_sum_au$AU_Type)
+n_au_ids <- length(unique(state_param_sum_au$AU_ID))
+n_au_types <- length(unique(state_param_sum_au$AU_Type))
+n_stations <- length(unique(state_param_sum$MLocID))
+parameters <- odeqstatusandtrends::AWQMS_to_standard(unique(state_param_sum_au$Char_Name))
+n_params <- length(unique(state_param_sum_au$Char_Name))
+list_fun <- function(x){paste(x, collapse = "s', '")}
+cap_list <- list()
+
+cat(paste0("Available data were sufficient to assess status and/or trend at ", n_stations, " stations within the state. These stations were located across ", n_au_ids, " assessment units consisting of '", list_fun(au_types[1:(n_au_types - 1)]), "s' and '", list_fun(au_types[n_au_types]), "s'. Data for ", 
+           gsub("'", "", 
+                paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
+                       , "'")
+           ), " were available for analysis and included in this report. The following section summarizes the results of the analysis state wide.\n\n"))
+
+```
 
 The map in `r figs(name = "query_map", display="cite")` shows the locations of all of the stations that were queried across the state.
 
@@ -219,92 +706,10 @@ if(!file.exists(paste0(state_project_dir, "Oregon_query_stations.png"))){
 
 ```
 
-`r paste0("![", figs(name = "query_map", caption = "All stations queried across the state"), "](", paste0(state_project_dir, "Oregon_query_stations.png"), ")")`
 
-The data returned were evaluated for quality. Data that was rated under the [DEQ's Laboratory Quality Manual][2.1.5] (ODEQ 2013) guidelines were given a data quality grade of C or higher. EPA and USGS data were included unless result comments indicated problems with the data.
 
-[2.1.1]: http://www.oregon.gov/deq/wq/Pages/WQdata.aspx
-[2.1.2]: https://www.epa.gov/waterdata/water-quality-data-wqx
-[2.1.3]: https://qwwebservices.usgs.gov/
-[2.1.4]: https://www.waterqualitydata.us/
-[2.1.5]: http://www.oregon.gov/deq/FilterDocs/DEQ91LAB0006QMP.pdf
 
-## Analysis
-
-The status of water quality standards attainment for dissolved oxygen, *E. coli*, *Enterococcus*, pH, and temperature samples were made in relation to the applicable numeric water quality criterion. Attainment determination was made following the Oregon Department of Environmental Quality's [Integrated Report Methodology](https://www.oregon.gov/deq/FilterDocs/ir2018assessMethod.pdf). For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined. Total suspended solids and total phosphorus have no applicable water quality criteria. In some areas, TMDL allocations exist for these parameters and were used to determine attainment. A status assessment for a monitoring station requires data be available within two whole years in the status period.
-
-The Willamette/Lower Willamette, Columbia Slough, Yamhill, Tualatin, and Molalla-Pudding Subbasin TMDLs are applicable to areas of the Willamette Basin. Pollutants addressed in the TMDLs include: chlorophyll a, dissolved oxygen, phosphorus, bacteria, DDE/DDT, lead, temperature, and Dieldrin. Applicable loading capacities written in these TMDLs are as follows:
-
-Toxics
-
-* DDT (Johnson Creek):
-    + TSS was identified as a surrogate measure for DDT. The TMDL established an instream TSS concentration of 15 mg/L in order to achieve a DDT reduction of 94%
-    + Separate allocations for DDT and DDE apply to the Columbia Slough TMDL
-* Dieldrin (Johnson Creek):
-    + ODEQ believes that achieving DDT criteria will also result in the attainment of Dieldrin criteria
-    + Separate targets for Dieldrin apply to the Columbia Slough TMDL
-* DDT & Dieldrin (Molalla-Pudding)
-    + The Molalla-Pudding Subbasin pesticides TMDL established instream TSS concentration targets of 15 mg/L for the Pudding River, 15 mg/L for Zollner Creek, and 7 mg/L for the Little Pudding River
-    
-Lead
-
-* In the Columbia Slough TMDL, DEQ developed specific allocations for lead from several sources that took into account four different flow rates.
-
-Iron
-
-* Instream TSS concentrations of 6 mg/L and 3 mg/L are necessary to meet the iron criterion in the Pudding River and Zollner Creek, respectively.
-
-Nutrients and pH Criteria 
-
-* Chlorophyll a action level is 15 ug/L based on a three month average with a minimum of three samples. Total phosphate TMDL allocations address pH and chlorophyll a impairments. The presence of too much phosphorus in waterbodies can increase plant and algal production, which can cause pH levels to be too high or too low.
-    + The total phosphorus interim target for the TMDLs in Columbia Slough and Fairview Creek is 0.1 mg/L, ortho-phosphate interim target is 0.02 mg/L based on EPA guidelines and DEQ best professional judgment.
-    + The Yamhill River TMDL target for total phosphorus is defined as 0.07 mg/L.
-    + The Tualatin Subbasin TMDL includes total phosphorus targets for the Tualatin River and its tributaries. TP targets are also defined for tributaries to Oswego Lake. The following tables describe these targets.
-
-`r cat("\n")`    
-`r paste0("![", figs(name="TualatinTribs", caption="Total phosphorus targets in Tualatin River and tributaries"), "](N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/TualatinTribs.jpg)")`
-
-`r cat("\n\n")`
-
-`r paste0("![", figs(name="OswegoLake", caption="Total phosphorus targets in Oswego Lake and tributaries"), "](N:/Status_and_Trend_Reports/Lookups_Statewide/TMDL_targets/OswegoLake.jpg)")`  
-
-Trends were calculated for dissolved oxygen, bacteria, pH, temperature, total phosphorus, and total suspended solids using a Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel and Hirsch 2002). A Seasonal Kendall test removes the influence of seasonal fluctuations by calculating a Mann Kendall test (Mann 1945) on each season separately and then comparing the slopes. A significant positive, negative, or steady trend was determined across all seasons and years when the significance of the seasonal slopes had a two-tailed p <= 0.20. A steady trend had a slope equal to zero.   Prior to applying the Seasonal Kendall test data were grouped into monthly "seasons." Multiple observations within any given month were collapsed into a single value using the median. A trend assessment was made at a monitoring station if data were available in a minimum of eight different years in the period from `r min(complete_years)` to `r max(complete_years)`. The observations must have beeen made with an underlying regularity (e.g. samples were taken in the same months for at least eight years).
-
-Stations that met the status or trend data requirements were assessed with the results presented in this report. In some cases a station had sufficient data for trend but not status because data were not available anytime in the last two years.
-
-Results for pH from both grab and continuous sample data were compared to the applicable water quality criterion as found in [OAR 340-041-0021][2.2.1].
-
-Results for bacteria samples were compared to the applicable bacteria criterion as found in [OAR 340-041-0009][2.2.2]. The bacteria standard for freshwater contact recreation is based on the presence of *E. coli* compared to a single sample maximum and a geometric mean of five or more samples in a 90 day period. The bacteria standard for coastal water contact recreation is based on the presence of *Enterococcus* compared to a single sample maximum and a geometric mean of five or more samples in a 90 day period.
-
-Dissolved oxygen status was assessed by comparing the observed concentration values to the applicable daily minimum water quality criterion found in [OAR 340-041-0016][2.2.3]. If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion.
-
-Results for continuous temperature data were compared against the applicable temperature criteria found in [OAR 340-041-0028][2.2.4]. The applicable temperature criteria is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
-
-[2.2.1]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68713
-[2.2.2]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68695
-[2.2.3]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=68706
-[2.2.4]: https://secure.sos.state.or.us/oard/viewSingleRule.action;JSESSIONID_OARD=Q--AbU9sI2gNpiU9aa_3IO93qbFAoGOHlZ2WHGSe8IsE0OGtWMuS!568786841?ruleVrsnRsn=244176
-
-# Statewide Summary
-
-```{r stateStatus, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
-
-types <- unique(state_param_sum_au$AU_Type)
-n_types <- length(unique(state_param_sum_au$AU_Type))
-parameters <- odeqstatusandtrends::AWQMS_to_standard(unique(state_param_sum_au$Char_Name))
-n_params <- length(unique(state_param_sum_au$Char_Name))
-list_fun <- function(x){paste(x, collapse = "s', '")}
-cap_list <- list()
-
-cat(paste0("Available data were sufficient to assess status and/or trend at ", length(unique(state_param_sum$MLocID)), " stations within the state. These stations were located across ", length(unique(state_param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
-           gsub("'", "", 
-                paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
-                       , "'")
-           ), " were available for analysis and included in this report. The following section summarizes the results of the analysis state wide.\n\n"))
-
-# cat(paste("The maps below show the stations included in the analysis for each parameter. Stations are color coded by current status. The Water Quality Listed streams for each parameter are included in the maps as red lines."), "\n\n")
-# 
-# cat(paste0("![](", project_dir, "GIS/", "state_param_summary_map.png)"), "\n\n")
+```{r stateResults, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
 
 cat("## Parameter Summary Maps\n\n")
 # fignum <- 1
@@ -391,8 +796,7 @@ au_sum <- state_param_sum_au %>% group_by(Char_Name) %>%
 
 # cat(tbls(name = "au_sum", caption = "Summary of assessment unit status across the state."))
 
-knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             ,
+knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = "au_sum", caption = "Summary of assessment unit status across the state.")
              ) %>% table_style()
 
@@ -424,8 +828,7 @@ au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>%
 
 # cat(tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type."))
 
-knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             ,
+knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type.")
              ) %>% table_style()
              
@@ -443,8 +846,7 @@ stn_sum <- state_param_sum %>% group_by(Char_Name) %>%
 
 # cat(tbls(name = "stn_sum", caption = "Summary of the status of stations across the state."))
 
-knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             ,
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = "stn_sum", caption = "Summary of the status of stations across the state.")
              ) %>% table_style()
 
@@ -484,8 +886,7 @@ stn_sum <- state_param_sum %>% group_by(Char_Name) %>%
 
 # cat(tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state."))
 
-knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             ,
+knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state.")
              ) %>% table_style()
 
@@ -527,13 +928,65 @@ cat("\n\n")
 
 basin_output <- NULL
 # capnum <- 6
+
+appendix_letter <- list("Black Rock Desert-Humboldt"="A",
+                        "Columbia River"="B",
+                        "Deschutes"="C",
+                        "Goose Lake"="D",
+                        "Grande Ronde"="E",
+                        "John Day"="F",
+                        "Klamath"="G",
+                        "Malheur"="H",
+                        "Mid-Coast"="I",
+                        "Middle Columbia-Hood"="J",
+                        "North Coast-Lower Columbia"="K",
+                        "Oregon Closed Basins"="L",
+                        "Owyhee"="M",
+                        "Powder-Burnt"="N",
+                        "Rogue"="O",
+                        "Sandy"="P",
+                        "Snake River"="Q",
+                        "South Coast"="R",
+                        "Umatilla-Walla Walla-Willow"="S",
+                        "Umpqua"="T",
+                        "Willamette"="U")
   
 for(i in basin_names){
-  name <- i
-
-  basin_output <- c(basin_output, knitr::knit_child(input = "state_basin_summary.Rmd", envir = globalenv()))
+ 
+   name <- i
+   a.letter <- appendix_letter[[name]]
+  
+   basin_output <- c(basin_output, knitr::knit_child(input = "state_basin_summary.Rmd", envir = globalenv()))
 }
 
 ```
 
 `r paste(basin_output, collapse = "\n")`
+
+
+# Citations
+
+Helsel, D.R. and R. M. Hirsch, 2002. Statistical Methods in Water Resources Techniques of Water Resources Investigations, Book 4, chapter A3. U.S. Geological Survey. 522 pages.
+
+Hirsch, R.M. and J.R. Slack. 1984. A nonparametric trend test for seasonal data with serial dependence. *Water Resources Research* 20(6):727-732.
+
+Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for monthly water quality data. *Water Resources Research* 18(1):107-121.
+
+Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
+
+Oregon Department of Environmental Quality [DEQ]. 1992. TMDLs for the Yamhill River. https://www.oregon.gov/deq/FilterDocs/YamhillTMDL1992.pdf
+
+Oregon Department of Environmental Quality [DEQ]. 1998. Columbia Slough TMDL. https://www.oregon.gov/deq/FilterDocs/columbiasloughtmdl.pdf
+
+Oregon Department of Environmental Quality [DEQ]. 2006. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2008. Molalla-Pudding Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2012. Tualatin Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2013. Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0. http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
+
+Oregon Department of Environmental Quality [DEQ]. 2019. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+
+
+
