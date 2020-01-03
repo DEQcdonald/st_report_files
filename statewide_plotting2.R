@@ -109,7 +109,13 @@ for (name in report_names){
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
   stations_AWQMS <- get_stations_AWQMS(basin_shp)
-  huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")])
+  
+  huc_names  <- stations_AWQMS %>%
+    dplyr::group_by(HUC8, HUC8_Name) %>%
+    dplyr::summarize(n=dplyr::n()) %>%
+    dplyr::filter(n==max(n)) %>%
+    dplyr::select(-n) %>%
+    as.data.frame()
 
   if(dir.exists(plot_dir)) {
   } else {dir.create(plot_dir, recursive = TRUE)}
