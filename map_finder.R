@@ -87,13 +87,9 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
               stroke = FALSE, fill = TRUE, fillOpacity = 0.5, fillColor = ~color,
               highlightOptions = highlightOptions(fillColor = "black", fillOpacity = 0.75)) %>% 
   addPolygons(group = "Subbasin Polygons",
-              label = ~lapply(paste("<b>Subbasin:</b>", HU_8_NAME), htmltools::HTML),
-              color = "black", weight = 2, opacity = 1, fill = FALSE,
-              highlightOptions = highlightOptions(color = "black", weight = 8, opacity = 1)) %>% 
+              color = "black", weight = 2, opacity = 1, fill = FALSE) %>% 
   addPolygons(data = basin_shp, group = "Basin Polygons",
-              color = "black", weight = 4, opacity = 1, fill = FALSE, 
-              label = ~lapply(paste("<b>Basin:</b>", REPORT), htmltools::HTML),
-              highlightOptions = highlightOptions(color = "black", weight = 8, opacity = 1)) %>% 
+              color = "black", weight = 4, opacity = 1, fill = FALSE) %>%  
   addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons")) %>%
   addControl(position = "bottomright", className = "logo",
              html = sprintf('<html><body><div style="opacity:1">
