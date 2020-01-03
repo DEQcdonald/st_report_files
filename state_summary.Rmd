@@ -225,7 +225,7 @@ For samples that appear to be replicates or samples made at various depths (i.e.
 
 ## Period of Analysis
 
-Water quality data collected over a twenty year period starting `r format(lubridate::ymd(start.date), format="%B %d, %Y")` and ending on `r format(lubridate::ymd(end.date), format="%B %d, %Y")` were retrieved from the data sources identified in section 3.1.
+Water quality data collected over a twenty year period starting `r format(lubridate::ymd(start.date), format="%B %d, %Y")` and ending on `r format(lubridate::ymd(end.date), format="%B %d, %Y")` were retrieved from the data sources identified in Section 3.1.
 
 For assessment of status, the twenty year period of analysis was divided into five shorter periods with each shorter period spanning four years. Only data collected within the four year period were used to determine status for that period. The five status periods are defined by the following calendar years:
 
@@ -235,7 +235,7 @@ For assessment of status, the twenty year period of analysis was divided into fi
 *	2011 – 2014
 *	2015 - 2018
 
-Trends were evaluated over the entire twenty year period. Minimum data requirements to assess trend are discussed in section XX.
+Trends were evaluated over the entire twenty year period. Minimum data requirements to assess trend are discussed in Section 3.5.
 
 ## Water Quality Status Assessment
 
@@ -250,6 +250,7 @@ The water quality status were assessed at monitoring stations and waterbody-base
 ### Status Reporting and Defintions
 
 The status assessment results are reported and presented in a number of ways. For each station or AU we report the status result in the following way:
+
 * __Attaining__: When results demonstrate attainment of the water quality criteria or TMDL target.
 * __Not Attaining__: When results do not attain the water quality criteria or TMDL target.
 * __Insufficient Data__: When there are results available but the results do not meet QA/QC objectives including minimum Data Quality Levels (DQLs); or the results do not meet minimum requirements to evaluate attainment of the water quality criteria or TMDL target.
@@ -307,7 +308,7 @@ colnames(bacteria.indicators.tbl) <- c("Designated use",
                                        "Threshold Value (CFU / 100 mL)")
 
 knitr::kable(bacteria.indicators.tbl, 
-             padding = 2, digits = 3,
+             padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "bacteriaIndicators", 
                             caption = "Bacterial Indicators and Criteria."))
@@ -401,7 +402,7 @@ tbl.ph<- data.frame(basin=c("replace with table"),
                            criteria=c("replace with table"))
 
 knitr::kable(tbl.ph, 
-             padding = 2, digits = 3,
+             padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tbl.ph", 
                             caption = "Summary of pH Basin-Specific Criteria."))
@@ -470,7 +471,7 @@ tbl.temp.criteria <- data.frame(du=c("Salmon & trout rearing & migration",
 colnames(tbl.temp.criteria) <- c("Designated Fish Use", "Temperature Criterion, deg-C")
 
 knitr::kable(tbl.temp.criteria, 
-             padding = 2, digits = 3,
+             padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tbl.temp.criteria", 
                             caption = "Numeric Temperature Criteria."))
@@ -523,7 +524,7 @@ tbl.tp.tmdls <- data.frame(tmdl=c("Tualatin Subbasin TMDL and WQMP",
 colnames(tbl.tp.tmdls) <- c("TMDL Document Name", "Year Approved", "Impairments", "Applicable Geographic Area")
 
 knitr::kable(tbl.tp.tmdls,
-             padding = 2, digits = 3,
+             padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tp.tmdls", 
                             caption = "Summary of TMDLs with total phosphorus targets that were evaluated in this report."))
@@ -572,7 +573,7 @@ tbl.tualatin <- data.frame(Segment=c("Mainstem Tualatin River @ Stafford Rd. (RM
 colnames(tbl.tualatin) <- c("Stream Segment","Total Phosphorus Concentrations (Summer Median – mg/L)")
 
 knitr::kable(tbl.tualatin, 
-             padding = 2, digits = 3,
+             padding = 0, digits = 2, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tualatin.targets", 
                             caption = "Total phosphorus targets in Tualatin River and tributaries."))
@@ -590,7 +591,7 @@ tbl.oswego <- data.frame(event=c("Base Flow","Storm","Base Flow"),
 colnames(tbl.oswego) <- c("Flow Type", "Period", "Maximum Total Phosphorus Concentrations (mg/L)")
 
 knitr::kable(tbl.oswego, 
-             padding = 2, digits = 3,
+             padding = 0, digits = 2, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "oswego.targets", 
                             caption = "Total phosphorus targets in Oswego Lake and tributaries."))
@@ -617,7 +618,7 @@ tbl.tss.tmdls <- data.frame(tmdl=c("Molalla-Pudding Subbasin TMDL and WQMP",
 colnames(tbl.tss.tmdls) <- c("TMDL Document Name", "Year Approved", "Impairments", "Applicable Geographic Area")
 
 knitr::kable(tbl.tp.tmdls,
-             padding = 2, digits = 3,
+             padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tss.tmdls", 
                             caption = "Summary of TMDLs with total suspends solids targets that were evaluated in this report."))
@@ -631,9 +632,9 @@ The Willamette Basin TMDL (DEQ 2006) TSS was identified as a surrogate measure f
 
 ## Waster Quality Trend Evaluation
 
-### Assessment Scale
+### Assessment Units
 
-Water quality trends were evaluated on monitoring stations. 
+Water quality trends were evaluated at monitoring stations only. 
 
 ### Trend Result Categories
 
@@ -657,8 +658,6 @@ For each parameter at each station where there were sufficient data to evaluate 
 
 A trend assessment using Seasonal Kendall cannot be made at a monitoring station unless the results there have an underlying regularity and there is sufficient data over time. We did not attempt to calculate trend unless there were water quality results in the same month for at least eight different years over the entire twenty year analysis period. We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). If there were insufficient data, “Insufficient Data” is assigned as the result. At stations with sufficient data, a significant positive, negative, or steady trend was determined across all seasons and years when the significance of the trend slopes had a two-tailed p <= 0.20. “Improving” or “Degrading” are assigned to a positive or negative slopes depending on the water quality standards and if an increasing or decreasing values were an improvement or derogation of water quality. For example, a positive result (increasing value with time) is considered an improving trend for dissolved oxygen but degrading trend for temperature. A steady trend had a slope equal to zero. “No significant Trend” is assigned when the null hypothesis is not rejected and indicates there is no consistent overall trends during the evaluation period.
 
-
-### Ass
 # Results
 
 ## Statewide
