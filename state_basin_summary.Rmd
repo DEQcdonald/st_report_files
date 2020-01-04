@@ -96,9 +96,9 @@ if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/
 </w:p>
 ```
 
-# `r name` Basin
+## `r name` Basin
 
-A summary of status and trend results for the `r name` Basin and subbasins within the `r name` Basin are presented in this section. Full tabular results including results for each station, assessment unit, exursion statistics, and the summary of best managment practices implemented are provided in Appendix `r a.letter`.
+A summary of status and trend results for the `r name` Basin and subbasins within the `r name` Basin are presented in this section. Full tabular results including results for each station, assessment unit, excursion statistics, and the summary of best managment practices implemented are provided in **Appendix `r a.letter`**.
 
 ```{r basinIntro, include = TRUE, results = 'asis'}
 wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/wq_limited_2012_df_temp_bact_ph_DO_TP_Sediment.csv',
@@ -158,11 +158,11 @@ param_summary <- unique(param_sum$Pollutant)
 # cat("## Status and Trend")
 cat("\n\n")
 
-cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTANT)), " parameters among its water bodies. Available data was sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
+cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTANT)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
-           ), " were available for analysis and included in this report. The following section summarizes the results of the analysis basin wide.\n\n"))
+           ), " were available for analysis and included in this report.\n\n"))
 ```
 
 
@@ -195,7 +195,7 @@ landuse_output <- knitr::knit_child("state_landuse_summary.Rmd", envir = globale
 
 cap_list <- list()
 
-cat("## Parameter Maps\n\n")
+cat("### Parameter Maps\n\n")
 
 cat(paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by current status. The water quality listed streams for each parameter are included in the maps as red lines."), "\n\n")
 
@@ -261,7 +261,7 @@ for(i in unique(param_sum$Pollutant)){
   cat("\n\n")
 }
 
-cat("## Status\n\n")
+cat("### Status\n\n")
 
 cat(paste0(tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
@@ -274,8 +274,7 @@ au_sum <- param_sum_au %>% group_by(Char_Name) %>%
 
 # cat(tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin.")))
 
-knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
-             ,
+knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin."))
              ) %>% table_style()
 
@@ -352,7 +351,7 @@ cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Su
 # fignum <- fignum + 1
 
 cat("\n\n")
-cat("## Trend\n\n")
+cat("### Trend\n\n")
 
 cat(paste0("\n\nA summary of the trends across parameters is shown in ",tbls(name = paste0(name, "_stn_trend_sum"), display="cite"),". Note that trend requires significantly more data than status and may result in many stations with sufficient data for assessing status, but insufficient data for assessing trend.\n\n"))
 
@@ -405,7 +404,7 @@ cat("\n\n")
 
 ```
 
-## Subbasin Summary
+### Subbasin Summary
 
 ```{r subbasin, include = FALSE, eval=TRUE, results = 'asis'}
 
