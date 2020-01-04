@@ -100,6 +100,6 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
                                     options = searchFeaturesOptions(openPopup = TRUE, textPlaceholder = "Search basins..."))
 
-htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/web_wqst_2019/2019_map_locator.html"), 
+htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/wqst_2019/map_locator.html"), 
                         title = paste("Oregon Status and Trends Map Locator"), 
                         background = "grey", selfcontained = FALSE)
