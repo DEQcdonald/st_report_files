@@ -41,12 +41,12 @@ options(kableExtra.auto_format = F)
 ```
 
 
-### `r paste(subbasin_name)`
+#### `r paste(subbasin_name)`
 
 
 ```{r sub_sum_map, include = FALSE, eval=FALSE, results = 'asis'}
 
-cat("#### Parameter Maps\n\n")
+cat("##### Parameter Maps\n\n")
 
 for(j in unique(map_df$Pollutant)){
   
@@ -102,7 +102,7 @@ for(j in unique(map_df$Pollutant)){
 ```
 
 
-#### Water Quality Limited Stream Segments 
+##### Water Quality Limited Stream Segments 
 
 ```{r wql_streams, include= TRUE, results= 'asis'}
 
@@ -147,7 +147,7 @@ knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names 
 ```
 
 
-#### Status
+##### Status
 
 ```{r status, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
 
@@ -243,7 +243,7 @@ cap_list[[2]] <- figs(name = paste0(subbasin_name, "_stn_sum_plot"), caption = p
 
 ```
 
-#### Trend
+##### Trend
 
 ```{r trend, include = TRUE, results = 'asis'}
 cat(paste0("\n\nA summary of the trends within parameters is shown in ", tbls(name = paste0(subbasin_name, "_stn_trend_sum"), display="cite"), ". Note that trend requires significantly more data than status and may result in many stations with insufficient data for trend analysis.\n\n"))
@@ -268,7 +268,7 @@ cat("\n\n")
 
 
 ```{r OWRI, include=FALSE, eval=FALSE, results = 'asis'}
-cat("## OWRI Watershed Restoration Actions")
+cat("##### OWRI Watershed Restoration Actions")
 cat("\n\n")
 
   cat(paste(tbls(paste0(subbasin_name, "_owriTab"), display = "cite"), 
