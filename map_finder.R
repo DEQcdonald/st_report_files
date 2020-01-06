@@ -93,12 +93,12 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons")) %>%
   addControl(position = "bottomright", className = "logo",
              html = sprintf('<html><body><div style="opacity:1">
-                                        <img width="60" src="data:image/png;base64,%s">
+                                        <img width="50" src="data:image/png;base64,%s">
                             </div></body></html>', logo)) %>% 
   addControl(position = "bottomleft", className = "info", 
-             html = "Hover over the map to determine the name of the basin, subbasin, and relevant status and trends map.<br> Click on an area of interest to obtain a link to its associated status and trends map.") %>% 
+             html = "Hover over the map to determine the name of the basin, subbasin,<br>and relevant status and trends map. Click on an area of interest<br>to obtain a link to its associated status and trends map.") %>% 
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
-                                    options = searchFeaturesOptions(openPopup = TRUE, textPlaceholder = "Search basins..."))
+                                    options = searchFeaturesOptions(openPopup = TRUE, textPlaceholder = "Search map info...", zoom = 8))
 
 htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/wqst_2019/map_locator.html"), 
                         title = paste("Oregon Status and Trends Map Locator"), 
