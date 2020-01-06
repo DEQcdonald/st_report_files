@@ -34,7 +34,7 @@ landuse_map_check <- if(name %in% c("Black Rock Desert-Humboldt", "Columbia Rive
 
 ```
 
-## Land Use
+### Land Use
 
 ```{r landuse-table, include=FALSE, results='asis'}
 

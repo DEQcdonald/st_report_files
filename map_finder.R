@@ -87,13 +87,9 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
               stroke = FALSE, fill = TRUE, fillOpacity = 0.5, fillColor = ~color,
               highlightOptions = highlightOptions(fillColor = "black", fillOpacity = 0.75)) %>% 
   addPolygons(group = "Subbasin Polygons",
-              label = ~lapply(paste("<b>Subbasin:</b>", HU_8_NAME), htmltools::HTML),
-              color = "black", weight = 2, opacity = 1, fill = FALSE,
-              highlightOptions = highlightOptions(color = "black", weight = 8, opacity = 1)) %>% 
+              color = "black", weight = 2, opacity = 1, fill = FALSE) %>% 
   addPolygons(data = basin_shp, group = "Basin Polygons",
-              color = "black", weight = 4, opacity = 1, fill = FALSE, 
-              label = ~lapply(paste("<b>Basin:</b>", REPORT), htmltools::HTML),
-              highlightOptions = highlightOptions(color = "black", weight = 8, opacity = 1)) %>% 
+              color = "black", weight = 4, opacity = 1, fill = FALSE) %>%  
   addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons")) %>%
   addControl(position = "bottomright", className = "logo",
              html = sprintf('<html><body><div style="opacity:1">
@@ -104,6 +100,6 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
                                     options = searchFeaturesOptions(openPopup = TRUE, textPlaceholder = "Search map info...", zoom = 8))
 
-htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/web_wqst_2019/2019_map_locator.html"), 
+htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/wqst_2019/map_locator.html"), 
                         title = paste("Oregon Status and Trends Map Locator"), 
                         background = "grey", selfcontained = FALSE)
