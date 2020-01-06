@@ -183,13 +183,13 @@ This report presents the results of a statewide water quality status and trends 
 *	What is the status of water quality in Oregon? Are waterbodies attaining water quality standards for bacteria, dissolved oxygen, pH, and temperature? 
 *	Where applicable, are Total Maximum Daily Load (TMDL) targets established for total phosphorus or total suspended solids being attained? 
 *	What are the trends in water quality?
-* What best management practices have been implemented?
+* What watershed restoration or protection actions have been implemented?
 
-DEQ conducts this analysis by assembling surface water quality data and information about best management practices implemented from readily accessible public databases, comparing these water quality data to the appropriate Oregon water quality standards or TMDL targets, and determining the status and trends where data and information of sufficient quality and quantity are available. Results are summarized for each of the 19 basins in Oregon as well as the Columbia and Snake Rivers.
+DEQ conducted this analysis by assembling surface water quality data and information about best management practices implemented from readily accessible public databases, comparing these water quality data to the appropriate Oregon water quality standards or TMDL targets, and determining the status and trends where data and information of sufficient quality and quantity are available. Results are summarized for each of the 19 administrative basins in Oregon as well as the Columbia and Snake Rivers.
 
 A webmap tool is also available on DEQ’s website to search for and review results. The current URL for this website is https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
 
-The results of this analysis informs DEQ, other state and federal agencies, and the public on the condition of waters; if water quality is improving or degrading; the pace of improvement or degradation; what actions, if any, are being taken to improve water quality, and where water quality data is and is not being collected.
+The results of this analysis informs DEQ, other state and federal agencies, and the public on the condition of waters and if TMDLs are being acheived; if water quality is improving or degrading; the pace of improvement or degradation; what actions, if any, are being taken to improve water quality, and where water quality data are and are not being collected.
 
 # Analysis Area and Tribal Waters
 
@@ -256,7 +256,7 @@ The status assessment results are reported and presented in a number of ways. Fo
 * __Insufficient Data__: When there are results available but the results do not meet QA/QC objectives including minimum Data Quality Levels (DQLs); or the results do not meet minimum requirements to evaluate attainment of the water quality criteria or TMDL target.
 * __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL target to evaluate attainment against. The later condition occurs where there are total suspended solids or total phosphorus data available in an area but no TMDL targets established in that area.
 
-We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An "excursion" occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, the percent excursion (=total excursions / total number of results X 100), and the minimum, maximum, and median excursion result value. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted.
+We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An "excursion" occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, the percent excursion (= total excursions / total number of results X 100), and the minimum, maximum, and median excursion result value. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted.
 
 ### Bacteria
 
@@ -504,11 +504,11 @@ Definitions
 
 The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
 
-The seven-day average daily maximum (7dAM) stream temperature is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7dAM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7dAM for August 10 is calculated from Tmax for August 4 to August 10; the 7dAM for August 11 is calculated from August 5 to 11, etc.
+The seven-day average daily maximum stream temperature is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
 
 INSERT EQUATION
 
-When spawning criteria apply, the first 7-day averaging period begins on the date the spawning period begins. The first 7dAM value will be assigned to the 7th calendar day following the start date of the spawning period. Therefore, the 7th calendar day of the spawning period is the first day that the 7dAM is required to meet the spawning criteria.
+When spawning criteria apply, the first 7-day averaging period begins on the date the spawning period begins. The first 7DADM value will be assigned to the 7th calendar day following the start date of the spawning period. Therefore, the 7th calendar day of the spawning period is the first day that the 7DADM is required to meet the spawning criteria.
 
 ```{r tbl-temp}
 
@@ -541,7 +541,7 @@ In streams designated as salmon and steelhead spawning areas, the salmon & steel
 
 ##### Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(b) in the Upper Klamath and Lost Subbasins
 
-To ensure the protection of Lost River and Shortnose Suckers in the Klamath River, Link River, and Lost River, the Upper Klamath and Lost Subbasin Temperature TMDL (DEQ 2019) developed TMDL targets to implemented the Cool Water Species narrative criterion. If daily maximum results exceed 28 deg-C in these reaches DEQ will determine that the cool water species narrative criterion is not being attained.
+To ensure the protection of Lost River and Shortnose Suckers in the Klamath River, Link River, and Lost River, the Upper Klamath and Lost Subbasins Temperature TMDL (DEQ 2019) developed TMDL targets to implemented the Cool Water Species narrative criterion. If daily maximum results exceed 28°C in these reaches DEQ will determine that the cool water species narrative criterion is not being attained.
 
 ##### Applicability
 
@@ -707,6 +707,10 @@ A Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel a
 For each parameter at each station where there were sufficient data to evaluate trend, the null hypothesis is that there is no monotonic trend over time. The alternative hypothesis is that for one or more seasons, there is an upward, downward, or steady monotonic trend over time. The null hypothesis is rejected (and we determine there is a trend) if the Z statistic (two-tailed p value) <= 0.20.
 
 A trend assessment using Seasonal Kendall cannot be made at a monitoring station unless the results there have an underlying regularity and there is sufficient data over time. We did not attempt to calculate trend unless there were water quality results in the same month for at least eight different years over the entire twenty year analysis period. We define “results” as a water quality observation or a calculated observation in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). If there were insufficient data, “Insufficient Data” is assigned as the result. At stations with sufficient data, a significant positive, negative, or steady trend was determined across all seasons and years when the significance of the trend slopes had a two-tailed p <= 0.20. “Improving” or “Degrading” are assigned to a positive or negative slopes depending on the water quality standards and if an increasing or decreasing values were an improvement or derogation of water quality. For example, a positive result (increasing value with time) is considered an improving trend for dissolved oxygen but degrading trend for temperature. A steady trend had a slope equal to zero. “No significant Trend” is assigned when the null hypothesis is not rejected and indicates there is no consistent overall trends during the evaluation period.
+
+## Watershed Restoration or Protection Actions
+
+To summarize actions taken to restore or protect watersheds and water quality, we summarized on-the-ground treatments implemented and reported to OWEB’s Oregon Watershed Restoration Inventory (OWRI). OWRI is a repository for a significant number of actions implemented in Oregon but it does not capture all restoration or protection actions. In particular projects funded by the United States Farm Bill and many USFS and BLM projects are not included. Typically treatments reported to OWRI were implemented as part of an OWEB grant funded project. DEQ also requires federal 319 grant recipients to report outputs to OWRI. There are over 130 unique treatments identified in OWRI. The various treatments can be grouped broadly into the following activity types: fish passage, fish screening, instream habitat, instream flow, riparian, road, upland, and urban.  For this report we counted any treatment towards the total if they were implemented in Oregon over the twenty year period of analysis. We subdivided the total into five shorter periods with each period being four years. Only treatments completed within the four year period counted towards the total for that period. The year the project was completed was used for multi-year projects. The totals are reported by subbasin for each activity type and treatment.
 
 # Results
 
