@@ -100,7 +100,8 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   # addControl(position = "bottomleft", className = "info", 
   #            html = "Hover over the map to determine the name of the basin, subbasin,<br>and relevant status and trends map. Click on an area of interest<br>to obtain a link to its associated status and trends map.") %>% 
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
-                                    options = searchFeaturesOptions(propertyName = "popup", openPopup = TRUE, textPlaceholder = "Search map info...", zoom = 8)) %>%
+                                    options = searchFeaturesOptions(propertyName = "popup", openPopup = TRUE, textPlaceholder = "Find a basin, subbasin, or map name", zoom = 8)) %>%
+  leaflet.extras::addSearchOSM(searchOptions(textPlaceholder = "Find a location")) %>% 
   htmlwidgets::onRender(jsCode = "function(el, x){
   var info = document.getElementsByClassName('info');
   for (var i = 0; i < info.length; i++) {
