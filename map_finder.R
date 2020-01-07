@@ -3,6 +3,7 @@ library(leaflet)
 library(leaflet.extras)
 library(sf)
 library(htmltools)
+library(htmlwidgets)
 
 report_areas <- sf::st_read(
   dsn = '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS',
@@ -79,11 +80,11 @@ report_areas <- report_areas %>% mutate(map_link = paste0("<a href='", report_na
 
 map_locator <- leaflet(report_areas) %>% addTiles() %>% 
   addPolygons(data = map_shp, group = "Map Polygons",
-              label = ~lapply(paste0("<b>Map:</b> ", MAP,
+              popup = ~lapply(paste0("<b>Status and Trends Map:</b><br>", map_link,
                                      "<br><b>Basin:</b> ", basin,
-                                     "<br><b>Subbasins:</b><br>", subbasins,
-                                     "<br><b>Click area for link to map"), htmltools::HTML),
-              popup = ~paste0("Status and Trends Map: ", map_link), 
+                                     "<br><b>Subbasins:</b><br>", subbasins), 
+                              htmltools::HTML),
+              # popup = ~paste0("", map_link), 
               stroke = FALSE, fill = TRUE, fillOpacity = 0.5, fillColor = ~color,
               highlightOptions = highlightOptions(fillColor = "black", fillOpacity = 0.75)) %>% 
   addPolygons(group = "Subbasin Polygons",
@@ -93,12 +94,26 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons")) %>%
   addControl(position = "bottomright", className = "logo",
              html = sprintf('<html><body><div style="opacity:1">
+                                        <a href="https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx">
                                         <img width="50" src="data:image/png;base64,%s">
-                            </div></body></html>', logo)) %>% 
-  addControl(position = "bottomleft", className = "info", 
-             html = "Hover over the map to determine the name of the basin, subbasin,<br>and relevant status and trends map. Click on an area of interest<br>to obtain a link to its associated status and trends map.") %>% 
+                            </a></div></body></html>', logo)) %>% 
+  # addControl(position = "bottomleft", className = "info", 
+  #            html = "Hover over the map to determine the name of the basin, subbasin,<br>and relevant status and trends map. Click on an area of interest<br>to obtain a link to its associated status and trends map.") %>% 
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
-                                    options = searchFeaturesOptions(openPopup = TRUE, textPlaceholder = "Search map info...", zoom = 8))
+                                    options = searchFeaturesOptions(propertyName = "popup", openPopup = TRUE, textPlaceholder = "Search map info...", zoom = 8)) %>%
+  htmlwidgets::onRender(jsCode = "function(el, x){
+  var info = document.getElementsByClassName('info');
+  for (var i = 0; i < info.length; i++) {
+  info[i].style.marginBottom = '20px';
+  info[i].style.borderRadius = '0px';
+  }
+  var logo = document.getElementsByClassName('logo');
+  for (var i = 0; i < logo.length; i++) {
+  logo[i].style.marginBottom = '0px';
+  logo[i].style.marginRight = '5px';
+                        }
+                        }") %>% 
+  htmlwidgets::appendContent(tags$head(tags$meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")))
 
 htmlwidgets::saveWidget(map_locator, paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/wqst_2019/map_locator.html"), 
                         title = paste("Oregon Status and Trends Map Locator"), 
