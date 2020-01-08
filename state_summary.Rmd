@@ -553,7 +553,7 @@ In this report, we evaluated status for total phosphorus or total suspended soli
 
 ### Total Phosphorus
 
-Oregon does not have explicit water quality standards for total phosphorus (TP) however total phosphorus can be a pollutant that contribute to an impairment of water quality standards. Often the impairment is for standards established for dissolved oxygen, pH, or algae. 
+Oregon does not have explicit water quality standards for total phosphorus (TP) however total phosphorus can be a pollutant that contributes to an impairment of water quality standards. Often the impairment is for standards established for dissolved oxygen, pH, or algae. 
 
 In this report, we evaluated status for total phosphorus in the Willamette Basin where a Total Maximum Daily Load has been established and identifies total phosphorus as a pollutant with specific concentration targets. Other TMDLs established in other parts of the state with total phosphorus concentration targets were not evaluated. `r tbls(name="tp.tmdls", display="cite")` summarizes the TMDLs evaluated in this report.
 
