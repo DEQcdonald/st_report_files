@@ -91,7 +91,9 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
               color = "black", weight = 2, opacity = 1, fill = FALSE) %>% 
   addPolygons(data = basin_shp, group = "Basin Polygons",
               color = "black", weight = 4, opacity = 1, fill = FALSE) %>%  
-  addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons")) %>%
+  addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons"),
+                   options = layersControlOptions(collapsed = FALSE, autoZIndex = TRUE)
+                   ) %>%
   addControl(position = "bottomright", className = "logo",
              html = sprintf('<html><body><div style="opacity:1">
                                         <a href="https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx">
@@ -100,8 +102,9 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
   # addControl(position = "bottomleft", className = "info", 
   #            html = "Hover over the map to determine the name of the basin, subbasin,<br>and relevant status and trends map. Click on an area of interest<br>to obtain a link to its associated status and trends map.") %>% 
   leaflet.extras::addSearchFeatures(targetGroups = "Map Polygons",
-                                    options = searchFeaturesOptions(propertyName = "popup", openPopup = TRUE, textPlaceholder = "Find a basin, subbasin, or map name", zoom = 8)) %>%
-  leaflet.extras::addSearchOSM(searchOptions(textPlaceholder = "Find a location")) %>% 
+                                    options = searchFeaturesOptions(propertyName = "popup", openPopup = TRUE, 
+                                                                    textPlaceholder = "Find a basin, subbasin, or map name", zoom = 8)) %>%
+  leaflet.extras::addSearchOSM(options = searchOptions(textPlaceholder = "Find a location", zoom = 9)) %>% 
   htmlwidgets::onRender(jsCode = "function(el, x){
   var info = document.getElementsByClassName('info');
   for (var i = 0; i < info.length; i++) {
