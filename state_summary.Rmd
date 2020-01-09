@@ -330,8 +330,7 @@ knitr::kable(bacteria.indicators.tbl,
 
 ```
 
-
-Insert Geometric Mean Equation
+INSERT GEOMETRIC MEAN EQUATION
 
 A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean.
 The 90-day geometric mean (GM90) of bacteria concentration is calculated by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which n ≥ 5.
@@ -340,9 +339,9 @@ The median sample concentration is calculated for the entire analysis period onc
 
 ### Dissolved Oxygen
 
-Dissolved oxygen status was assessed by comparing the observed concentration values to the applicable water quality criterion found in [OAR 340-041-0016][3.4.4]. If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be attaining.
-
 #### Water Quality Criteria
+
+Dissolved oxygen status was assessed by comparing the observed concentration values to the applicable water quality criterion found in [OAR 340-041-0016][3.4.4].
 
 OAR 340-041-0016
 
@@ -402,6 +401,7 @@ The application of the various dissolved oxygen criteria is based on designated 
 
 If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using below equations. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
 
+INSERT EQUATION
 
 ### pH
 
@@ -429,10 +429,10 @@ Basin-Specific Criteria
 
 ```{r tbl-ph}
 
-tbl.ph<- data.frame(basin=c("replace with table"),
-                           OAR=c("replace with table"),
-                           Water=c("replace with table"),
-                           criteria=c("replace with table"))
+tbl.ph<- data.frame(basin=c("replace with pH table"),
+                           OAR=c("replace with pH table"),
+                           Water=c("replace with pH table"),
+                           criteria=c("replace with pH table"))
 
 knitr::kable(tbl.ph, 
              padding = 0, digits = 1, format = table_format,
@@ -506,7 +506,7 @@ The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display
 
 The seven-day average daily maximum stream temperature is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
 
-INSERT EQUATION
+INSERT 7DADM EQUATION
 
 When spawning criteria apply, the first 7-day averaging period begins on the date the spawning period begins. The first 7DADM value will be assigned to the 7th calendar day following the start date of the spawning period. Therefore, the 7th calendar day of the spawning period is the first day that the 7DADM is required to meet the spawning criteria.
 
@@ -667,7 +667,7 @@ tbl.tss.tmdls <- data.frame(tmdl=c("Molalla-Pudding Subbasin TMDL and WQMP",
 
 colnames(tbl.tss.tmdls) <- c("TMDL Document Name", "Year Approved", "Impairments", "Applicable Geographic Area")
 
-knitr::kable(tbl.tp.tmdls,
+knitr::kable(tbl.tss.tmdls,
              padding = 0, digits = 1, format = table_format,
              row.names = FALSE,
              caption = tbls(name = "tss.tmdls", 
