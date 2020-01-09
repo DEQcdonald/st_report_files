@@ -131,13 +131,15 @@ for (name in report_names){
   # Temperature plots -------------------------------------------------------
 
   temp_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Temperature, water",]$MLocID)
+  seaKen_temp = seaKen %>% filter(Char_Name == "Temperature, water", trend %in% c("Improving", "Degrading", "Steady"))
   temp_plots <- list()
 
   count <- 1
   for(temp_station in temp_stations){
     print(paste0("Plotting temperature data for station: ", temp_station, " (", count, " of ", length(temp_stations), ")...",name))
 
-    plot_data <- data_assessed %>% filter(Char_Name == "Temperature, water", MLocID == temp_station)
+    plot_data <- data_assessed %>% filter(Char_Name == "Temperature, water", MLocID == temp_station) %>% 
+      mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == temp_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
     subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
@@ -145,7 +147,7 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/Temperature"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/Temperature"), recursive = TRUE)}
 
-    p <- plot_temperature(data = plot_data, seaKen = seaKen[seaKen$Char_Name == "Temperature, water",], station = temp_station)
+    p <- plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station)
 
     ggsave(plot = p,
            filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, ".jpeg"),
@@ -161,13 +163,15 @@ for (name in report_names){
   # pH Plots ----------------------------------------------------------------
 
   pH_stations <- unique(c(param_sum_stn[param_sum_stn$Char_Name == "pH",]$MLocID))
+  seaKen_pH = seaKen %>% filter(Char_Name == "pH", trend %in% c("Improving", "Degrading", "Steady"))
   pH_plots <- list()
 
   count <- 1
   for(pH_station in pH_stations){
     print(paste0("Plotting pH data for station: ", pH_station, " (", count, " of ", length(pH_stations), ")...",name))
 
-    plot_data <- data_assessed %>% filter(Char_Name == "pH", MLocID == pH_station)
+    plot_data <- data_assessed %>% filter(Char_Name == "pH", MLocID == pH_station) %>% 
+      mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == pH_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
     subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
@@ -175,7 +179,7 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/pH"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/pH"), recursive = TRUE)}
 
-    p <- plot_pH(plot_data, seaKen[seaKen$Char_Name == "pH",], pH_station)
+    p <- plot_pH(plot_data, seaKen_pH, pH_station)
 
     ggsave(plot = p,
            filename = paste0(plot_dir, subbasin, "/pH/pH_", pH_station, ".jpeg"),
@@ -189,13 +193,15 @@ for (name in report_names){
   # Total Phosphorus plots --------------------------------------------------
 
   TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Phosphate-phosphorus",]$MLocID)
+  seaKen_TP = seaKen %>% filter(Char_Name == "Phosphate-phosphorus", trend %in% c("Improving", "Degrading", "Steady"))
   TP_plots <- list()
 
   count <- 1
   for(TP_station in TP_stations){
     print(paste0("Plotting TP data for station: ", TP_station, " (", count, " of ", length(TP_stations), ")...",name))
 
-    plot_data <- data_assessed %>% filter(Char_Name == "Phosphate-phosphorus", MLocID == TP_station)
+    plot_data <- data_assessed %>% filter(Char_Name == "Phosphate-phosphorus", MLocID == TP_station) %>% 
+      mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == TP_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
     if(is.na(unique(plot_data$HUC8))){
@@ -207,7 +213,7 @@ for (name in report_names){
     } else {dir.create(paste0(plot_dir, subbasin, "/TP"), recursive = TRUE)}
 
     if(!all(is.na(plot_data$Result_cen))){
-    p <- plot_TP(data = plot_data, seaKen = seaKen[seaKen$Char_Name == "Phosphate-phosphorus",], station = TP_station)
+    p <- plot_TP(data = plot_data, seaKen = seaKen_TP, station = TP_station)
 
     ggsave(plot = p,
            filename = paste0(plot_dir, subbasin, "/TP/TP_", TP_station, ".jpeg"),
@@ -223,13 +229,15 @@ for (name in report_names){
   # Total suspended solids plots --------------------------------------------
 
   TSS_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Total suspended solids",]$MLocID)
+  seaKen_TSS = seaKen %>% filter(Char_Name == "Total suspended solids", trend %in% c("Improving", "Degrading", "Steady"))
   TSS_plots <- list()
 
   count <- 1
   for(TSS_station in TSS_stations){
     print(paste0("Plotting TSS data for station: ", TSS_station, " (", count, " of ", length(TSS_stations), ")...", name))
 
-    plot_data <- data_assessed %>% filter(Char_Name == "Total suspended solids", MLocID == TSS_station)
+    plot_data <- data_assessed %>% filter(Char_Name == "Total suspended solids", MLocID == TSS_station) %>% 
+      mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == TSS_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
     subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
@@ -238,7 +246,7 @@ for (name in report_names){
     } else {dir.create(paste0(plot_dir, subbasin, "/TSS"), recursive = TRUE)}
 
     if(!all(is.na(plot_data$Result_cen))){
-      p <- plot_TSS(data = plot_data, seaKen = seaKen[seaKen$Char_Name == "Total suspended solids",], station = TSS_station)
+      p <- plot_TSS(data = plot_data, seaKen = seaKen_TSS, station = TSS_station)
 
       ggsave(plot = p,
              filename = paste0(plot_dir, subbasin, "/TSS/TSS_", TSS_station, ".jpeg"),
@@ -255,6 +263,7 @@ for (name in report_names){
   # Bacteria plots ----------------------------------------------------------
 
   data_bact <- data_assessed %>% dplyr::filter(Char_Name %in% AWQMS_Char_Names("bacteria"))
+  seaKen_bact = seaKen %>% filter(Char_Name %in% AWQMS_Char_Names("bacteria"), trend %in% c("Improving", "Degrading", "Steady"))
   bact_stations <- unique(param_sum_stn[param_sum_stn$Char_Name %in% AWQMS_Char_Names("bacteria"),]$MLocID)
   bact_plots <- list()
   bact_params <- AWQMS_Char_Names('bacteria')[AWQMS_Char_Names('bacteria') %in% unique(c(param_sum_stn$Char_Name, as.character(seaKen$Char_Name)))]
@@ -266,7 +275,8 @@ for (name in report_names){
     for(bact_station in param_stations){
       print(paste0("Plotting ", bact_param, " data for station: ", bact_station, " (", count, " of ", length(param_stations), ")...",name))
 
-      plot_data <- data_assessed %>% filter(Char_Name == bact_param, MLocID == bact_station)
+      plot_data <- data_assessed %>% filter(Char_Name == bact_param, MLocID == bact_station) %>% 
+        mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == bact_station,]$AU_Name))
      
       huc <- unique(plot_data$HUC8)
       subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
@@ -274,7 +284,7 @@ for (name in report_names){
       if(dir.exists(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]))) {
       } else {dir.create(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]), recursive = TRUE)}
 
-      p <- plot_bacteria(data = plot_data, seaKen = seaKen[seaKen$Char_Name == bact_param,], station = bact_station)
+      p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
 
       ggsave(plot = p,
              filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
@@ -291,6 +301,7 @@ for (name in report_names){
   # Dissolved oxygen plots -------------------------------------------------------
 
   data_DO <- data_assessed %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)"))
+  seaKen_DO = seaKen %>% filter(Char_Name == "Dissolved oxygen (DO)", trend %in% c("Improving", "Degrading", "Steady"))
   DO_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Dissolved oxygen (DO)",]$MLocID)
   # DO_stations <- unique((data_DO %>% filter(is.na(Statistical_Base), MLocID %in% DO_stations))$MLocID)
   DO_plots <- list()
@@ -300,7 +311,7 @@ for (name in report_names){
     print(paste0("Plotting dissolved oxygen data for station: ", DO_station, " (", count, " of ", length(DO_stations), ")...",name))
 
     # plot_data <- data_DO %>% filter(Char_Name == "Dissolved oxygen (DO)", MLocID == DO_station, is.na(Statistical_Base))
-    plot_data <- data_DO %>% filter(MLocID == DO_station)
+    plot_data <- data_DO %>% filter(MLocID == DO_station) %>% mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == DO_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
     subbasin <- huc_names[huc_names$HUC8 == huc,]$HUC8_Name
@@ -308,7 +319,7 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/DO"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/DO"), recursive = TRUE)}
 
-    p_list <- plot_DO(data = plot_data, seaKen = seaKen[seaKen$Char_Name == "Dissolved oxygen (DO)",], 
+    p_list <- plot_DO(data = plot_data, seaKen = seaKen_DO, 
                  station = DO_station)
 
     for(p in names(p_list)){
