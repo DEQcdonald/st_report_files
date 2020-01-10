@@ -6,7 +6,7 @@ library(dplyr)
 library(odeqstatusandtrends)
 # devtools::install_github('donco/odeqassessment', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(odeqassessment)
-# devtools::install_github('rmichie/wqdb/wqdb', host = 'https://api.github.com', upgrade='never')
+# devtools::install_github('rmichie/wqdb/wqdb', host = 'https://api.github.com', force = TRUE, upgrade='never')
 # library(wqdb)
 # devtools::install_github('rmichie/owri/owri', host = 'https://api.github.com', upgrade='never')
 library(owri)
@@ -53,6 +53,8 @@ HUC_shp <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.
 # basin_shp <- readOGR(dsn = gis_dir, layer = 'TualatinJWC_DWSA_dissolve', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 # HUC_shp <- HUC_shp[HUC_shp$REPORT != "Willamette",]
 
+au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/AssessmentUnits_OR_Dissolve.txt', stringsAsFactors = FALSE)
+
 missing_AUs <- NULL
 wqp_stns <- NULL
 state_param_sum_au <- NULL
@@ -64,56 +66,9 @@ state_param_sum_au_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-appendix_letter <- list("Black Rock Desert-Humboldt"="A",
-                        "Columbia River"="B",
-                        "Deschutes"="C",
-                        "Goose Lake"="D",
-                        "Grande Ronde"="E",
-                        "John Day"="F",
-                        "Klamath"="G",
-                        "Malheur"="H",
-                        "Mid-Coast"="I",
-                        "Middle Columbia-Hood"="J",
-                        "North Coast-Lower Columbia"="K",
-                        "Oregon Closed Basins"="L",
-                        "Owyhee"="M",
-                        "Powder-Burnt"="N",
-                        "Rogue"="O",
-                        "Sandy"="P",
-                        "Snake River"="Q",
-                        "South Coast"="R",
-                        "Umatilla-Walla Walla-Willow"="S",
-                        "Umpqua"="T",
-                        "Willamette"="U")
-
-report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
-                        "Columbia River"="columbiariv",
-                        "Deschutes"="deschutes",
-                        "Goose Lake"="gooselake",
-                        "Grande Ronde"="granderonde",
-                        "John Day"="johnday",
-                        "Klamath"="klamath",
-                        "Malheur"="malheur",
-                        "Mid-Coast"="midcoast",
-                        "Middle Columbia-Hood"="midcohood",
-                        "North Coast-Lower Columbia"="ncoast",
-                        "Oregon Closed Basins"="orclosed",
-                        "Owyhee"="owyhee",
-                        "Powder-Burnt"="powderburnt",
-                        "Rogue"="rogue",
-                        "Sandy"="sandy",
-                        "Snake River"="snakeriv",
-                        "South Coast"="scoast",
-                        "Umatilla-Walla Walla-Willow"="umatilla",
-                        "Umpqua"="umpqua",
-                        "Willamette"="willamette")
-
 #name <- "Willamette"
 
 for (name in report_names){
-
-  name_abr <- report_name_abr[[name]]
-  a.letter <- appendix_letter[[name]]
 
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
 
@@ -121,19 +76,6 @@ for (name in report_names){
 
   if(dir.exists(data_dir)) {
   } else {dir.create(data_dir)}
-
-  if(web_output) {
-    if(dir.exists(paste0(top_dir,'/web_wqst_2019'))) {
-    } else {dir.create(paste0(top_dir,'/web_wqst_2019'))}
-    output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
-    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results.xlsx")
-  } else {
-    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
-    xlsx_name <- paste0("Appendix_",a.letter,"_",name,"_Results_DRAFT_", eval_date, ".xlsx")
-  }
-
-  if(dir.exists(output_dir)) {
-  } else {dir.create(output_dir)}
 
   eval_date <- Sys.Date()
   save(eval_date, file = paste0(data_dir, name, "_eval_date.RData"))
@@ -148,7 +90,7 @@ for (name in report_names){
   hucs <- unique(basin_shp$HUC_8)
 
   stations_AWQMS <- get_stations_AWQMS(basin_shp)
-  missing_AUs <- bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
+  missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
 
   stations_wqp <- get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
@@ -156,7 +98,7 @@ for (name in report_names){
   if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
     print("Add these stations to the Stations Database:")
     print(stations_wqp)
-    wqp_stns <- bind_rows(wqp_stns, stations_wqp)
+    wqp_stns <- dplyr::bind_rows(wqp_stns, stations_wqp)
   } else {stations_wqp <- NULL}
 
   if(file.exists(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))){
@@ -185,7 +127,6 @@ for (name in report_names){
   data_raw$ELEV_Ft <- stations_AWQMS[match(data_raw$MLocID, stations_AWQMS$MLocID),
                                      c("ELEV_Ft")]
 
-  au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/AssessmentUnits_OR_Dissolve.txt')
   stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID),
                                      c("AU_Name")]
 
@@ -200,139 +141,142 @@ for (name in report_names){
   status <- NULL
   excur_stats <- NULL
   trend <- NULL
-
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('pH'))){
+  
+  # pH ----
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('pH'))){
     print("Assessing pH...")
-    data_pH <- data_clean %>% filter(Char_Name == "pH")
-    data_pH <- Censored_data(data_pH, criteria = 'pH_Min')
+    data_pH <- data_clean %>% dplyr::filter(Char_Name == "pH")
+    data_pH <- odeqassessment::Censored_data(data_pH, criteria = 'pH_Min')
     data_pH <- odeqassessment::pH_assessment(data_pH)
-    data_assessed <- bind_rows(data_assessed, data_pH)
+    data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
+                                                                 periods=4, 
+                                                                 year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_pH)
 
-    pH_status <- status_stns(data = data_pH, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, pH_status)
+    pH_status <- odeqstatusandtrends::status_stns(df=data_pH)
+    status <- dplyr::bind_rows(status, pH_status)
 
-    pH_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_pH, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, pH_excur_stats)
+    pH_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_pH)
+    excur_stats <- dplyr::bind_rows(excur_stats, pH_excur_stats)
 
-    pH_trend <- trend_stns(data_pH)
-    trend <- bind_rows(trend, pH_trend)
+    pH_trend <- odeqstatusandtrends::trend_stns(data_pH)
+    trend <- dplyr::bind_rows(trend, pH_trend)
   }
 
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('Temperature')) &
+  # Temperature----
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('Temperature')) &
      any(unique(data_clean[data_clean$Char_Name == "Temperature, water",]$Statistical_Base) %in% "7DADM")){
     print("Assessing temperature...")
-    data_temp <- data_clean %>% filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
-    data_temp <- Censored_data(data_temp, criteria = "temp_crit")
+    data_temp <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
+    data_temp <- odeqassessment::Censored_data(data_temp, criteria = "temp_crit")
     data_temp <- odeqassessment::temp_assessment(data_temp)
-    data_assessed <- bind_rows(data_assessed, data_temp)
+    data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
+                                                                   periods=4, 
+                                                                   year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_temp)
 
-    temp_status <- status_stns(data_temp, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, temp_status)
+    temp_status <- odeqstatusandtrends::status_stns(data_temp)
+    status <- dplyr::bind_rows(status, temp_status)
 
-    temp_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_temp, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, temp_excur_stats)
+    temp_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_temp)
+    excur_stats <- dplyr::bind_rows(excur_stats, temp_excur_stats)
 
-    temp_trend <- trend_stns(data_temp)
-    trend <- bind_rows(trend, temp_trend)
+    temp_trend <- odeqstatusandtrends::trend_stns(data_temp)
+    trend <- dplyr::bind_rows(trend, temp_trend)
   }
-
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('TP'))){
+  
+  # TP -----
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
-    data_TP <- data_clean %>% filter(Char_Name == "Phosphate-phosphorus")
-    data_TP <- Censored_data(data_TP, criteria = "TP_crit")
-    data_TP <- TP_assessment(data_TP)
-    data_assessed <- bind_rows(data_assessed, data_TP)
+    data_TP <- data_clean %>% dplyr::filter(Char_Name == "Phosphate-phosphorus")
+    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "TP_crit")
+    data_TP <- odeqassessment::TP_assessment(data_TP)
+    data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
+                                                                 periods=4, 
+                                                                 year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_TP)
 
-    TP_status <- status_stns(data = data_TP, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, TP_status)
+    TP_status <- odeqstatusandtrends::status_stns(df =data_TP)
+    status <- dplyr::bind_rows(status, TP_status)
 
-    TP_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_TP, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, TP_excur_stats)
+    TP_excur_stats <- odeqstatusandtrends::excursion_stats(df =data_TP)
+    excur_stats <- dplyr::bind_rows(excur_stats, TP_excur_stats)
 
-    TP_trend <- trend_stns(data = data_TP)
-    trend <- bind_rows(trend, TP_trend)
+    TP_trend <- odeqstatusandtrends::trend_stns(df =data_TP)
+    trend <- dplyr::bind_rows(trend, TP_trend)
   }
 
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('TSS'))){
+  # TSS ----
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
-    data_TSS <- data_clean %>% filter(Char_Name == "Total suspended solids")
-    data_TSS <- Censored_data(data_TSS, criteria = "TSS_crit")
-    data_TSS <- TSS_assessment(data_TSS)
-    data_assessed <- bind_rows(data_assessed, data_TSS)
+    data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
+    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "TSS_crit")
+    data_TSS <- odeqassessment::TSS_assessment(data_TSS)
+    data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
+                                                                  periods=4, 
+                                                                  year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_TSS)
 
-    TSS_status <- status_stns(data = data_TSS, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, TSS_status)
+    TSS_status <- odeqstatusandtrends::status_stns(df=data_TSS)
+    status <- dplyr::bind_rows(status, TSS_status)
 
-    TSS_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_TSS, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, TSS_excur_stats)
+    TSS_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_TSS)
+    excur_stats <- dplyr::bind_rows(excur_stats, TSS_excur_stats)
 
-    TSS_trend <- trend_stns(data = data_TSS)
-    trend <- bind_rows(trend, TSS_trend)
+    TSS_trend <- odeqstatusandtrends::trend_stns(df =data_TSS)
+    trend <- dplyr::bind_rows(trend, TSS_trend)
   }
-
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('bacteria'))){
+  
+  # Bacteria --------
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('bacteria'))){
     print("Assessing bacteria...")
-    data_bact <- data_clean %>% filter(Char_Name %in% AWQMS_Char_Names('bacteria'))
-    data_bact <- data_bact %>% mutate(bact_crit_min = pmin(bact_crit_ss, bact_crit_geomean, bact_crit_percent, na.rm = TRUE))
-    data_bact <- Censored_data(data_bact, criteria = "bact_crit_min")
-    data_ent <- Coastal_Contact_rec(data_bact)
-    data_eco <- Fresh_Contact_rec(data_bact)
-    data_shell <- Shell_Harvest(data_bact)
-    data_bact <- bind_rows(data_ent, data_eco, data_shell)
-    data_assessed <- bind_rows(data_assessed, data_bact)
+    data_bact <- data_clean %>% dplyr::filter(Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names('bacteria'))
+    data_bact <- data_bact %>% dplyr::mutate(bact_crit_min = pmin(bact_crit_ss, bact_crit_geomean, bact_crit_percent, na.rm = TRUE))
+    data_bact <- odeqassessment::Censored_data(data_bact, criteria = "bact_crit_min")
+    data_ent <- odeqassessment::Coastal_Contact_rec(data_bact)
+    data_eco <- odeqassessment::Fresh_Contact_rec(data_bact)
+    data_shell <- odeqassessment::Shell_Harvest(data_bact)
+    data_bact <- dplyr::bind_rows(data_ent, data_eco, data_shell)
+    data_bact$status_period <- odeqstatusandtrends::status_periods(datetime = data_bact$sample_datetime, 
+                                                                   periods=4, 
+                                                                   year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_bact)
 
-    bact_status <- status_stns(data_bact, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, bact_status)
+    bact_status <- odeqstatusandtrends::status_stns(data_bact)
+    status <- dplyr::bind_rows(status, bact_status)
 
-    bact_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_bact, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, bact_excur_stats)
+    bact_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_bact)
+    excur_stats <- dplyr::bind_rows(excur_stats, bact_excur_stats)
 
-    bact_trend <- trend_stns(data_bact)
-    trend <- bind_rows(trend, bact_trend)
+    bact_trend <- odeqstatusandtrends::trend_stns(data_bact)
+    trend <- dplyr::bind_rows(trend, bact_trend)
   }
 
-  if(any(unique(data_clean$Char_Name) %in% AWQMS_Char_Names('DO'))){
+  # Dissolved Oxygen ---
+  if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('DO'))){
     print("Assessing dissolved oxygen...")
-    data_DO <- data_clean %>% filter(Char_Name %in% c("Dissolved oxygen (DO)", "Dissolved oxygen saturation", "Temperature, water"))
-    data_DO <- Censored_data(data_DO, criteria = "DO_crit_min")
-    data_DO <- DO_assessment(data_DO)
-    data_assessed <- bind_rows(data_assessed, data_DO)
+    data_DO <- data_clean %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)", "Dissolved oxygen saturation", "Temperature, water"))
+    data_DO <- odeqassessment::Censored_data(data_DO, criteria = "DO_crit_min")
+    data_DO <-  odeqassessment::DO_assessment(data_DO)
+    data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
+                                                                 periods=4, 
+                                                                 year_range = c(start_year:end_year))
+    data_assessed <- dplyr::bind_rows(data_assessed, data_DO)
 
-    DO_status <- status_stns(data_DO, year_range = c(min(complete.years), max(complete.years)))
-    status <- bind_rows(status, DO_status)
+    DO_status <- odeqstatusandtrends::status_stns(data_DO)
+    status <- dplyr::bind_rows(status, DO_status)
 
-    DO_excur_stats <- odeqstatusandtrends::excursion_stats(data = data_DO, year_range = c(min(complete.years), max(complete.years)))
-    excur_stats <- bind_rows(excur_stats, DO_excur_stats)
+    DO_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_DO)
+    excur_stats <- dplyr::bind_rows(excur_stats, DO_excur_stats)
 
-    DO_trend <- trend_stns(data_DO)
-    trend <- bind_rows(trend, DO_trend)
+    DO_trend <- odeqstatusandtrends::trend_stns(data_DO)
+    trend <- dplyr::bind_rows(trend, DO_trend)
   }
 
   print(paste0("Saving assessed data..."))
 
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   save(status, trend, excur_stats, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-
-  # Assess status by parameter ----------------------------------------------
-
-  # pH_status <- status_stns(data_pH, year_range = c(min(complete.years), max(complete.years)))
-  # temp_status <- status_stns(data_temp, year_range = c(min(complete.years), max(complete.years)))
-  # TP_status <- status_stns(data_TP, year_range = c(min(complete.years), max(complete.years)))
-  # TSS_status <- status_stns(data_TSS, year_range = c(min(complete.years), max(complete.years)))
-  # bact_status <- status_stns(data_bact, year_range = c(min(complete.years), max(complete.years)))
-  # DO_status <- status_stns(data_DO, year_range = c(min(complete.years), max(complete.years)))
-  # status <- bind_rows(pH_status, temp_status, TP_status, TSS_status, bact_status, DO_status)
-
-  # pH_trend <- trend_stns(data_pH)
-  # temp_trend <- trend_stns(data_temp)
-  # TP_trend <- trend_stns(data_TP)
-  # TSS_trend <- trend_stns(data_TSS)
-  # bact_trend <- trend_stns(data_bact)
-  # DO_trend <- trend_stns(data_DO)
-  # trend <- bind_rows(pH_trend, temp_trend, TP_trend, TSS_trend, bact_trend, DO_trend)
-
-  # save(status, trend, stations_AWQMS, file = paste0(data_dir, name, "_seaken_inputs.RData"))
-
 
   # Assess trends -----------------------------------------------------------
 
@@ -354,9 +298,9 @@ for (name in report_names){
   # OWRI summary -------------------------------------------------------------
 
   print(paste0("Creating OWRI summary for the ", name, " Basin..."))
-
+  
   owri.db <- "//deqhq1/WQNPS/Status_and_Trend_Reports/OWRI/OwriDbExport_122618.db"
-  owri_summary <- tryCatch(owri_summary(owri.db = owri.db, complete.years = complete.years, huc8 = hucs),
+  owri_summary <- tryCatch(owri::owri_summary(owri.db = owri.db, complete.years = complete.years, huc8 = hucs),
                            error = function(e) {
                              print("Error: OWRI summary. Setting to NULL.")
                              data.frame(NoProjects="NULL")})
@@ -365,13 +309,17 @@ for (name in report_names){
 
   print(paste0("Saving parameter summary tables..."))
 
-  stn_orgs <- data_assessed %>% group_by(MLocID, Char_Name) %>% summarise(Organizations = paste(unique(Org_Name), collapse = ", "))
-  param_sum_stn <- parameter_summary_by_station(status, seaKen, stations_AWQMS)
+  stn_orgs <- data_assessed %>% 
+    dplyr::group_by(MLocID, Char_Name) %>% 
+    dplyr::summarise(Organizations = paste(unique(Org_Name), collapse = ", "))
+  param_sum_stn <- odeqstatusandtrends::parameter_summary_by_station(status, seaKen, stations_AWQMS)
   param_sum_stn <- merge(param_sum_stn, stn_orgs, by = c("Char_Name", "MLocID"), all.x = TRUE, all.y = FALSE)
 
-  au_orgs <- data_assessed %>% group_by(AU_ID, Char_Name) %>% summarise(Stations = paste(unique(MLocID), collapse = ", "),
-                                                                        Organizations = paste(unique(Org_Name), collapse = ", "))
-  param_sum_au <- parameter_summary_by_au(status, seaKen, stations_AWQMS)
+  au_orgs <- data_assessed %>% 
+    dplyr::group_by(AU_ID, Char_Name) %>% 
+    dplyr::summarise(Stations = paste(unique(MLocID), collapse = ", "),
+                     Organizations = paste(unique(Org_Name), collapse = ", "))
+  param_sum_au <- odeqstatusandtrends::parameter_summary_by_au(status, seaKen, stations_AWQMS)
   param_sum_au <- merge(param_sum_au, au_orgs, by = c("Char_Name", "AU_ID"), all.x = TRUE, all.y = FALSE)
 
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
