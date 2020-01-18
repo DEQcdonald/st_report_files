@@ -258,24 +258,24 @@ for (name in report_names){
   
   for (sheet_name in names(xlsx_list[2:8])) {
     openxlsx::setColWidths(wb, sheet=sheet_name, cols=c(1:ncol(xlsx_list[[sheet_name]])), widths = "auto")
-  
-  openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
-                     style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
-  
-  openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
-  
-  openxlsx::writeData(wb, sheet="Notes", x="2019 Oregon Statewide Status and Trend Report", 
-                      startRow = 3, startCol = 3, rowNames = FALSE)
-  
-  openxlsx::writeData(wb, sheet="Notes", x=paste0("Appendix ",a.letter,": Tabular Results for the ",name), 
-                      startRow = 4, startCol = 3, rowNames = FALSE)
-  
-  openxlsx::addStyle(wb, sheet="Notes", rows=c(3:4), cols=3, stack=TRUE, 
-                     style=openxlsx::createStyle(textDecoration="bold", fontName = "Arial", fontSize = 10))
-  
-  openxlsx::insertImage(wb, sheet="Notes", logo, startRow = 2,  startCol = 2, 
-                        width = 1.07, height = 1.57, units="in")
-
-  openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
-
-}
+    
+    openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
+    
+    openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
+                       style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
+    
+    openxlsx::writeData(wb, sheet="Notes", x="2019 Oregon Statewide Status and Trend Report", 
+                        startRow = 3, startCol = 3, rowNames = FALSE)
+    
+    openxlsx::writeData(wb, sheet="Notes", x=paste0("Appendix ",a.letter,": Tabular Results for the ",name), 
+                        startRow = 4, startCol = 3, rowNames = FALSE)
+    
+    openxlsx::addStyle(wb, sheet="Notes", rows=c(3:4), cols=3, stack=TRUE, 
+                       style=openxlsx::createStyle(textDecoration="bold", fontName = "Arial", fontSize = 10))
+    
+    openxlsx::insertImage(wb, sheet="Notes", logo, startRow = 2,  startCol = 2, 
+                          width = 1.07, height = 1.57, units="in")
+    
+    openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
+    
+  }
