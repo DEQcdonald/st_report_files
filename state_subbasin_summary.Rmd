@@ -257,10 +257,8 @@ stn_sum <- par_sum %>% group_by(Pollutant) %>%
   ) %>% 
   mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
-# cat(tbls(name = paste0(subbasin_name, "_stn_trend_sum"), caption = paste0(subbasin_name, " Subbasin summary of trends at stations across the state.")))
-
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
-             caption = tbls(name = paste0(subbasin_name, "_stn_trend_sum"), caption = paste0(subbasin_name, " Subbasin summary of trends at stations across the state."))
+             caption = tbls(name = paste0(subbasin_name, "_stn_trend_sum"), caption = paste0("Subbasin Summary of trend results at stations across the ",subbasin_name, "."))
              ) %>% table_style()
 
 cat("\n\n")
