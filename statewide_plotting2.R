@@ -99,7 +99,7 @@ for (name in report_names){
   load(file = paste0(data_dir,'/', name,'_eval_date.RData'))
 
   if(web_output) {
-    output_dir <- paste0(top_dir,'/web_wqst_2019/', name_abr)
+    output_dir <- paste0(top_dir,'/wqst_2019/', name_abr)
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
   }
