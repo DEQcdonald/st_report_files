@@ -73,7 +73,7 @@ for (name in report_names){
   xlsx_name <- gsub("-","_",xlsx_name, fixed=TRUE)
   
   if(final_output) {
-    output_dir <- paste0(top_dir,'/Statewide Report')
+    output_dir <- paste0(top_dir,'/Statewide Report/WQST_2019_addon_ODA')
   } else {
     output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
   }
@@ -147,7 +147,7 @@ for (name in report_names){
                     "Assessment Unit ID" = AU_ID,
                     "Latitude" = Lat_DD,
                     "Longitude" = Long_DD,
-                    matches("Dissolved oxygen (DO)"),
+                    contains("Dissolved oxygen"),
                     matches("Escherichia coli"),
                     contains("Entero"),
                     contains("Fecal"),
@@ -194,7 +194,6 @@ for (name in report_names){
     
     openxlsx::addStyle(wb, sheet="Notes", rows=c(11:12), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
                        style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
-    
     
     openxlsx::writeData(wb, sheet="Notes", x="2019 Oregon Statewide Status and Trend Report", 
                         startRow = 3, startCol = 3, rowNames = FALSE)
