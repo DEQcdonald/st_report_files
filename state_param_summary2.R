@@ -41,6 +41,8 @@ gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # ----
 
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+start_year <- min(complete.years)
+end_year <- max(complete.years)
 
 query_dates <- c(start.date, end.date)
 
@@ -150,7 +152,7 @@ for (name in report_names){
     data_pH <- odeqassessment::pH_assessment(data_pH)
     data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_pH)
 
     pH_status <- odeqstatusandtrends::status_stns(df=data_pH)
@@ -172,7 +174,7 @@ for (name in report_names){
     data_temp <- odeqassessment::temp_assessment(data_temp)
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
                                                                    periods=4, 
-                                                                   year_range = c(start_year:end_year))
+                                                                   year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_temp)
 
     temp_status <- odeqstatusandtrends::status_stns(data_temp)
@@ -193,7 +195,7 @@ for (name in report_names){
     data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TP)
 
     TP_status <- odeqstatusandtrends::status_stns(df =data_TP)
@@ -214,7 +216,7 @@ for (name in report_names){
     data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
                                                                   periods=4, 
-                                                                  year_range = c(start_year:end_year))
+                                                                  year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TSS)
 
     TSS_status <- odeqstatusandtrends::status_stns(df=data_TSS)
@@ -239,7 +241,7 @@ for (name in report_names){
     data_bact <- dplyr::bind_rows(data_ent, data_eco, data_shell)
     data_bact$status_period <- odeqstatusandtrends::status_periods(datetime = data_bact$sample_datetime, 
                                                                    periods=4, 
-                                                                   year_range = c(start_year:end_year))
+                                                                   year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_bact)
 
     bact_status <- odeqstatusandtrends::status_stns(data_bact)
@@ -260,7 +262,7 @@ for (name in report_names){
     data_DO <-  odeqassessment::DO_assessment(data_DO)
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year, end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_DO)
 
     DO_status <- odeqstatusandtrends::status_stns(data_DO)
