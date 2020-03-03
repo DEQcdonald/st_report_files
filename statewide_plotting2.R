@@ -43,7 +43,7 @@ start.date = "1999-01-01"
 end.date = "2018-12-30"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # ----
@@ -284,19 +284,32 @@ for (name in report_names){
       if(dir.exists(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]))) {
       } else {dir.create(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]), recursive = TRUE)}
 
-      p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      # p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      
+      p_list <- odeqstatusandtrends::plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      
+      for(p in names(p_list)){
+        print(paste("Saving", p, "plot..."))
+        
+        ggsave(plot = p_list[[p]],
+               filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, "_", p, ".jpeg"),
+               device = "jpeg",
+               width = 8, height = 6)
+        
+        # DO_plots[[DO_station]] <- p
+      }
 
-      ggsave(plot = p,
-             filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
-             device = "jpeg",
-             width = 8, height = 6)
+      # ggsave(plot = p,
+      #        filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
+      #        device = "jpeg",
+      #        width = 8, height = 6)
       count <- count + 1
 
-      bact_plots[[bact_station]] <- p
+      # bact_plots[[bact_station]] <- p
     }
   }
 
-  bact_plots[2]
+  # bact_plots[2]
 
   # Dissolved oxygen plots -------------------------------------------------------
 

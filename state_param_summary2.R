@@ -31,10 +31,10 @@ library(Rcpp)
 # Inputs ----
 
 start.date = "1999-01-01"
-end.date = "2018-12-30"
+end.date = "2018-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -70,7 +70,7 @@ report_names <- sort(unique(HUC_shp$REPORT))
 
 #name <- "Willamette"
 
-for (name in report_names){
+for (name in report_names[19:21]){
 
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
 
@@ -80,7 +80,7 @@ for (name in report_names){
   } else {dir.create(data_dir)}
 
   eval_date <- Sys.Date()
-  save(eval_date, file = paste0(data_dir, name, "_eval_date.RData"))
+  save(eval_date, file = paste0(data_dir, "_eval_date.RData"))
 
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
 
@@ -97,18 +97,18 @@ for (name in report_names){
   stations_wqp <- get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
 
-  if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
-    print("Add these stations to the Stations Database:")
-    print(stations_wqp)
-    wqp_stns <- dplyr::bind_rows(wqp_stns, stations_wqp)
-  } else {stations_wqp <- NULL}
+  # if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
+  #   print("Add these stations to the Stations Database:")
+  #   print(stations_wqp)
+  #   wqp_stns <- dplyr::bind_rows(wqp_stns, stations_wqp)
+  # } else {stations_wqp <- NULL}
 
   if(file.exists(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))){
     load(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   } else {
     data_raw <- GetData(parameters = c("Temperature", "Bacteria", "TSS", "DO", "TP", "pH"),
                         stations_AWQMS = stations_AWQMS,
-                        stations_WQP = stations_wqp,
+                        # stations_WQP = stations_wqp,
                         start.date = start.date,
                         end.date = end.date,
                         huc8 = hucs)
@@ -143,6 +143,7 @@ for (name in report_names){
   status <- NULL
   excur_stats <- NULL
   trend <- NULL
+  data_clean$Spawn_type <- NA
   
   # pH ----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('pH'))){

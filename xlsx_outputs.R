@@ -12,7 +12,7 @@ library(base64enc)
 
 final_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
@@ -279,3 +279,4 @@ for (name in report_names){
     openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
     
   }
+}

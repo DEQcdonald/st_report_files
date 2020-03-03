@@ -16,7 +16,7 @@ library(odeqstatusandtrends)
 
 final_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # Web Maps  -------------------------------------------
