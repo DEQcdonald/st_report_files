@@ -331,6 +331,7 @@ knitr::kable(bacteria.indicators.tbl,
 ```
 
 $$GM90 = \sqrt[n]{x_{1}x_{2}...x_{n}}$$
+
 Where:
 $GM90$ = The geometric mean over a 90 day period.
 $n$ = number of samples.
@@ -401,6 +402,7 @@ The application of the various dissolved oxygen criteria is based on designated 
 
 * __Spawning Time-Period__: The spawning criteria shall be applied for places and times indicated, in the tables and figures referenced in OAR-340-041-0016 (1), as having active salmon and steelhead spawning, or any additional assumed spawning by resident trout species. Listed status of waterbodies in violation of the spawning criteria is in effect only during the applicable spawning date range for the waterbody.
 * __Year-round__: The year-round dissolved oxygen criteria apply year round. For some locations, a more stringent spawning criteria may apply in addition to the year round criterion for part of the year. Listed status of waterbodies in violation of the year-round criteria are in effect year-round.
+* __Critical Period__: The critical period for assessing compliance with the year-round dissolved oxygen standard is the summer period July 1 - September 30, when seasonal trends in dissolved oxygen are expected to be near annual minimums.
 
 If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using below equations. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
 
