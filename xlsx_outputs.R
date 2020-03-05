@@ -48,27 +48,28 @@ appendix_letter <- list("Black Rock Desert-Humboldt"="A",
                         "Umpqua"="T",
                         "Willamette"="U")
 
-report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
-                        "Columbia River"="columbiariv",
-                        "Deschutes"="deschutes",
-                        "Goose Lake"="gooselake",
-                        "Grande Ronde"="granderonde",
-                        "John Day"="johnday",
-                        "Klamath"="klamath",
-                        "Malheur"="malheur",
-                        "Mid-Coast"="midcoast",
-                        "Middle Columbia-Hood"="midcohood",
-                        "North Coast-Lower Columbia"="ncoast",
-                        "Oregon Closed Basins"="orclosed",
-                        "Owyhee"="owyhee",
-                        "Powder-Burnt"="powderburnt",
-                        "Rogue"="rogue",
-                        "Sandy"="sandy",
-                        "Snake River"="snakeriv",
-                        "South Coast"="scoast",
-                        "Umatilla-Walla Walla-Willow"="umatilla",
-                        "Umpqua"="umpqua",
-                        "Willamette"="willamette")
+# document name used for web download
+report_name_abr <- list("Black Rock Desert-Humboldt"="BlackRock",
+                        "Columbia River"="ColumbiaRiver",
+                        "Deschutes"="Deschutes",
+                        "Goose Lake"="GooseLake",
+                        "Grande Ronde"="GrandeRonde",
+                        "John Day"="JohnDay",
+                        "Klamath"="Klamath",
+                        "Malheur"="Malheur",
+                        "Mid-Coast"="MidCoast",
+                        "Middle Columbia-Hood"="MidColumbia",
+                        "North Coast-Lower Columbia"="NCoast",
+                        "Oregon Closed Basins"="ClosedBasins",
+                        "Owyhee"="Owyhee",
+                        "Powder-Burnt"="PowderBurnt",
+                        "Rogue"="Rogue",
+                        "Sandy"="Sandy",
+                        "Snake River"="SnakeRiver",
+                        "South Coast"="SouthCoast",
+                        "Umatilla-Walla Walla-Willow"="Umatilla",
+                        "Umpqua"="Umpqua",
+                        "Willamette"="Willamette")
 
 #name <- "Willamette"
 #name <- "Owyhee"
@@ -78,8 +79,8 @@ for (name in report_names){
 
   name_abr <- report_name_abr[[name]]
   a.letter <- appendix_letter[[name]]
-  xlsx_name <- gsub(" ", "_", paste0("Appendix_",a.letter,"_",name,"_Results.xlsx"), fixed=TRUE)
-  xlsx_name <- gsub("-","_",xlsx_name, fixed=TRUE)
+  xlsx_name <- gsub(" ", "", paste0("Appendix",a.letter,name_abr,".xlsx"), fixed=TRUE)
+  xlsx_name <- gsub("-","",xlsx_name, fixed=TRUE)
 
   if(final_output) {
     output_dir <- paste0(top_dir,'/Statewide Report')
