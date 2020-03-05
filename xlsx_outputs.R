@@ -6,9 +6,14 @@ library(tidyr)
 library(lubridate)
 library(openxlsx)
 library(rgdal)
+library(sf)
 library(base64enc)
 
 # Inputs ----
+start.date = "1999-01-01"
+end.date = "2018-12-31"
+
+report_name <- "2019 Oregon Statewide Status and Trend Report"
 
 final_output <- TRUE
 
@@ -21,8 +26,14 @@ au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
 
 # ----
 
+complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+
 HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
                           integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
+
+agwqma_shp <- sf::st_read(dsn = "//deqhq1/WQNPS/Status_and_Trend_Reports/GIS",
+                          layer = "ODA_AgWQMA",
+                          stringsAsFactors = FALSE)
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -91,17 +102,29 @@ for (name in report_names){
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
 
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
-
+  
   stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID),
                                      c("AU_Name")]
-
+  stations_AWQMS_shp <- stations_AWQMS %>%
+    dplyr::mutate(Long_sf=Long_DD,
+                  Lat_sf=Lat_DD)
+  
+  stations_AWQMS_shp <- sf::st_transform(sf::st_as_sf(stations_AWQMS_shp, coords = c("Long_sf",  "Lat_sf"), crs = sf::st_crs("+init=EPSG:4269")),crs=sf::st_crs(agwqma_shp))
+  
+  stations_AWQMS_shp <- sf::st_join(stations_AWQMS_shp, agwqma_shp, left=TRUE)
+  
+  stations_AgWQMA <- stations_AWQMS_shp %>%
+    dplyr::select(MLocID, PlanName) %>%
+    sf::st_drop_geometry() %>%
+    unique()
+  
   load(file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   load(file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
   load(file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   load(file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   load(file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-
+  
   if(file.exists(paste0(data_dir, "/", name, "_seaken.RData"))){
     load(file = paste0(data_dir, "/", name, "_seaken.RData"))
   } else {seaKen <- data.frame()}
@@ -109,16 +132,20 @@ for (name in report_names){
   # Create summary table ------------------------------------------------------
 
   print(paste0("Saving parameter summary tables..."))
+  
+  #-- Trend Stats ----------------------------  
 
   if(is.null(seaKen) | nrow(seaKen)==0){
     seaKen <- data.frame(Comment = "There were no stations with data that qualified for trend analysis")
   } else {
     seaKen <- seaKen %>%
       dplyr::left_join(stations_AWQMS, by="MLocID") %>%
+      dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
       dplyr::select('Station ID' = MLocID,
                     'Station Name' = StationDes,
                     'Subbasin Name' = HUC8_Name,
                     HUC8,
+                    'Agricultural Water Quality Management Area'=PlanName,
                     'Assessment Unit ID' = AU_ID,
                     Latitude = Lat_DD,
                     Longitude = Long_DD,
@@ -130,13 +157,17 @@ for (name in report_names){
                     "Trend Result"=trend)
     
   }
-
+  
+  #-- Exursion Stats -----------------------
+  
   excur_stats <- excur_stats %>%
     dplyr::left_join(stations_AWQMS, by="MLocID") %>%
+    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
     dplyr::select('Station ID' = MLocID,
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
                   HUC8,
+                  "Agricultural Water Quality Management Area"=PlanName,
                   'Assessment Unit ID' = AU_ID,
                   "Latitude" = Lat_DD,
                   "Longitude" = Long_DD,
@@ -148,17 +179,21 @@ for (name in report_names){
                   sort(grep('excursion_median', colnames(excur_stats), value = TRUE)),
                   sort(grep('excursion_max', colnames(excur_stats), value = TRUE))
     )
-
+  
   colnames(excur_stats) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(excur_stats), perl = TRUE)
   colnames(excur_stats) <- gsub("_", " ", colnames(excur_stats), perl = TRUE)
   colnames(excur_stats) <- sapply(colnames(excur_stats), simpleCap, USE.NAMES = FALSE)
   colnames(excur_stats) <- gsub(" N ", " n ", colnames(excur_stats), perl = TRUE)
+  
+  #-- Station Summary ---------------------------
 
   param_sum_stn <- param_sum_stn %>%
+    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
     dplyr::select('Station ID' = MLocID,
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
                   HUC8,
+                  'Agricultural Water Quality Management Area'=PlanName,
                   'Assessment Unit ID' = AU_ID,
                   "Latitude" = Lat_DD,
                   "Longitude" = Long_DD,
@@ -171,6 +206,8 @@ for (name in report_names){
   colnames(param_sum_stn) <- gsub("_", " ", colnames(param_sum_stn), perl = TRUE)
   colnames(param_sum_stn) <- sapply(colnames(param_sum_stn), simpleCap, USE.NAMES = FALSE)
 
+  #-- AU Summary ---------------------------
+  
   param_sum_au <- param_sum_au %>%
     dplyr::select('Assessment Unit ID' = AU_ID,
                   'Assessment Unit Name' = AU_Name,
@@ -186,6 +223,8 @@ for (name in report_names){
   colnames(param_sum_au) <- gsub("_", " ", colnames(param_sum_au), perl = TRUE)
   colnames(param_sum_au) <- sapply(colnames(param_sum_au), simpleCap, USE.NAMES = FALSE)
 
+# -- Results by Org --------------------  
+
   org_sums <- data_assessed %>%
     dplyr::mutate(Basin = name) %>%
     dplyr::group_by(Org_Name, Basin) %>%
@@ -200,21 +239,27 @@ for (name in report_names){
                      'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>%
     dplyr::rename('Sampling Organization' = Org_Name)
 
+#-- Results by Year ---------------------  
+
   station_sums <- data_assessed %>%
-    dplyr::mutate(Basin = name,
+    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
+    dplyr::mutate(#Basin = name,
                   Year = lubridate::year(sample_datetime),
-                  Subbasin = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>%
-    dplyr::group_by(MLocID, StationDes, Basin, Subbasin, AU_ID, Char_Name, Year) %>%
+                  HUC8_Name = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>%
+    dplyr::group_by(MLocID, StationDes, HUC8_Name, HUC8, PlanName, AU_ID, Char_Name, Year) %>%
     dplyr::summarise(Results = n()) %>%
     tidyr::pivot_wider(names_from = "Year", values_from = "Results") %>%
-    dplyr::rename('Station ID' = MLocID, 'Station Name' = StationDes, 'Assessment Unit ID' = AU_ID, "Parameter" = Char_Name)
+    dplyr::rename('Station ID' = MLocID,
+                  'Station Name' = StationDes,
+                  "Subbasin Name" = HUC8_Name,
+                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Assessment Unit ID' = AU_ID,
+                  "Parameter" = Char_Name)
+  
+  #-- Notes ---------------------------
 
   Notes <- data.frame(stringsAsFactors=FALSE,
                       Table=c(paste0("Table ",a.letter,"-", seq(1,7, by=1),"      ")),
-                      #Sheet=c("Station_Summary","AU_Summary","Excursions","Trend_Stats",
-                              #"OWRI_Summary",
-                              #"Results_by_Org",
-                              #"Results_by_Year"),
                       Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
                                            name,"."),
                                     paste0("Water quality status results for Assessment Units within the ", name,"."),
@@ -258,26 +303,34 @@ for (name in report_names){
   openxlsx::modifyBaseFont(wb, fontSize = 10, fontName = "Arial")
   
   for (sheet_name in names(xlsx_list[2:8])) {
+    
     openxlsx::setColWidths(wb, sheet=sheet_name, cols=c(1:ncol(xlsx_list[[sheet_name]])), widths = "auto")
     
-    openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
-    
-    openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
-                       style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
-    
-    openxlsx::writeData(wb, sheet="Notes", x="2019 Oregon Statewide Status and Trend Report", 
-                        startRow = 3, startCol = 3, rowNames = FALSE)
-    
-    openxlsx::writeData(wb, sheet="Notes", x=paste0("Appendix ",a.letter,": Tabular Results for the ",name), 
-                        startRow = 4, startCol = 3, rowNames = FALSE)
-    
-    openxlsx::addStyle(wb, sheet="Notes", rows=c(3:4), cols=3, stack=TRUE, 
-                       style=openxlsx::createStyle(textDecoration="bold", fontName = "Arial", fontSize = 10))
-    
-    openxlsx::insertImage(wb, sheet="Notes", logo, startRow = 2,  startCol = 2, 
-                          width = 1.07, height = 1.57, units="in")
-    
-    openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
+    openxlsx::addStyle(wb, sheet=sheet_name, 
+                       rows=c(1:nrow(xlsx_list[[sheet_name]])), 
+                       cols=c(1:ncol(xlsx_list[[sheet_name]])),
+                       stack=TRUE, gridExpand = TRUE,
+                       style=openxlsx::createStyle(valign = "top", fontName = "Arial", fontSize = 10))
     
   }
+    
+  openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
+  
+  openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
+                     style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
+  
+  openxlsx::writeData(wb, sheet="Notes", x=report_name, 
+                      startRow = 3, startCol = 3, rowNames = FALSE)
+  
+  openxlsx::writeData(wb, sheet="Notes", x=paste0("Appendix ",a.letter,": Tabular Results for the ",name), 
+                      startRow = 4, startCol = 3, rowNames = FALSE)
+  
+  openxlsx::addStyle(wb, sheet="Notes", rows=c(3:4), cols=3, stack=TRUE, 
+                     style=openxlsx::createStyle(textDecoration="bold", fontName = "Arial", fontSize = 10))
+  
+  openxlsx::insertImage(wb, sheet="Notes", logo, startRow = 2,  startCol = 2, 
+                        width = 1.07, height = 1.57, units="in")
+  
+  openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
+    
 }
