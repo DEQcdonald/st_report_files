@@ -78,6 +78,7 @@ state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "-Revision/")
 
 figs <- captioner(prefix="Figure")
 tbls  <- captioner(prefix="Table")
+eqns <- captioner(prefix="Equation")
 
 load(file = paste0(state_project_dir, "Oregon_param_summary_by_station.RData"))
 load(file = paste0(state_project_dir, "Oregon_param_summary_by_au.RData"))
@@ -189,7 +190,7 @@ DEQ conducted this analysis by assembling surface water quality data and informa
 
 A webmap tool is also available on DEQ’s website to search for and review results. The current URL for this website is https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
 
-The results of this analysis informs DEQ, other state and federal agencies, and the public on the condition of waters and if TMDLs are being acheived; if water quality is improving or degrading; the pace of improvement or degradation; what actions, if any, are being taken to improve water quality, and where water quality data are and are not being collected.
+The results of this analysis informs DEQ, other state and federal agencies, and the public on the condition of waters and if TMDLs are being achieved; if water quality is improving or degrading; the pace of improvement or degradation; what actions, if any, are being taken to improve water quality, and where water quality data are and are not being collected.
 
 # Analysis Area and Tribal Waters
 
@@ -199,7 +200,7 @@ Only those waters that are under the State of Oregon’s jurisdiction are evalua
 
 ## Data Sources
 
-Water quality data were retrieved from DEQ's [Ambient Water Quality Monitoring System (AWQMS)][3.1.1] that integrates DEQ water quality data with other publically available data sources (including the now retired DEQ LASAR database); the [Water Quality Portal][3.1.2]) that includes data from the U.S. Environmental Protection Agency ([WQX/STORET][3.1.3]) database, USGS's [NWIS][3.1.4], and other federal agencies, Tribes, and various third parties; NOAA’s [National Estuarine Research Reserve System][3.1.5]; [EIM][3.1.6] (Washington Department of Ecology database); and data obtained during DEQ’s Integrated Report “call for data” process. 
+Water quality data were retrieved from DEQ's [Ambient Water Quality Monitoring System (AWQMS)][3.1.1] which integrates DEQ water quality data with other publically available data sources (including the now retired DEQ LASAR database); the [Water Quality Portal][3.1.2]) which includes data from the U.S. Environmental Protection Agency ([WQX/STORET][3.1.3]) database, USGS's [NWIS][3.1.4], and other federal agencies, Tribes, and various third parties; NOAA’s [National Estuarine Research Reserve System][3.1.5]; [EIM][3.1.6] (Washington Department of Ecology database); and data obtained during DEQ’s Integrated Report “call for data” process. 
 
 Information about watershed improvement projects and the associated on the ground treatments that were implemented were obtained from the [Oregon Watershed Restoration Inventory][3.1.7] (OWRI) database maintained by the Oregon Watershed Enhancement Board (OWEB).
 
@@ -213,9 +214,9 @@ Information about watershed improvement projects and the associated on the groun
 
 ## QA/QC Requirements
 
-All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ and data collected through the Volunteer Monitoring Program must have data quality level of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the integrated report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. Any data with a result measure qualifier code that indicated problems with the data were removed. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
+All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ and data collected through the Volunteer Monitoring Program must have a Data Quality Level (DQL) of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the integrated report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. Any data with a result measure qualifier code that indicated problems with the data were removed. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
 
-Additional checks included reviewing for inconsistences in the station description and station location (latitude and longitude). Any inconsistences were corrected. If the sampling location could not be determined, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned. Results in units of ug/l were converted to mg/l and temperature data measured in degrees Fahrenheit were converted to degrees Celsius.
+Additional checks included reviewing for inconsistences in the station description and station location (latitude and longitude). Any inconsistences were corrected. If the sampling location could not be determined, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned. Results in units of ug/L were converted to mg/L and temperature data measured in degrees Fahrenheit were converted to degrees Celsius.
 
 For samples that were taken for the purpose of auditing the field data (often called replicates or duplicates) the field samples were prioritized and the replicate removed if the DQL for both the field sample and duplicate were the same. If the DQLs were different the sample with the higher DQL was used.
 
@@ -330,13 +331,18 @@ knitr::kable(bacteria.indicators.tbl,
 
 ```
 
-$$GM90 = \sqrt[n]{x_{1}x_{2}...x_{n}}$$
-Where:
-$GM90$ = The geometric mean over a 90 day period.
-$n$ = number of samples.
-$x_n$ = bacteria sample concentration, as number of organisms per 100 mL.
+A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean. The 90-day geometric mean ($GM90$) of bacteria concentration is calculated using `r tbls(name = "eqns-GM90", display="cite")` by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which $n$ ≥ 5.
 
-A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean. The 90-day geometric mean ($GM90$) of bacteria concentration is calculated by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which $n$ ≥ 5.
+`r eqns(name = "eqns-GM90",caption = "Geometric Mean Equaiton."))`
+$$GM90 = \sqrt[n]{x_{1}x_{2}...x_{n}}$$  
+
+Where:
+
+$GM90$ = The geometric mean over a 90 day period.
+
+$n$ = number of samples.
+
+$x_n$ = bacteria sample concentration, as number of organisms per 100 mL.
 
 The median sample concentration is calculated for the entire analysis period once there are at least five samples available.
 
@@ -402,23 +408,30 @@ The application of the various dissolved oxygen criteria is based on designated 
 * __Spawning Time-Period__: The spawning criteria shall be applied for places and times indicated, in the tables and figures referenced in OAR-340-041-0016 (1), as having active salmon and steelhead spawning, or any additional assumed spawning by resident trout species. Listed status of waterbodies in violation of the spawning criteria is in effect only during the applicable spawning date range for the waterbody.
 * __Year-round__: The year-round dissolved oxygen criteria apply year round. For some locations, a more stringent spawning criteria may apply in addition to the year round criterion for part of the year. Listed status of waterbodies in violation of the year-round criteria are in effect year-round.
 
-If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be in compliance with the water quality criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using below equations. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
+If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be attaining the dissolved oxygen criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using `r tbls(name = "eqns-DO-Theo", display="cite")` and `r tbls(name = "eqns-DO-PS", display="cite")`. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
 
-#### Equation 1:
+`r eqns(name = "eqns-DO-Theo",caption = ""))`
 $$DO_{Theo} = e ^{[-139.34411+\frac{1.575701\times 10^5}{T}-\frac{6.642308\times 10^7}{T^2}+\frac{1.23800\times 10^{10}}{T^3}-\frac{8.621949\times 10^{11}}{T^4}]} \times (1-(0.0001148 \times Site_{elvm}))$$
-Where
-$e$ = a constant, the base of the natural logarithm ($\approx 2.71828$)
-$T$ = Temperatuer in Kelvin
-$Site_{elvm} $ = Site elevation in meters (recorded field value or derived from a Digital Elevation Model)
+Where:
 
-#### Equation 2:
+$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L.
+
+$e$ = a constant, the base of the natural logarithm ($\approx 2.71828$).
+
+$T$ = Temperature in Kelvin.
+
+$Site_{elvm}$ = Site elevation in meters (recorded field value or derived from a Digital Elevation Model).
+
+`r eqns(name = "eqns-DO-PS",caption = "Percent Dissolved Oxygen Saturation"))`
 
 $$ PS = 100\times \frac{DO_{Meas}}{DO_{Theo}} $$
-Where
-$PS$ = Percent saturation dissolved oxygen
-$DO_{Meas}$ = Measured Dissolved Oxygen in mg/L
-$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L
+Where:
 
+$PS$ = Percent saturation dissolved oxygen.
+
+$DO_{Meas}$ = Measured Dissolved Oxygen in mg/L.
+
+$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r tbls(name = "eqns-DO-Theo", display="cite")`.
 
 ### pH
 
@@ -521,13 +534,18 @@ Definitions
 
 The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
 
-The seven-day average daily maximum stream temperature is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
+The seven-day average daily maximum stream temperature (`r tbls(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
+
+`r eqns(name = "eqns-temp-7DADM", caption = ""))`
 
 $$7DADM = \frac{1}{7}\sum_{i=1}^7T_{max-i} $$
-Where
-$7DADM$ = the serven-day average daily maximum stream temperature
-$i$ = day in the sequence
-$T_{max}$ = maximum temperature of day $i$
+Where:
+
+$7DADM$ = the seven-day average daily maximum stream temperature.
+
+$i$ = day in the sequence.
+
+$T_{max}$ = maximum temperature of day $i$.
 
 When spawning criteria apply, the first 7-day averaging period begins on the date the spawning period begins. The first 7DADM value will be assigned to the 7th calendar day following the start date of the spawning period. Therefore, the 7th calendar day of the spawning period is the first day that the 7DADM is required to meet the spawning criteria.
 
@@ -711,9 +729,9 @@ Water quality trends were evaluated at monitoring stations only.
 
 The water quality trends at stations are reported using the following categories:
 
-* __Improving__: When result demonstrates a statistically significant trend in advancement of water quality conditions
-* __Degrading__: When result shows a statistically significant trend in deterioration of water quality conditions
-* __Steady__: When result has a statistically significant slope that equals to zero, which indications neither improving or degrading in water quality conditions
+* __Improving__: When the result demonstrates a statistically significant trend in advancement of water quality conditions
+* __Degrading__: When the result shows a statistically significant trend in deterioration of water quality conditions
+* __Steady__: When the result has a statistically significant slope that equals to zero, which indications neither improving or degrading in water quality conditions
 * __No Significant Trend__: When there is no consistent overall trend
 * __Insufficient Data__: When there are results available but the results do not meet QA/QC objectives including minimum Data Quality Levels (DQLs); or the results do not meet minimum requirements to evaluate attainment of the water quality criteria or TMDL target.
 

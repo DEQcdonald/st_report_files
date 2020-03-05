@@ -153,7 +153,7 @@ knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names 
 
 cap_list <- list()
 
-cat(paste0("There are ", length(unique(par_sum_au$AU_ID)), " assessment units within the ", subbasin_name, " subbasin that were included in this report. ", tbls(name = paste0(subbasin_name, "_au_sum"), display="cite"), "and ", figs(name = paste0(subbasin_name, "_au_sum_plot"), display="cite"), " summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+cat(paste0("There are ", length(unique(par_sum_au$AU_ID)), " assessment units within the ", subbasin_name, " subbasin that were included in this report. ", tbls(name = paste0(subbasin_name, "_au_sum"), display="cite"), " and ", figs(name = paste0(subbasin_name, "_au_sum_plot"), display="cite"), " summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
 au_sum <- par_sum_au %>% group_by(Char_Name) %>% 
   summarise(Attaining = sum(status_2015_2018 == "Attaining"),

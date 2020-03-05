@@ -142,6 +142,7 @@ for (name in report_names[19:21]){
   data_assessed <- NULL
   status <- NULL
   excur_stats <- NULL
+  stat_summary <- NULL
   trend <- NULL
   data_clean$Spawn_type <- NA
   
@@ -275,11 +276,13 @@ for (name in report_names[19:21]){
     DO_trend <- odeqstatusandtrends::trend_stns(data_DO)
     trend <- dplyr::bind_rows(trend, DO_trend)
   }
+  
+  stat_summary <- odeqstatusandtrends::summary_stats(data_assessed)
 
   print(paste0("Saving assessed data..."))
 
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
-  save(status, trend, excur_stats, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
+  save(status, trend, excur_stats, stat_summary, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
 
   # Assess trends -----------------------------------------------------------
 

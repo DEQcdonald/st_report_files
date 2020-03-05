@@ -10,11 +10,13 @@ library(odeqstatusandtrends)
 
 # Inputs ----
 start.date = "1999-01-01"
-end.date = "2018-12-30"
+end.date = "2018-12-31"
+
+report_name <- "2019 Oregon Statewide Status and Trend Report"
 
 final_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
@@ -24,9 +26,6 @@ au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
 # ----
 
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
-
-# This assumes a 20 year period
-status_period <- 4
 
 HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
                           integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
@@ -93,27 +92,21 @@ for (name in report_names){
   
   stations_AWQMS_shp <- sf::st_join(stations_AWQMS_shp, agwqma_shp, left=TRUE)
   
+  stations_AgWQMA <- stations_AWQMS_shp %>%
+    dplyr::select(MLocID, StationDes, Lat_DD, Long_DD, HUC8_Name, HUC8, PlanName, AU_ID) %>%
+    sf::st_drop_geometry() %>%
+    unique()
+  
   load(file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   load(file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-  
-  if(file.exists(paste0(data_dir, "/", name, "_seaken.RData"))){
-    load(file = paste0(data_dir, "/", name, "_seaken.RData"))
-  } else {seaKen <- data.frame()}
-  
-  ### -- Will not be needed after running new version of status_periods and excursion_stats
-  data_assessed0 <- data_assessed
-  data_assessed$status_period <- odeqstatusandtrends::status_periods(datetime=data_assessed$sample_datetime, year_range=c(min(complete.years), max(complete.years)))
-  excur_stats <- odeqstatusandtrends::excursion_stats(data_assessed)
-  stat_summary <- odeqstatusandtrends::summary_stats(data_assessed)
-  ### --
-  
+
   bins <- odeqstatusandtrends::status_periods(datetime=data_assessed$sample_datetime, year_range=c(min(complete.years), max(complete.years)), bins_only = TRUE)
   
   df.oda1 <- excur_stats %>%
     dplyr::right_join(status, by=c("MLocID", "Char_Name")) %>%
     dplyr::right_join(stat_summary, by=c("MLocID", "Char_Name", "Spawn_type")) %>%
-    dplyr::mutate(Char_Name=ifelse(Char_Name== "Temperature, water", paste0(Char_Name," ",Spawn_type), Char_Name)) %>%
+    dplyr::mutate(Char_Name=ifelse(Char_Name %in% c("Temperature, water", "Dissolved oxygen (DO)"), paste0(Char_Name," ",Spawn_type), Char_Name)) %>%
     dplyr::select(MLocID, Char_Name, contains(bins[1]), -contains("percent")) %>%
     as.data.frame()
   
@@ -121,10 +114,13 @@ for (name in report_names){
   
   if(!"results_n" %in% names(df.oda1)) {
     df.oda3 <- data.frame(Comment = paste0("There were no stations with results in the ", gsub("_","-",bins[1])," status period."))
-  }
+  } 
   else {
     df.oda2 <- df.oda1 %>%
-      dplyr::mutate(excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
+      dplyr::rename(status=contains("status")) %>%
+      dplyr::mutate(Char_Name=gsub(Char_Name,pattern=" (DO)",replacement = "", fixed=TRUE),
+                    status_period=gsub(gsub(bins[1], pattern="status_", replacement = ""),pattern="_", replacement = "-"),
+                    excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
                     excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), excursion_median),
                     excursion_max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), excursion_max),
                     min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(min, 1), min),
@@ -136,9 +132,9 @@ for (name in report_names){
       dplyr::mutate(results=dplyr::case_when(Char_Name %in% c(odeqstatusandtrends::AWQMS_Char_Names('TP'), "Total suspended solids") & status=="Unassessed" ~ paste0("Unassessed N=",results_n," (", min,"|", median,"|", max,")"),
                                              (!(Char_Name %in% c(odeqstatusandtrends::AWQMS_Char_Names('TP'), "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",excursion_min,"|", excursion_median,"|", excursion_max,")"),
                                              TRUE ~ paste0(excursions_n,"/",results_n))) %>%
-      dplyr::select(MLocID, Char_Name, results) %>%
+      dplyr::select(MLocID, status_period, Char_Name, results) %>%
       tidyr::pivot_wider(names_from=Char_Name, values_from=results) %>%
-      dplyr::left_join(stations_AWQMS_shp, by="MLocID") %>%
+      dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
       dplyr::select("Station ID" = MLocID,
                     "Station Name" = StationDes,
                     "Agricultural Water Quality Management Area"=PlanName,
@@ -147,7 +143,9 @@ for (name in report_names){
                     "Assessment Unit ID" = AU_ID,
                     "Latitude" = Lat_DD,
                     "Longitude" = Long_DD,
-                    contains("Dissolved oxygen"),
+                    "Status Period"=status_period,
+                    "Dissolved Oxygen"=matches("Dissolved oxygen Not_Spawn"),
+                    "Dissolved Oxygen Spawning Period"=matches("Dissolved oxygen Spawn"),
                     matches("Escherichia coli"),
                     contains("Entero"),
                     contains("Fecal"),
@@ -188,14 +186,21 @@ for (name in report_names){
   openxlsx::modifyBaseFont(wb, fontSize = 10, fontName = "Arial")
   
   for (sheet_name in names(xlsx_list[2])) {
+    
     openxlsx::setColWidths(wb, sheet=sheet_name, cols=c(1:ncol(xlsx_list[[sheet_name]])), widths = "auto")
+    
+    openxlsx::addStyle(wb, sheet=sheet_name, 
+                       rows=c(1:nrow(xlsx_list[[sheet_name]])), 
+                       cols=c(1:ncol(xlsx_list[[sheet_name]])),
+                       stack=TRUE, gridExpand = TRUE,
+                       style=openxlsx::createStyle(valign = "top", fontName = "Arial", fontSize = 10))
     
     openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
     
     openxlsx::addStyle(wb, sheet="Notes", rows=c(11:12), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
                        style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
     
-    openxlsx::writeData(wb, sheet="Notes", x="2019 Oregon Statewide Status and Trend Report", 
+    openxlsx::writeData(wb, sheet="Notes", x=report_name, 
                         startRow = 3, startCol = 3, rowNames = FALSE)
     
     openxlsx::writeData(wb, sheet="Notes", x=paste0("Appendix ",a.letter,": Tabular Results for the ",name), 
