@@ -80,7 +80,7 @@ for (name in report_names){
   } else {dir.create(data_dir)}
 
   eval_date <- Sys.Date()
-  save(eval_date, file = paste0(data_dir, "_eval_date.RData"))
+  save(eval_date, file = paste0(data_dir, "/", name, "_eval_date.RData"))
 
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
 
