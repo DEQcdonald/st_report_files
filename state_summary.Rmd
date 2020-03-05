@@ -74,7 +74,7 @@ year <- "2019"
 start.date = "1999-01-01"
 end.date = "2018-12-31"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
-state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "/")
+state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "-Revision/")
 
 figs <- captioner(prefix="Figure")
 tbls  <- captioner(prefix="Table")

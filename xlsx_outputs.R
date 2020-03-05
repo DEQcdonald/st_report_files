@@ -193,7 +193,7 @@ for (name in report_names){
                      'DO Results' = sum(Char_Name == "Dissolved oxygen (DO)"),
                      'pH Results' = sum(Char_Name == "pH"),
                      'TSS Results' = sum(Char_Name == "Total suspended solids"),
-                     'TP Results' = sum(Char_Name == "Phosphate-phosphorus"),
+                     'TP Results' = sum(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP')),
                      'E. Coli Results' = sum(Char_Name == "Escherichia coli"),
                      'Fecal Coliform Results' = sum(Char_Name == "Fecal Coliform"),
                      'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>%

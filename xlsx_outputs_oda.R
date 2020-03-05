@@ -133,8 +133,8 @@ for (name in report_names){
     
     df.oda3 <- df.oda2 %>%
       dplyr::filter(!is.na(results_n)) %>%
-      dplyr::mutate(results=dplyr::case_when(Char_Name %in% c("Phosphate-phosphorus", "Total suspended solids") & status=="Unassessed" ~ paste0("Unassessed N=",results_n," (", min,"|", median,"|", max,")"),
-                                             (!(Char_Name %in% c("Phosphate-phosphorus", "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",excursion_min,"|", excursion_median,"|", excursion_max,")"),
+      dplyr::mutate(results=dplyr::case_when(Char_Name %in% c(odeqstatusandtrends::AWQMS_Char_Names('TP'), "Total suspended solids") & status=="Unassessed" ~ paste0("Unassessed N=",results_n," (", min,"|", median,"|", max,")"),
+                                             (!(Char_Name %in% c(odeqstatusandtrends::AWQMS_Char_Names('TP'), "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",excursion_min,"|", excursion_median,"|", excursion_max,")"),
                                              TRUE ~ paste0(excursions_n,"/",results_n))) %>%
       dplyr::select(MLocID, Char_Name, results) %>%
       tidyr::pivot_wider(names_from=Char_Name, values_from=results) %>%
@@ -154,7 +154,7 @@ for (name in report_names){
                     pH,
                     "Temperature Non-Spawning Period"=matches("Temperature, water Not_Spawn"),
                     "Temperature Spawning Period"=matches("Temperature, water Spawn"),
-                    matches("Phosphate-phosphorus"),
+                    matches(odeqstatusandtrends::AWQMS_Char_Names('TP')),
                     matches("Total suspended solids"))
   }
   

@@ -164,7 +164,7 @@ au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
   # TP -----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
-    data_TP <- data_clean %>% dplyr::filter(Char_Name == "Phosphate-phosphorus")
+    data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "TP_crit")
     data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
