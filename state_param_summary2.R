@@ -70,7 +70,7 @@ report_names <- sort(unique(HUC_shp$REPORT))
 
 #name <- "Willamette"
 
-for (name in report_names[19:21]){
+for (name in report_names){
 
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
 
