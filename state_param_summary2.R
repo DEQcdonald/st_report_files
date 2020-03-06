@@ -59,12 +59,8 @@ au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
 
 missing_AUs <- NULL
 wqp_stns <- NULL
-state_param_sum_au <- NULL
-state_param_sum_stn <- NULL
-state_org_sums <- NULL
-state_station_sums <- NULL
-state_param_sum_stn_data <- NULL
-state_param_sum_au_data <- NULL
+state_param_sum_au <- data.frame()
+state_param_sum_stn <- data.frame()
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -327,8 +323,15 @@ for (name in report_names){
                      Organizations = paste(unique(Org_Name), collapse = ", "))
   param_sum_au <- odeqstatusandtrends::parameter_summary_by_au(status, seaKen, stations_AWQMS)
   param_sum_au <- merge(param_sum_au, au_orgs, by = c("Char_Name", "AU_ID"), all.x = TRUE, all.y = FALSE)
+  
+  state_param_sum_stn <- rbind(state_param_sum_stn, param_sum_stn)	
+  state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
 
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
 }
+
+save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	
+save(state_param_sum_au, file = paste0(top_dir, "/Oregon_param_summary_by_AU.RData"))
+
