@@ -74,14 +74,14 @@ year <- "2019"
 start.date = "1999-01-01"
 end.date = "2018-12-31"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
-state_project_dir <- paste0("N:/Status_and_Trend_Reports/", year, "-Revision/")
+top_dir <- paste0("N:/Status_and_Trend_Reports/", year, "-Revision/")
 
 figs <- captioner(prefix="Figure")
 tbls  <- captioner(prefix="Table")
 eqns <- captioner(prefix="Equation")
 
-load(file = paste0(state_project_dir, "Oregon_param_summary_by_station.RData"))
-load(file = paste0(state_project_dir, "Oregon_param_summary_by_AU.RData"))
+load(file = paste0(top_dir, "Oregon_param_summary_by_station.RData"))
+load(file = paste0(top_dir, "Oregon_param_summary_by_AU.RData"))
 
 state_param_sum_stn <- state_param_sum_stn %>% dplyr::filter(!is.na(AU_ID))
 state_param_sum_stn <- state_param_sum_stn %>% dplyr::filter(AU_ID != "")
@@ -153,9 +153,9 @@ state_wql_streams <- filter(state_wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "S
 state_wql_streams_shp <- state_wql_streams %>% group_by(Char_Name) %>% summarise(geometry = st_union(geometry))
 # wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
 
-if(!dir.exists(paste0(state_project_dir, "Statewide Maps"))) {dir.create(paste0(state_project_dir, "Statewide Maps"))}
+if(!dir.exists(paste0(top_dir, "Statewide Maps"))) {dir.create(paste0(top_dir, "Statewide Maps"))}
 
-state_map_dir <- paste0(state_project_dir, "Statewide Maps/")
+state_map_dir <- paste0(top_dir, "Statewide Maps/")
 
 lgnd <- base64enc::base64encode("//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/map_overview_legend.png")
 
@@ -324,7 +324,7 @@ knitr::kable(bacteria.indicators.tbl,
 
 ```
 
-A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean. The 90-day geometric mean ($GM90$) of bacteria concentration is calculated using `r tbls(name = "eqns-GM90", display="cite")` by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which $n$ ≥ 5.
+A geometric mean is calculated on a rolling basis for each 90-day period of data available at a sampling location. A minimum of five samples collected on different days is required to calculate a 90-day rolling geometric mean. The 90-day geometric mean ($GM90$) of bacteria concentration is calculated using `r eqns(name = "eqns-GM90", display="cite")` by taking the nth root of the product of the concentration of each sample collected within a 90-day period for which $n$ ≥ 5.
 
 `r eqns(name = "eqns-GM90", caption = "Geometric Mean Equation.")`
 
@@ -402,9 +402,10 @@ The application of the various dissolved oxygen criteria is based on designated 
 * __Spawning Time-Period__: The spawning criteria shall be applied for places and times indicated, in the tables and figures referenced in OAR-340-041-0016 (1), as having active salmon and steelhead spawning, or any additional assumed spawning by resident trout species. Listed status of waterbodies in violation of the spawning criteria is in effect only during the applicable spawning date range for the waterbody.
 * __Year-round__: The year-round dissolved oxygen criteria apply year round. For some locations, a more stringent spawning criteria may apply in addition to the year round criterion for part of the year. Listed status of waterbodies in violation of the year-round criteria are in effect year-round.
 
-If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be attaining the dissolved oxygen criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using `r tbls(name = "eqns-DO-Theo", display="cite")` and `r tbls(name = "eqns-DO-PS", display="cite")`. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
+If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be attaining the dissolved oxygen criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using `r eqns(name = "eqns-DO-Theo", display="cite")` and `r eqns(name = "eqns-DO-PS", display="cite")`. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
 
 `r eqns(name = "eqns-DO-Theo",caption = "")`
+
 $$DO_{Theo} = e ^{[-139.34411+\frac{1.575701\times 10^5}{T}-\frac{6.642308\times 10^7}{T^2}+\frac{1.23800\times 10^{10}}{T^3}-\frac{8.621949\times 10^{11}}{T^4}]} \times (1-(0.0001148 \times Site_{elvm}))$$
 Where:
 
@@ -528,7 +529,7 @@ Definitions
 
 The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. In order to ensure there was sufficient continuous data to calculate 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month can have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
 
-The seven-day average daily maximum stream temperature (`r tbls(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
+The seven-day average daily maximum stream temperature (`r eqns(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
 
 `r eqns(name = "eqns-temp-7DADM", caption = "")`
 
@@ -743,7 +744,7 @@ A trend assessment using Seasonal Kendall cannot be made at a monitoring station
 
 ## Watershed Restoration or Protection Actions
 
-To summarize actions taken to restore or protect watersheds and water quality, we summarized on-the-ground treatments implemented and reported to OWEB’s Oregon Watershed Restoration Inventory (OWRI). OWRI is a repository for a significant number of actions implemented in Oregon but it does not capture all restoration or protection actions. In particular projects funded by the United States Farm Bill and many USFS and BLM projects are not included. Typically treatments reported to OWRI were implemented as part of an OWEB grant funded project. DEQ also requires federal 319 grant recipients to report outputs to OWRI. There are over 130 unique treatments identified in OWRI. The various treatments can be grouped broadly into the following activity types: fish passage, fish screening, instream habitat, instream flow, riparian, road, upland, and urban.  For this report we counted any treatment towards the total if they were implemented in Oregon over the twenty year period of analysis. We subdivided the total into five shorter periods with each period being four years. Only treatments completed within the four year period counted towards the total for that period. The year the project was completed was used for multi-year projects. The totals are reported by subbasin for each activity type and treatment.
+To summarize actions taken to restore or protect watersheds and water quality, we summarized on-the-ground treatments implemented and reported to OWEB’s Oregon Watershed Restoration Inventory (OWRI). OWRI is a repository for a significant number of actions implemented in Oregon but it does not capture all restoration or protection actions. In particular projects funded by the United States Farm Bill and many USFS and BLM projects are not included. Typically treatments reported to OWRI were implemented as part of an OWEB grant funded project. DEQ also requires federal 319 grant recipients to report outputs to OWRI. There are over 130 unique treatments identified in OWRI. The various treatments can be grouped broadly into the following activity types: fish passage, fish screening, instream habitat, instream flow, riparian, road, upland, and urban. For this report we summarized the number treatments completed if they were implemented in Oregon over the twenty year period of analysis. We subdivided the total into five shorter periods with each period being four years. Only treatments completed within the four year period counted towards the total for that period. The year the project was completed was used for multi-year projects. The totals are reported in the Appendices by subbasin for each activity type and treatment.
 
 # Results
 
@@ -781,18 +782,20 @@ huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")]) %>% filter(HUC8_Nam
 HUC_shp <- sf::st_as_sf(HUC_shp)
 HUC_shp <- st_transform(HUC_shp, 4326)
 
-if(!file.exists(paste0(state_project_dir, "Oregon_query_stations.png"))){
-  query_map <- leaflet(stations_AWQMS, options = leafletOptions(zoomControl = FALSE)) %>% addProviderTiles("Esri.NatGeoWorldMap") %>% 
+if(!file.exists(paste0(state_map_dir, "Oregon_query_stations.png"))){
+  query_map <- leaflet(stations_AWQMS, options = leafletOptions(zoomControl = FALSE)) %>% 
+    addProviderTiles("Esri.NatGeoWorldMap") %>% 
     addPolygons(data = HUC_shp, fill = FALSE, opacity = 1, weight = 1.5, color = "black") %>% 
     addCircleMarkers(lng = ~Long_DD, lat = ~Lat_DD, stroke = TRUE, weight = 1, opacity = 1, fillOpacity = 1, radius = 1.5,
                      color = "black", fillColor = "green")
   
-  mapview::mapshot(query_map, file = paste0(state_map_dir, "Oregon_query_stations.png"), remove_controls = c("zoomControl", "layersControl"))
+  mapview::mapshot(query_map, file = paste0(state_map_dir, "Oregon_query_stations.png"), 
+                   remove_controls = c("zoomControl", "layersControl"))
 }
 
 ```
 
-`r paste0("![", figs(name = "query_map", caption = "All stations queried across the state"), "](", paste0(state_project_dir, "Oregon_query_stations.png"), ")")`
+`r paste0("![", figs(name = "query_map", caption = "All stations queried across the state"), "](", paste0(state_map_dir, "Oregon_query_stations.png"), ")")`
 
 ```{r stateResults, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
 
@@ -809,14 +812,15 @@ for(i in unique(state_param_sum_stn$Char_Name)){
   
   if(!file.exists(paste0(state_map_dir, "Oregon_", gsub(",| ", "_", i), ".png"))){
     wql_streams_i <- filter(state_wql_streams_shp, Char_Name == i)
-    # wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
-    
-    map_df <- state_param_sum_stn %>% filter(Char_Name == i) %>% mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
-                                                                                    "lightgray",
-                                                                                    if_else(!!status_current == "Not Attaining",
-                                                                                            "orange",
-                                                                                            "green")
-    ))
+
+    map_df <- state_param_sum_stn %>% filter(Char_Name == i) %>% 
+      mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
+                             "lightgray",
+                             if_else(!!status_current == "Not Attaining",
+                                     "orange",
+                                     "green")
+                             )
+             )
     
     map <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>% 
       addProviderTiles("Esri.NatGeoWorldMap") %>%
