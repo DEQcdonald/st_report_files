@@ -41,14 +41,6 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.width = 12, 
                       fig.height = 6)
 
-# param_sum <- params$param_sum
-# param_sum_au <- params$param_sum_au
-# basin <- params$basin
-# complete_years <- params$complete_years
-# hucs <- params$hucs
-# table_format <- params$table_format
-# figs <- captioner(prefix="\nFigure")
-# tbls  <- captioner(prefix="Table")
 
 project_dir <- paste0('N:/Status_and_Trend_Reports/2019/2019-', name, '/')
 
@@ -89,10 +81,10 @@ if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/
 
 ```{=openxml}
 <w:p>
-  </w:pPr>
-    <w:r>
-      <w:br w:type="page"/>
-    </w:r>
+</w:pPr>
+<w:r>
+<w:br w:type="page"/>
+</w:r>
 </w:p>
 ```
 
@@ -112,7 +104,7 @@ param_sum$AU_Type <- if_else(grepl("_SR_", param_sum$AU_ID),
                                      if_else(grepl("_WS_", param_sum$AU_ID),
                                              "Watershed Unit",
                                              if_else(grepl("_EB_", param_sum$AU_ID),
-                                                      "Estuary or Bay",
+                                                     "Estuary or Bay",
                                                      if_else(grepl("_CL_", param_sum$AU_ID),
                                                              "Coastline",
                                                              NA_character_
@@ -122,20 +114,20 @@ param_sum$AU_Type <- if_else(grepl("_SR_", param_sum$AU_ID),
                              )
 )
 param_sum_au$AU_Type <- if_else(grepl("_SR_", param_sum_au$AU_ID),
-                             "Stream",
-                             if_else(grepl("_LK_", param_sum_au$AU_ID),
-                                     "Lake",
-                                     if_else(grepl("_WS_", param_sum_au$AU_ID),
-                                             "Watershed Unit",
-                                             if_else(grepl("_EB_", param_sum_au$AU_ID),
-                                                      "Estuary or Bay",
-                                                     if_else(grepl("_CL_", param_sum_au$AU_ID),
-                                                             "Coastline",
-                                                             NA_character_
-                                                     )
-                                             )
-                                     )
-                             )
+                                "Stream",
+                                if_else(grepl("_LK_", param_sum_au$AU_ID),
+                                        "Lake",
+                                        if_else(grepl("_WS_", param_sum_au$AU_ID),
+                                                "Watershed Unit",
+                                                if_else(grepl("_EB_", param_sum_au$AU_ID),
+                                                        "Estuary or Bay",
+                                                        if_else(grepl("_CL_", param_sum_au$AU_ID),
+                                                                "Coastline",
+                                                                NA_character_
+                                                        )
+                                                )
+                                        )
+                                )
 )
 param_sum[param_sum$AU_ID == "Sru Lake", c("AU_Name", "AU_Type")] <- c("Sru Lake", "Lake")
 param_sum_au[param_sum_au$AU_ID == "Sru Lake", c("AU_Name", "AU_Type")] <- c("Sru Lake", "Lake")
@@ -145,7 +137,7 @@ param_sum <- param_sum %>% dplyr::rename(Pollutant = Char_Name, Station_Descript
 simpleCap <- function(x) {
   s <- strsplit(x, " ")[[1]]
   paste(toupper(substring(s, 1,1)), substring(s, 2),
-      sep="", collapse=" ")
+        sep="", collapse=" ")
 }
 
 types <- unique(param_sum_au$AU_Type)
@@ -155,7 +147,6 @@ n_params <- length(unique(param_sum_au$Char_Name))
 list_fun <- function(x){paste(x, collapse = "s', '")}
 param_summary <- unique(param_sum$Pollutant)
 
-# cat("## Status and Trend")
 cat("\n\n")
 
 cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTANT)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
@@ -168,22 +159,7 @@ cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTA
 
 ```{r landuse, include = FALSE, results = 'asis', eval=TRUE, fig.height=7}
 
-# rmarkdown::render("//deqhq1/WQNPS/Agriculture/Status_and_Trend_Analysis/StatusAndTrends_Package/odeqstatusandtrends/R/subbasin.Rmd",
-#                   params = list(
-#                     subbasin = subbasin,
-#                     par_sum = par_sum))
 landuse_output <- NULL
-
-# data <- param_sum %>% filter(HUC8 == i)
-# par_sum <- data %>% select(-Lat_DD, -Long_DD, -HUC8, -HUC8_Name, -X)
-# subbasin <- if(any(!is.na(data$HUC8_Name)) & length(unique(data$HUC8_Name)) == 1){unique(data$HUC8_Name)} else {unique(data$HUC8)}
-
-# sub_rmd <- knitr::knit_child(
-#   rmarkdown::render("//deqhq1/WQNPS/Status_and_Trend_Reports/2019/2019-Willamette/", output_format = "html_document",
-#                     params = list(
-#                       subbasin = i,
-#                       par_sum = data))
-# )
 
 landuse_output <- knitr::knit_child("state_landuse_summary.Rmd", envir = globalenv())
 
@@ -203,14 +179,11 @@ for(i in unique(param_sum$Pollutant)){
   if(i != "pH"){
     parameter_name <- simpleCap(i)
   } else {parameter_name <- "pH"}
-      
-  # cat(paste(i, "map"))
-  # cat("\n\n")
   
   if(!file.exists(paste0(project_dir, "/Maps/", gsub(",| ", "_", i), ".png"))){
     wql_streams_i <- filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name == i)
     wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
-
+    
     map_df <- param_sum %>% filter(Pollutant == i) %>% mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
                                                                               "lightgray",
                                                                               if_else(!!status_current == "Not Attaining",
@@ -224,16 +197,6 @@ for(i in unique(param_sum$Pollutant)){
                    opacity = 1,
                    weight = 2,
                    color = "red",
-                   # popup = ~paste0("<b>", STREAM_NAM,
-                   #                 "<br>Parameter:</b> ", Char_Name,
-                   #                 "<br><b>Listing:</b> ", LISTING_ST),
-                   # popup = ~paste0("<b>", STREAM_NAM,
-                   #                 # "<br>Parameter:</b> ", Char_Name,
-                   #                 "<br></b><br>",
-                   #                 sapply(SEGMENT_ID, WQLpopupTable, param = i, USE.NAMES = FALSE)),
-                   # popupOptions = popupOptions(maxWidth = 1200),
-                   # highlightOptions = highlightOptions(color = "red", weight = 8, opacity = 1),
-                   # label = ~STREAM_NAM,
                    smoothFactor = 2,
                    group = "WQ Listed Streams"
       ) %>% 
@@ -241,16 +204,14 @@ for(i in unique(param_sum$Pollutant)){
       addCircleMarkers(lng = ~Long_DD, lat = ~Lat_DD, fillColor = ~color, stroke = TRUE, weight = 1, 
                        opacity = 1, fillOpacity = 1, color = 'black', radius = 4.5, label = ~color) %>% 
       addControl(position = "bottomright", className = "legend",
-               html = sprintf('<html><body><div style="opacity:0.95">
+                 html = sprintf('<html><body><div style="opacity:0.95">
                                         <img width="175" height="150" src="data:image/png;base64,%s">
                             </div></body></html>', lgnd)) %>% 
       addControl(html = paste('<div style="opacity:0.95; background:white; padding:0px 6px; border-radius: 8px; font-size:18px"><b>', 
                               name, parameter_name, "Status</b></div>"), 
                  position = "topleft", className = "map_title")
     
-    # maps[[i]] <- map
     mapview::mapshot(map, file = paste0(project_dir, "/Maps/", gsub(",| ", "_", i), ".png")
-                     # , remove_controls = c("zoomControl", "layersControl")
                      , selfcontained = FALSE)
   }
   
@@ -272,18 +233,14 @@ au_sum <- param_sum_au %>% group_by(Char_Name) %>%
   mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   rename(Pollutant = Char_Name)
 
-# cat(tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin.")))
-
 knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
              caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin."))
-             ) %>% table_style()
+) %>% table_style()
 
 cat("\n\n")
 
 ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
   geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
-  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
-  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
   xlab("Pollutant")+
   ylab("# of Assessment Units")+
   scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
@@ -291,11 +248,6 @@ ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
   ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
 
 cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " Basin by parameter."))
-
-# cat("\n")
-# 
-# cat(figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " Basin by parameter.")))
-# fignum <- fignum + 1
 
 cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," Basin.\n\n"))
 
@@ -306,13 +258,11 @@ au_sum_type <- param_sum_au %>% group_by(AU_Type, Char_Name) %>%
   mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
-# cat(tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type.")))
-
 knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type."))
-             ) %>% table_style()
-             
+) %>% table_style()
+
 
 cat("\n\n")
 
@@ -324,19 +274,15 @@ stn_sum <- param_sum %>% group_by(Pollutant) %>%
             Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
   mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
-# cat(tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin.")))
-
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin."))
-             ) %>% table_style()
+) %>% table_style()
 
 cat("\n\n")
 
 ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
   geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
-  # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
-  # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
   xlab("Pollutant")+
   ylab("# of Stations")+
   scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
@@ -344,11 +290,6 @@ ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))
   ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
 
 cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " Basin by parameter."))
-
-# cat("\n")
-# 
-# cat(figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " Basin by parameter.")))
-# fignum <- fignum + 1
 
 cat("\n\n")
 cat("### Trend\n\n")
@@ -364,43 +305,12 @@ stn_sum <- param_sum %>% group_by(Pollutant) %>%
   ) %>% 
   mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
-# cat(tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state.")))
-
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
              caption = tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state."))
-             ) %>% table_style()
+) %>% table_style()
 
 cat("\n\n")
-
-# cat("## OWRI Watershed Restoration Actions")
-# cat("\n\n")
-# 
-# owri_basin <- owri_summary %>% group_by(ActivityType, Treatment_Unit) %>% summarise_at(colnames(owri_summary)[5:10], sum)
-# action_df <- owri_basin[owri_basin$Total != 0,]
-# actions <- unique(action_df$ActivityType)
-# n_action <- length(actions)
-# n_units <- length(unique(action_df$Treatment_Unit))
-# 
-# cat(paste0("According to the Oregon Watershed Restoration Inventory (OWRI), ", n_action, " types of restoration actions have been implemented across the ", basin, " basin including '", paste(actions[1:(n_action-1)], collapse = "', '"), "' and '", paste(actions[n_action], collapse = "', '"), "' activities encompassing ", n_units, " different forms of treatment units. ", tbls(paste0(basin, "_owriTab"), display = "cite"), " summarizes reported treatment outputs reported to the Oregon Watershed Restoration Inventory (owri) for numerous watershed restoration projects within the  ", basin, " basin. Basin Treatment summaries are grouped into yearly periods. The year refers to the year the project was completed."))
-#   
-# cat("\n\n")
-# 
-# colnames(owri_basin) <- sapply(gsub("_", " ", colnames(owri_basin)), simpleCap, USE.NAMES = FALSE)
-# 
-# cat(tbls(name = paste0(basin, "_owriTab"), 
-#          caption = paste("Summary of watershed restoration actions implemented and reported to the Oregon Watershed Restoration Inventory in the ",
-#                          basin, " basin. Source: OWEB OWRI ", owri_version)
-# )
-# )
-# capnum <- tbls(paste0(basin, "_owriTab"), display = "num")
-# 
-# t <- knitr::kable(owri_basin, format = table_format, padding = 0, digits = 1, row.names = FALSE
-# ) %>% table_style()
-# 
-# print(t)
-# 
-# cat("\n\n")
 
 ```
 
@@ -408,45 +318,27 @@ cat("\n\n")
 
 ```{r subbasin, include = FALSE, eval=TRUE, results = 'asis'}
 
-#-- OWRI data ---
-# owri.db <- "//deqhq1/WQNPS/Status_and_Trend_Reports/OWRI/OwriDbExport_122618.db"
-# owri_summary <- owri_summary(owri.db = owri.db, complete.years = complete_years, huc8 = hucs)
-# owri_version <- "122618"
-
 subbasin_output <- NULL
 
 capnum <- 3
 
 for(i in unique(param_sum$HUC8)){
-
+  
   data <- param_sum %>% dplyr::filter(HUC8 == i)
   map_df <- data
   par_sum <- data %>% dplyr::select(-Lat_DD, -Long_DD, -HUC8, -HUC8_Name)
   par_sum_au <- param_sum_au %>% filter(AU_ID %in% data$AU_ID)
-  # owri_huc8 <- owri_summary %>% 
-  #   dplyr::filter(HUC8 == i) %>%
-  #   dplyr::select(-HUC8, -HUC8_Name ,'Activity Type'=ActivityType, 'Treatment (Units)'=Treatment_Unit)
+  
   subbasin_name <- huc_names[huc_names$HUC8 == i,]$HUC8_Name
   sub_area <- area[area$HUC_8 == i,]
-
-  # sub_rmd <- knitr::knit_child(
-  #   rmarkdown::render("C:/workspace/subbasin.Rmd", output_format = "html_document",
-  #                     params = list(
-  #                       subbasin = i,
-  #                       par_sum = data))
-  # )
-
+  
   subbasin_output <- c(subbasin_output, knitr::knit_child("state_subbasin_summary.Rmd", envir = globalenv()))
   
   capnum <- as.numeric(capnum)
   
   print(capnum)
-
-  # cat("\n\n")
-
+  
 }
-
-# `r paste(subbasin_output, collapse = "\n")`
 
 ```
 
