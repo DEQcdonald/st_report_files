@@ -114,7 +114,8 @@ for (name in report_names){
     
     print(paste0(m, "..."))
     
-    map <- odeqstatusandtrends::parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = report_shp[report_shp$MAP == m,])
+    map <- odeqstatusandtrends::parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, 
+                                                      area = report_shp[report_shp$MAP == m,], proj_dir = output_dir)
     
     htmlwidgets::saveWidget(map, paste0(output_dir, "/", m_abr, "_map.html"),
                             title = paste(m, "Status and Trends Map"),
