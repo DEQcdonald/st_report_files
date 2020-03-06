@@ -122,6 +122,6 @@ map_locator <- leaflet(report_areas) %>% addTiles() %>%
                         }") %>% 
   htmlwidgets::appendContent(tags$head(tags$meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")))
 
-htmlwidgets::saveWidget(map_locator, paste0(top_dir,"/wqst_2019/map_locator.html"), 
+htmlwidgets::saveWidget(map_locator, paste0(top_dir,"/wqst_map/map_locator.html"), 
                         title = paste("Oregon Status and Trends Map Locator"), 
                         background = "grey", selfcontained = FALSE)

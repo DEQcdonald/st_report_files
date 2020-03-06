@@ -39,9 +39,10 @@ library(Rcpp)
 
 # Inputs ----
 
+report_year <- '2019'
+
 start.date = "1999-01-01"
 end.date = "2018-12-30"
-web_output <- TRUE
 
 top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
@@ -94,16 +95,12 @@ for (name in report_names){
 
   print(paste0("Creating plots for the ", name, " Basin..."))
   
-  data_dir <- paste0(top_dir,'/2019-', name)
-  
+  data_dir <- paste0(top_dir,'/', report_year,'-', name)
+
   load(file = paste0(data_dir,'/', name,'_eval_date.RData'))
 
-  if(web_output) {
-    output_dir <- paste0(top_dir,'/wqst_2019/', name_abr)
-  } else {
-    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
-  }
-  
+  output_dir <- paste0(top_dir,'/wqst_map/', name_abr)
+
   plot_dir <- paste0(output_dir,'/Plots/')
   
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
