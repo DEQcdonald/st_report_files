@@ -76,9 +76,9 @@ end.date = "2018-12-31"
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 top_dir <- paste0("N:/Status_and_Trend_Reports/", year, "-Revision/")
 
-figs <- captioner(prefix="Figure")
-tbls  <- captioner(prefix="Table")
-eqns <- captioner(prefix="Equation")
+figs <- captioner::captioner(prefix="Figure")
+tbls  <- captioner::captioner(prefix="Table")
+eqns <- captioner::captioner(prefix="Equation")
 
 load(file = paste0(top_dir, "Oregon_param_summary_by_station.RData"))
 load(file = paste0(top_dir, "Oregon_param_summary_by_AU.RData"))
@@ -86,19 +86,21 @@ load(file = paste0(top_dir, "Oregon_param_summary_by_AU.RData"))
 state_param_sum_stn <- state_param_sum_stn %>% dplyr::filter(!is.na(AU_ID))
 state_param_sum_stn <- state_param_sum_stn %>% dplyr::filter(AU_ID != "")
 state_param_sum_stn$Char_Name <- AWQMS_to_standard(state_param_sum_stn$Char_Name)
+
 state_param_sum_au <- state_param_sum_au %>% dplyr::filter(!is.na(AU_ID))
 state_param_sum_au <- state_param_sum_au %>% dplyr::filter(AU_ID != "")
-state_param_sum_au$Char_Name <- AWQMS_to_standard(state_param_sum_au$Char_Name)
+state_param_sum_au$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(state_param_sum_au$Char_Name)
 
-state_param_sum_stn$AU_Type <- if_else(grepl("_SR_", state_param_sum_stn$AU_ID),
+state_param_sum$AU_Type <- dplyr::if_else(grepl("_SR_", state_param_sum$AU_ID),
                              "Stream",
-                             if_else(grepl("_LK_", state_param_sum_stn$AU_ID),
+                             dplyr::if_else(grepl("_LK_", state_param_sum$AU_ID),
                                      "Lake",
-                                     if_else(grepl("_WS_", state_param_sum_stn$AU_ID),
+                                     dplyr::if_else(grepl("_WS_", state_param_sum$AU_ID),
                                              "Watershed Unit",
-                                             if_else(grepl("_EB_", state_param_sum_stn$AU_ID),
+                                             dplyr::if_else(grepl("_EB_", state_param_sum$AU_ID),
                                                       "Estuary or Bay",
-                                                     if_else(grepl("_CL_", state_param_sum_stn$AU_ID),
+                                                     dplyr::if_else(grepl("_CL_", state_param_sum$AU_ID),
+
                                                              "Coastline",
                                                              NA_character_
                                                      )
@@ -106,15 +108,15 @@ state_param_sum_stn$AU_Type <- if_else(grepl("_SR_", state_param_sum_stn$AU_ID),
                                      )
                              )
 )
-state_param_sum_au$AU_Type <- if_else(grepl("_SR_", state_param_sum_au$AU_ID),
+state_param_sum_au$AU_Type <- dplyr::if_else(grepl("_SR_", state_param_sum_au$AU_ID),
                              "Stream",
-                             if_else(grepl("_LK_", state_param_sum_au$AU_ID),
+                             dplyr::if_else(grepl("_LK_", state_param_sum_au$AU_ID),
                                      "Lake",
-                                     if_else(grepl("_WS_", state_param_sum_au$AU_ID),
+                                     dplyr::if_else(grepl("_WS_", state_param_sum_au$AU_ID),
                                              "Watershed Unit",
-                                             if_else(grepl("_EB_", state_param_sum_au$AU_ID),
+                                             dplyr::if_else(grepl("_EB_", state_param_sum_au$AU_ID),
                                                       "Estuary or Bay",
-                                                     if_else(grepl("_CL_", state_param_sum_au$AU_ID),
+                                                     dplyr::if_else(grepl("_CL_", state_param_sum_au$AU_ID),
                                                              "Coastline",
                                                              NA_character_
                                                      )
@@ -133,24 +135,26 @@ basin_intro <- FALSE
 
 # project_dir <- paste0('N:/Status_and_Trend_Reports/2019/2019-', basin, '/')
 
-# area <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
+# area <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 # area <- area[area$REPORT %in% c(name), ]
 # area <- sf::st_as_sf(area)
-# area <- st_transform(area, 4326)
+# area <- sf::st_transform(area, 4326)
 
 state_wql_streams <- sf::st_read(
     dsn = "N:/Agriculture/Status_and_Trend_Analysis/R_support_files",
     layer = "WQL_Streams_2012",
     # query = paste0("SELECT * FROM WQL_Streams_2012 WHERE HUC_4TH_CO IN ('",
-    #                paste(unique(param_sum$HUC8), collapse = "', '"), "')"),
+    #                paste(raster::unique(param_sum$HUC8), collapse = "', '"), "')"),
     stringsAsFactors = FALSE, quiet = TRUE
   )
 state_wql_streams$Char_Name <- unlist(sapply(state_wql_streams$POLLUTANT, AWQMS_Char_Names, USE.NAMES = FALSE))
-state_wql_streams$Char_Name <- AWQMS_to_standard(state_wql_streams$Char_Name)
+state_wql_streams$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(state_wql_streams$Char_Name)
 state_wql_streams <- sf::st_zm(state_wql_streams, what = "ZM")
-state_wql_streams <- st_transform(state_wql_streams, 4326)
-state_wql_streams <- filter(state_wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(state_param_sum_stn$Char_Name))
-state_wql_streams_shp <- state_wql_streams %>% group_by(Char_Name) %>% summarise(geometry = st_union(geometry))
+
+state_wql_streams <- sf::st_transform(state_wql_streams, 4326)
+state_wql_streams <- dplyr::filter(state_wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(state_param_sum$Char_Name))
+state_wql_streams_shp <- state_wql_streams %>% dplyr::group_by(Char_Name) %>% summarise(geometry = sf::st_union(geometry))
+
 # wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
 
 if(!dir.exists(paste0(top_dir, "Statewide Maps"))) {dir.create(paste0(top_dir, "Statewide Maps"))}
@@ -401,6 +405,7 @@ The application of the various dissolved oxygen criteria is based on designated 
 
 * __Spawning Time-Period__: The spawning criteria shall be applied for places and times indicated, in the tables and figures referenced in OAR-340-041-0016 (1), as having active salmon and steelhead spawning, or any additional assumed spawning by resident trout species. Listed status of waterbodies in violation of the spawning criteria is in effect only during the applicable spawning date range for the waterbody.
 * __Year-round__: The year-round dissolved oxygen criteria apply year round. For some locations, a more stringent spawning criteria may apply in addition to the year round criterion for part of the year. Listed status of waterbodies in violation of the year-round criteria are in effect year-round.
+* __Critical Period__: The critical period for assessing compliance with the year-round dissolved oxygen standard is the summer period July 1 - September 30, when seasonal trends in dissolved oxygen are expected to be near annual minimums.
 
 If the dissolved oxygen concentration exceeded the water quality criterion, but met the criteria for percent saturation at the same time, it was considered to be attaining the dissolved oxygen criterion. Direct field instrument measurements of percent saturation are preferred and shall be used if available. However, if corresponding percent saturation data is unavailable, and corresponding water temperature data is available, the value can be calculated using `r eqns(name = "eqns-DO-Theo", display="cite")` and `r eqns(name = "eqns-DO-PS", display="cite")`. When the dissolved oxygen saturation is measured in excess of 100 percent, the saturation value used shall be limited to 100 percent for the calculation of metrics. 
 
@@ -773,14 +778,14 @@ The map in `r figs(name = "query_map", display="cite")` shows the locations of a
 
 ```{r stations_map, include=FALSE}
 
-HUC_shp <- readOGR(dsn = "N:/Status_and_Trend_Reports/GIS", layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
+HUC_shp <- rgdal::readOGR(dsn = "N:/Status_and_Trend_Reports/GIS", layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 basin_names <- sort(unique(HUC_shp$REPORT))
 
-stations_AWQMS <- get_stations_AWQMS(HUC_shp)
-huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")]) %>% filter(HUC8_Name != "-9999")
+stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(HUC_shp)
+huc_names <- unique(stations_AWQMS[,c("HUC8", "HUC8_Name")]) %>% dplyr::filter(HUC8_Name != "-9999")
 
 HUC_shp <- sf::st_as_sf(HUC_shp)
-HUC_shp <- st_transform(HUC_shp, 4326)
+HUC_shp <- sf::st_transform(HUC_shp, 4326)
 
 if(!file.exists(paste0(state_map_dir, "Oregon_query_stations.png"))){
   query_map <- leaflet(stations_AWQMS, options = leafletOptions(zoomControl = FALSE)) %>% 
@@ -804,23 +809,23 @@ cat("### Parameter Summary Maps\n\n")
 
 for(i in unique(state_param_sum_stn$Char_Name)){
   if(i != "pH"){
-    parameter_name <- simpleCap(i)
+    parameter_name <- odeqstatusandtrends::simpleCap(i)
   } else {parameter_name <- "pH"}
   
   # cat(paste(i, "map"))
   # cat("\n\n")
   
   if(!file.exists(paste0(state_map_dir, "Oregon_", gsub(",| ", "_", i), ".png"))){
-    wql_streams_i <- filter(state_wql_streams_shp, Char_Name == i)
 
-    map_df <- state_param_sum_stn %>% filter(Char_Name == i) %>% 
-      mutate(color = if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
-                             "lightgray",
-                             if_else(!!status_current == "Not Attaining",
-                                     "orange",
-                                     "green")
-                             )
-             )
+    wql_streams_i <- dplyr::filter(state_wql_streams_shp, Char_Name == i)
+    # wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
+    
+    map_df <- state_param_sum %>% dplyr::filter(Char_Name == i) %>% dplyr::mutate(color = dplyr::if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
+                                                                                    "lightgray",
+                                                                                    dplyr::if_else(!!status_current == "Not Attaining",
+                                                                                            "orange",
+                                                                                            "green")
+    ))
     
     map <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>% 
       addProviderTiles("Esri.NatGeoWorldMap") %>%
@@ -876,12 +881,12 @@ cat("### Status\n\n")
 
 cat(paste0(tbls("au_sum", display = 'cite')," shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
-au_sum <- state_param_sum_au %>% group_by(Char_Name) %>% 
-  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+au_sum <- state_param_sum_au %>% dplyr::group_by(Char_Name) %>% 
+  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
             'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
             Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
-  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
-  rename(Pollutant = Char_Name)
+  dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  dplyr::rename(Pollutant = Char_Name)
 
 # cat(tbls(name = "au_sum", caption = "Summary of assessment unit status across the state."))
 
@@ -891,7 +896,7 @@ knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_
 
 cat("\n\n")
 
-au_sum_plot <- ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
+au_sum_plot <- ggplot2::ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "Status"))+
   geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
   # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
   # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
@@ -908,12 +913,12 @@ cap_list[[1]] <- figs(name = paste0("state_au_sum_plot"), caption = paste0("Summ
 
 cat(paste0("\n\n", tbls("au_type_sum", display = 'cite')," contains a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.\n\n"))
 
-au_sum_type <- state_param_sum_au %>% group_by(AU_Type, Char_Name) %>% 
-  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+au_sum_type <- state_param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
+  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
             'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
             Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
-  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
-  rename("AU Type" = AU_Type, Pollutant = Char_Name)
+  dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
 # cat(tbls(name = "au_type_sum", caption = "Statewide status summary of assessment units by type."))
 
@@ -926,12 +931,13 @@ cat("\n\n")
 
 cat(paste0("\n\n", tbls("stn_sum", display = 'cite') ," summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
 
-stn_sum <- state_param_sum_stn %>% group_by(Char_Name) %>% 
-  summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+stn_sum <- state_param_sum %>% dplyr::group_by(Char_Name) %>% 
+  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
+
             "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
             Unassessed = sum(status_2015_2018 == "Unassessed"))%>% 
-  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
-  rename(Pollutant = Char_Name)
+  dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  dplyr::rename(Pollutant = Char_Name)
 
 # cat(tbls(name = "stn_sum", caption = "Summary of the status of stations across the state."))
 
@@ -941,7 +947,7 @@ knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table
 
 cat("\n\n")
 
-stn_sum_plot <- ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
+stn_sum_plot <- ggplot2::ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
   geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
   # geom_bar(aes(x = Char_Name, y = n_not_attaining, fill = "Not Attaining"), stat = "identity", position = "dodge")+
   # geom_bar(aes(x = Char_Name, y = n_unassessed, fill = "Unassessed"), stat = "identity", position = "dodge")+
@@ -963,15 +969,16 @@ cat("### Trend\n\n")
 
 cat(paste0("\n\nA summary of the trends across parameters is shown in ", tbls("stn_trend_sum", display = 'cite'),". Note that trend requires significantly more data than status and may result in many stations with sufficient data for assessing status, but insufficient data for assessing trend.\n\n"))
 
-stn_sum <- state_param_sum_stn %>% group_by(Char_Name) %>% 
-  summarise(Improving = sum(trend == "Improving"),
+stn_sum <- state_param_sum %>% dplyr::group_by(Char_Name) %>% 
+  dplyr::summarise(Improving = sum(trend == "Improving"),
+
             Degrading = sum(trend == "Degrading"),
             Steady = sum(trend == "Steady"),
             "No Significant Trend" = sum(trend == "No Significant Trend"),
             "Insufficient Data" = sum(trend == "Insufficient Data"),
   ) %>% 
-  mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
-  rename(Pollutant = Char_Name)
+  dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
+  dplyr::rename(Pollutant = Char_Name)
 
 # cat(tbls(name = "stn_trend_sum", caption = "Statewide summary of trends at stations across the state."))
 
@@ -984,7 +991,7 @@ cat("\n\n")
 # cat("## OWRI Watershed Restoration Actions")
 # cat("\n\n")
 
-# owri_basin <- owri_summary %>% group_by(ActivityType, Treatment_Unit) %>% summarise_at(colnames(owri_summary)[5:10], sum)
+# owri_basin <- owri_summary %>% dplyr::group_by(ActivityType, Treatment_Unit) %>% summarise_at(colnames(owri_summary)[5:10], sum)
 # action_df <- owri_basin[owri_basin$Total != 0,]
 # actions <- unique(action_df$ActivityType)
 # n_action <- length(actions)
