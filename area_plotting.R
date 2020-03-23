@@ -60,7 +60,7 @@ huc_names  <- stations_AWQMS %>%
   dplyr::select(-n) %>%
   as.data.frame()
 
-charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)", "pH", "Total suspended solids", "Phosphate-phosphorus",
+charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)", "pH", "Total suspended solids", odeqstatusandtrends::AWQMS_Char_Names('TP'),
                                   "Fecal Coliform", "Escherichia coli", "Enterococcus"),
                         folder = c("Temperature", "DO", "pH", "TSS", "TP", "Fecal_Coliform", "Ecoli", "Enterococcus"),
                         file = c("temp", "DO", "pH", "TSS", "TP", "FeColi", "Ecoli", "Enterococcus"),
@@ -141,15 +141,15 @@ for(pH_station in pH_stations){
 
 # Total Phosphorus plots --------------------------------------------------
 
-TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Phosphate-phosphorus",]$MLocID)
-seaKen_TP = seaKen %>% filter(Char_Name == "Phosphate-phosphorus", trend %in% c("Improving", "Degrading", "Steady"))
+TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'),]$MLocID)
+seaKen_TP = seaKen %>% filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), trend %in% c("Improving", "Degrading", "Steady"))
 TP_plots <- list()
 
 count <- 1
 for(TP_station in TP_stations){
   print(paste0("Plotting TP data for station: ", TP_station, " (", count, " of ", length(TP_stations), ")...",name))
   
-  plot_data <- data_assessed %>% filter(Char_Name == "Phosphate-phosphorus", MLocID == TP_station) %>% 
+  plot_data <- data_assessed %>% filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), MLocID == TP_station) %>% 
     mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == TP_station,]$AU_Name))
   
   huc <- unique(plot_data$HUC8)

@@ -39,11 +39,12 @@ library(Rcpp)
 
 # Inputs ----
 
+report_year <- '2019'
+
 start.date = "1999-01-01"
 end.date = "2018-12-30"
-web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # ----
@@ -54,7 +55,7 @@ query_dates <- c(start.date, end.date)
 HUC_shp <- readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08', integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 # HUC_shp <- HUC_shp[!(HUC_shp$REPORT %in% c("Klamath","Willamette")),]
 
-charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)", "pH", "Total suspended solids", "Phosphate-phosphorus",
+charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)", "pH", "Total suspended solids", odeqstatusandtrends::AWQMS_Char_Names('TP'),
                                   "Fecal Coliform", "Escherichia coli", "Enterococcus"),
                         folder = c("Temperature", "DO", "pH", "TSS", "TP", "Fecal_Coliform", "Ecoli", "Enterococcus"),
                         file = c("temp", "DO", "pH", "TSS", "TP", "FeColi", "Ecoli", "Enterococcus"),
@@ -94,16 +95,12 @@ for (name in report_names){
 
   print(paste0("Creating plots for the ", name, " Basin..."))
   
-  data_dir <- paste0(top_dir,'/2019-', name)
-  
+  data_dir <- paste0(top_dir,'/', report_year,'-', name)
+
   load(file = paste0(data_dir,'/', name,'_eval_date.RData'))
 
-  if(web_output) {
-    output_dir <- paste0(top_dir,'/wqst_2019/', name_abr)
-  } else {
-    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
-  }
-  
+  output_dir <- paste0(top_dir,'/wqst_map/', name_abr)
+
   plot_dir <- paste0(output_dir,'/Plots/')
   
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
@@ -192,15 +189,15 @@ for (name in report_names){
 
   # Total Phosphorus plots --------------------------------------------------
 
-  TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Phosphate-phosphorus",]$MLocID)
-  seaKen_TP = seaKen %>% filter(Char_Name == "Phosphate-phosphorus", trend %in% c("Improving", "Degrading", "Steady"))
+  TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'),]$MLocID)
+  seaKen_TP = seaKen %>% filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), trend %in% c("Improving", "Degrading", "Steady"))
   TP_plots <- list()
 
   count <- 1
   for(TP_station in TP_stations){
     print(paste0("Plotting TP data for station: ", TP_station, " (", count, " of ", length(TP_stations), ")...",name))
 
-    plot_data <- data_assessed %>% filter(Char_Name == "Phosphate-phosphorus", MLocID == TP_station) %>% 
+    plot_data <- data_assessed %>% filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), MLocID == TP_station) %>% 
       mutate(AU_Name = unique(param_sum_stn[param_sum_stn$MLocID == TP_station,]$AU_Name))
     
     huc <- unique(plot_data$HUC8)
@@ -284,19 +281,32 @@ for (name in report_names){
       if(dir.exists(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]))) {
       } else {dir.create(paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"]), recursive = TRUE)}
 
-      p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      # p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      
+      p_list <- odeqstatusandtrends::plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      
+      for(p in names(p_list)){
+        print(paste("Saving", p, "plot..."))
+        
+        ggsave(plot = p_list[[p]],
+               filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, "_", p, ".jpeg"),
+               device = "jpeg",
+               width = 8, height = 6)
+        
+        # DO_plots[[DO_station]] <- p
+      }
 
-      ggsave(plot = p,
-             filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
-             device = "jpeg",
-             width = 8, height = 6)
+      # ggsave(plot = p,
+      #        filename = paste0(plot_dir, subbasin, "/", charnames[charnames$awqms == bact_param, "folder"], "/", charnames[charnames$awqms == bact_param, "file"], "_", bact_station, ".jpeg"),
+      #        device = "jpeg",
+      #        width = 8, height = 6)
       count <- count + 1
 
-      bact_plots[[bact_station]] <- p
+      # bact_plots[[bact_station]] <- p
     }
   }
 
-  bact_plots[2]
+  # bact_plots[2]
 
   # Dissolved oxygen plots -------------------------------------------------------
 

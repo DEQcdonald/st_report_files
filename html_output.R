@@ -14,9 +14,9 @@ library(odeqstatusandtrends)
 
 # Inputs ----
 
-final_output <- TRUE
+report_year <- '2019'
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # Web Maps  -------------------------------------------
@@ -84,18 +84,14 @@ for (name in report_names){
 
   print(paste0("Creating parameter summary map for the ", name, " Basin..."))
   
-  data_dir <- paste0(top_dir,'/2019-', name)
+  data_dir <- paste0(top_dir,'/', report_year,'-', name)
   
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   
-  if(final_output) {
-    if(dir.exists(paste0(top_dir,'/wqst_2019'))) {
-    } else {dir.create(paste0(top_dir,'/wqst_2019'))}
-    output_dir <- paste0(top_dir,'/wqst_2019/', name_abr)
-  } else {
-    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
-  }
-  
+  if(dir.exists(paste0(top_dir,'/wqst_map'))) {
+  } else {dir.create(paste0(top_dir,'/wqst_map'))}
+  output_dir <- paste0(top_dir,'/wqst_map/', name_abr)
+
   if(dir.exists(output_dir)) {
   } else {dir.create(output_dir)}
   
@@ -114,7 +110,8 @@ for (name in report_names){
     
     print(paste0(m, "..."))
     
-    map <- odeqstatusandtrends::parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, area = report_shp[report_shp$MAP == m,])
+    map <- odeqstatusandtrends::parameter_summary_map(param_summary = param_sum_stn, au_param_summary = param_sum_au, 
+                                                      area = report_shp[report_shp$MAP == m,], proj_dir = output_dir)
     
     htmlwidgets::saveWidget(map, paste0(output_dir, "/", m_abr, "_map.html"),
                             title = paste(m, "Status and Trends Map"),

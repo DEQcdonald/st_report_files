@@ -31,16 +31,18 @@ library(Rcpp)
 # Inputs ----
 
 start.date = "1999-01-01"
-end.date = "2018-12-30"
+end.date = "2018-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
 # ----
 
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
+start_year <- min(complete.years)
+end_year <- max(complete.years)
 
 query_dates <- c(start.date, end.date)
 
@@ -57,12 +59,8 @@ au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
 
 missing_AUs <- NULL
 wqp_stns <- NULL
-state_param_sum_au <- NULL
-state_param_sum_stn <- NULL
-state_org_sums <- NULL
-state_station_sums <- NULL
-state_param_sum_stn_data <- NULL
-state_param_sum_au_data <- NULL
+state_param_sum_au <- data.frame()
+state_param_sum_stn <- data.frame()
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -78,7 +76,7 @@ for (name in report_names){
   } else {dir.create(data_dir)}
 
   eval_date <- Sys.Date()
-  save(eval_date, file = paste0(data_dir, name, "_eval_date.RData"))
+  save(eval_date, file = paste0(data_dir, "/", name, "_eval_date.RData"))
 
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
 
@@ -95,18 +93,18 @@ for (name in report_names){
   stations_wqp <- get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
 
-  if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
-    print("Add these stations to the Stations Database:")
-    print(stations_wqp)
-    wqp_stns <- dplyr::bind_rows(wqp_stns, stations_wqp)
-  } else {stations_wqp <- NULL}
+  # if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
+  #   print("Add these stations to the Stations Database:")
+  #   print(stations_wqp)
+  #   wqp_stns <- dplyr::bind_rows(wqp_stns, stations_wqp)
+  # } else {stations_wqp <- NULL}
 
   if(file.exists(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))){
     load(paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   } else {
     data_raw <- GetData(parameters = c("Temperature", "Bacteria", "TSS", "DO", "TP", "pH"),
                         stations_AWQMS = stations_AWQMS,
-                        stations_WQP = stations_wqp,
+                        # stations_WQP = stations_wqp,
                         start.date = start.date,
                         end.date = end.date,
                         huc8 = hucs)
@@ -140,7 +138,9 @@ for (name in report_names){
   data_assessed <- NULL
   status <- NULL
   excur_stats <- NULL
+  stat_summary <- NULL
   trend <- NULL
+  data_clean$Spawn_type <- NA
   
   # pH ----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('pH'))){
@@ -150,7 +150,7 @@ for (name in report_names){
     data_pH <- odeqassessment::pH_assessment(data_pH)
     data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_pH)
 
     pH_status <- odeqstatusandtrends::status_stns(df=data_pH)
@@ -172,7 +172,7 @@ for (name in report_names){
     data_temp <- odeqassessment::temp_assessment(data_temp)
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
                                                                    periods=4, 
-                                                                   year_range = c(start_year:end_year))
+                                                                   year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_temp)
 
     temp_status <- odeqstatusandtrends::status_stns(data_temp)
@@ -188,12 +188,12 @@ for (name in report_names){
   # TP -----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
-    data_TP <- data_clean %>% dplyr::filter(Char_Name == "Phosphate-phosphorus")
+    data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "TP_crit")
     data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TP)
 
     TP_status <- odeqstatusandtrends::status_stns(df =data_TP)
@@ -214,7 +214,7 @@ for (name in report_names){
     data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
                                                                   periods=4, 
-                                                                  year_range = c(start_year:end_year))
+                                                                  year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TSS)
 
     TSS_status <- odeqstatusandtrends::status_stns(df=data_TSS)
@@ -239,7 +239,7 @@ for (name in report_names){
     data_bact <- dplyr::bind_rows(data_ent, data_eco, data_shell)
     data_bact$status_period <- odeqstatusandtrends::status_periods(datetime = data_bact$sample_datetime, 
                                                                    periods=4, 
-                                                                   year_range = c(start_year:end_year))
+                                                                   year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_bact)
 
     bact_status <- odeqstatusandtrends::status_stns(data_bact)
@@ -260,7 +260,7 @@ for (name in report_names){
     data_DO <-  odeqassessment::DO_assessment(data_DO)
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
                                                                  periods=4, 
-                                                                 year_range = c(start_year:end_year))
+                                                                 year_range = c(start_year, end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_DO)
 
     DO_status <- odeqstatusandtrends::status_stns(data_DO)
@@ -272,11 +272,13 @@ for (name in report_names){
     DO_trend <- odeqstatusandtrends::trend_stns(data_DO)
     trend <- dplyr::bind_rows(trend, DO_trend)
   }
+  
+  stat_summary <- odeqstatusandtrends::summary_stats(data_assessed)
 
   print(paste0("Saving assessed data..."))
 
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
-  save(status, trend, excur_stats, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
+  save(status, trend, excur_stats, stat_summary, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
 
   # Assess trends -----------------------------------------------------------
 
@@ -321,8 +323,15 @@ for (name in report_names){
                      Organizations = paste(unique(Org_Name), collapse = ", "))
   param_sum_au <- odeqstatusandtrends::parameter_summary_by_au(status, seaKen, stations_AWQMS)
   param_sum_au <- merge(param_sum_au, au_orgs, by = c("Char_Name", "AU_ID"), all.x = TRUE, all.y = FALSE)
+  
+  state_param_sum_stn <- rbind(state_param_sum_stn, param_sum_stn)	
+  state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
 
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
 }
+
+save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	
+save(state_param_sum_au, file = paste0(top_dir, "/Oregon_param_summary_by_AU.RData"))
+
