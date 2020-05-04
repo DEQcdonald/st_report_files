@@ -131,7 +131,8 @@ for (name in report_names){
   # Clean data and add criteria ---------------------------------------------
 
   data_clean <- CleanData(data_raw)
-  data_clean <- add_criteria(data_clean)
+  # add geoID
+  # add TMDL ID
 
   # Assess various parameters -----------------------------------------------
 
@@ -146,6 +147,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('pH'))){
     print("Assessing pH...")
     data_pH <- data_clean %>% dplyr::filter(Char_Name == "pH")
+    data_pH <- add_criteria(data_pH)
     data_pH <- odeqassessment::Censored_data(data_pH, criteria = 'pH_Min')
     data_pH <- odeqassessment::pH_assessment(data_pH)
     data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
@@ -168,6 +170,7 @@ for (name in report_names){
      any(unique(data_clean[data_clean$Char_Name == "Temperature, water",]$Statistical_Base) %in% "7DADM")){
     print("Assessing temperature...")
     data_temp <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
+    data_temp <- add_criteria(data_temp)
     data_temp <- odeqassessment::Censored_data(data_temp, criteria = "temp_crit")
     data_temp <- odeqassessment::temp_assessment(data_temp)
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
@@ -189,6 +192,8 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
+    # data_TP <- add_criteria(data_TP)
+    
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "TP_crit")
     data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
@@ -210,6 +215,8 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
+    # data_TSS <- add_criteria(data_TSS)
+
     data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "TSS_crit")
     data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
@@ -231,6 +238,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('bacteria'))){
     print("Assessing bacteria...")
     data_bact <- data_clean %>% dplyr::filter(Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names('bacteria'))
+    data_bact <- add_criteria(data_bact)
     data_bact <- data_bact %>% dplyr::mutate(bact_crit_min = pmin(bact_crit_ss, bact_crit_geomean, bact_crit_percent, na.rm = TRUE))
     data_bact <- odeqassessment::Censored_data(data_bact, criteria = "bact_crit_min")
     data_ent <- odeqassessment::Coastal_Contact_rec(data_bact)
@@ -256,6 +264,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('DO'))){
     print("Assessing dissolved oxygen...")
     data_DO <- data_clean %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)", "Dissolved oxygen saturation", "Temperature, water"))
+    data_DO <- add_criteria(data_DO)
     data_DO <- odeqassessment::Censored_data(data_DO, criteria = "DO_crit_min")
     data_DO <-  odeqassessment::DO_assessment(data_DO)
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
