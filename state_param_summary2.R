@@ -30,11 +30,11 @@ library(Rcpp)
 
 # Inputs ----
 
-start.date = "1999-01-01"
-end.date = "2018-12-31"
+start.date = "2000-01-01"
+end.date = "2019-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -70,7 +70,7 @@ for (name in report_names){
 
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
 
-  data_dir <- paste0(top_dir,'/2019-', name)
+  data_dir <- paste0(top_dir,'/2020-', name)
 
   if(dir.exists(data_dir)) {
   } else {dir.create(data_dir)}
@@ -111,9 +111,6 @@ for (name in report_names){
 
     print(paste0("Saving raw data from query..."))
 
-    save(data_raw, file = paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
-  }
-
   data_raw[, c("StationDes", "HUC8", "HUC8_Name", "HUC10", "HUC12", "HUC12_Name",
                "Lat_DD", "Long_DD", "Reachcode", "Measure", "AU_ID", 141:149)] <-
     stations_AWQMS[match(data_raw$MLocID, stations_AWQMS$MLocID),
@@ -127,6 +124,9 @@ for (name in report_names){
 
   stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID),
                                      c("AU_Name")]
+  
+  save(data_raw, file = paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
+  }
 
   # Clean data and add criteria ---------------------------------------------
 
@@ -171,8 +171,18 @@ for (name in report_names){
     print("Assessing temperature...")
     data_temp <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
     data_temp <- add_criteria(data_temp)
+
     data_temp <- odeqassessment::Censored_data(data_temp, criteria = "temp_crit")
     data_temp <- odeqassessment::temp_assessment(data_temp)
+    
+    data_temp_dmax <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "Maximum")
+    if(nrow(data_temp_dmax) > 0){
+      data_temp_dmax <- which_target_df(data_temp_dmax, all_obs = FALSE)
+      data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "target_value")
+      data_temp_dmax <- target_assessment(data_temp_dmax)
+      data_temp <- bind_rows(data_temp, data_temp_dmax)
+    }
+    
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
                                                                    periods=4, 
                                                                    year_range = c(start_year,end_year))
@@ -192,9 +202,12 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
-    # data_TP <- add_criteria(data_TP)
+    data_TP <- which_target_df(data_TP)
     
-    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "TP_crit")
+    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
+    
+    data_TP <- target_assessment(data_TP)
+    
     data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
                                                                  periods=4, 
@@ -215,9 +228,12 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
-    # data_TSS <- add_criteria(data_TSS)
+    data_TSS <- which_target_df(data_TSS)
 
-    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "TSS_crit")
+    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "target_value")
+    
+    data_TSS <- target_assessment(data_TSS)
+    
     data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
                                                                   periods=4, 
