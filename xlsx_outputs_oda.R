@@ -100,7 +100,7 @@ for (name in report_names){
   load(file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   load(file = paste0(data_dir, "/", name, "_eval_date.RData"))
   load(file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-
+  
   bins <- odeqstatusandtrends::status_periods(datetime=data_assessed$sample_datetime, year_range=c(min(complete.years), max(complete.years)), bins_only = TRUE)
   
   df.oda1 <- excur_stats %>%
@@ -120,12 +120,12 @@ for (name in report_names){
       dplyr::rename(status=contains("status")) %>%
       dplyr::mutate(Char_Name=gsub(Char_Name,pattern=" (DO)",replacement = "", fixed=TRUE),
                     status_period=gsub(gsub(bins[1], pattern="status_", replacement = ""),pattern="_", replacement = "-"),
-                    excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
+                    excursion_min=dplyr::if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
                     excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), excursion_median),
-                    excursion_max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), excursion_max),
-                    min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(min, 1), min),
-                    median=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(median, 1), median),
-                    max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(max, 1), max))
+                    excursion_max=dplyr::if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), excursion_max),
+                    min=dplyr::if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(min, 1), min),
+                    median=dplyr::if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(median, 1), median),
+                    max=dplyr::if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(max, 1), max))
     
     df.oda3 <- df.oda2 %>%
       dplyr::filter(!is.na(results_n)) %>%
