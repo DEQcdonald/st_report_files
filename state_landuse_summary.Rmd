@@ -43,8 +43,8 @@ nlcd_huc8_df <- read.csv(paste0(lu_dir,"/Lookups_Statewide/NLCD_2016_LU_sqm_by_H
 
 #Reclass the NLCD
 landuse.huc8.df <- nlcd_huc8_df %>% 
-  filter(ReportUnit %in% name) %>% 
-  group_by(HUC_8_NAME) %>% 
+  dplyr::filter(ReportUnit %in% name) %>% 
+  dplyr::group_by(HUC_8_NAME) %>% 
   dplyr::summarise(WsAreaSqKm = round(sum(VALUE_11,VALUE_12,
                                           VALUE_21,VALUE_22,VALUE_23,VALUE_24,
                                           VALUE_31,VALUE_41,VALUE_42,VALUE_43,
@@ -68,7 +68,7 @@ landuse.huc8.df <- nlcd_huc8_df %>%
                                           VALUE_95) * 0.001 / WsAreaSqKm * 100, 1))
 
 landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_names$HUC8),]$HUC8_Name
-landuse.huc8.df <- landuse.huc8.df %>% filter(!is.na(HUC_8_NAME))
+landuse.huc8.df <- landuse.huc8.df %>% dplyr::filter(!is.na(HUC_8_NAME))
 
 colnames(landuse.huc8.df) <- c("Subbasin", "Watershed Area (km2)", "% Urban/Roads", "% Forest", "% Cultivated"," % Range/Forest Disturbance", " %Other")
 

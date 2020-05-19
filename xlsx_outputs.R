@@ -87,12 +87,12 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="BlackRock",
 #name <- "Umatilla-Walla Walla-Willow"
 
 for (name in report_names){
-
+  
   name_abr <- report_name_abr[[name]]
   a.letter <- appendix_letter[[name]]
   xlsx_name <- gsub(" ", "", paste0("Appendix",a.letter,name_abr,".xlsx"), fixed=TRUE)
   xlsx_name <- gsub("-","",xlsx_name, fixed=TRUE)
-
+  
   if(final_output) {
     output_dir <- paste0(top_dir,'/Statewide Report')
   } else {
@@ -100,7 +100,7 @@ for (name in report_names){
   }
   data_dir <- paste0(top_dir,'/2019-', name)
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
-
+  
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
   
   stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID),
@@ -128,13 +128,13 @@ for (name in report_names){
   if(file.exists(paste0(data_dir, "/", name, "_seaken.RData"))){
     load(file = paste0(data_dir, "/", name, "_seaken.RData"))
   } else {seaKen <- data.frame()}
-
+  
   # Create summary table ------------------------------------------------------
-
+  
   print(paste0("Saving parameter summary tables..."))
   
   #-- Trend Stats ----------------------------  
-
+  
   if(is.null(seaKen) | nrow(seaKen)==0){
     seaKen <- data.frame(Comment = "There were no stations with data that qualified for trend analysis")
   } else {
@@ -186,7 +186,7 @@ for (name in report_names){
   colnames(excur_stats) <- gsub(" N ", " n ", colnames(excur_stats), perl = TRUE)
   
   #-- Station Summary ---------------------------
-
+  
   param_sum_stn <- param_sum_stn %>%
     dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
     dplyr::select('Station ID' = MLocID,
@@ -201,11 +201,11 @@ for (name in report_names){
                   "Sampling Organizations" = Organizations,
                   grep('status', colnames(param_sum_stn), value = TRUE),
                   'Trend' = trend)
-
+  
   colnames(param_sum_stn) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(param_sum_stn), perl = TRUE)
   colnames(param_sum_stn) <- gsub("_", " ", colnames(param_sum_stn), perl = TRUE)
   colnames(param_sum_stn) <- sapply(colnames(param_sum_stn), simpleCap, USE.NAMES = FALSE)
-
+  
   #-- AU Summary ---------------------------
   
   param_sum_au <- param_sum_au %>%
@@ -218,13 +218,13 @@ for (name in report_names){
                   "Sampling Organizations" = Organizations,
                   grep('status', colnames(param_sum_au), value = TRUE)
     )
-
+  
   colnames(param_sum_au) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(param_sum_au), perl = TRUE)
   colnames(param_sum_au) <- gsub("_", " ", colnames(param_sum_au), perl = TRUE)
   colnames(param_sum_au) <- sapply(colnames(param_sum_au), simpleCap, USE.NAMES = FALSE)
-
-# -- Results by Org --------------------  
-
+  
+  # -- Results by Org --------------------  
+  
   org_sums <- data_assessed %>%
     dplyr::mutate(Basin = name) %>%
     dplyr::group_by(Org_Name, Basin) %>%
@@ -238,14 +238,14 @@ for (name in report_names){
                      'Fecal Coliform Results' = sum(Char_Name == "Fecal Coliform"),
                      'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>%
     dplyr::rename('Sampling Organization' = Org_Name)
-
-#-- Results by Year ---------------------  
-
+  
+  #-- Results by Year ---------------------  
+  
   station_sums <- data_assessed %>%
     dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
     dplyr::mutate(#Basin = name,
-                  Year = lubridate::year(sample_datetime),
-                  HUC8_Name = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>%
+      Year = lubridate::year(sample_datetime),
+      HUC8_Name = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>%
     dplyr::group_by(MLocID, StationDes, HUC8_Name, HUC8, PlanName, AU_ID, Char_Name, Year) %>%
     dplyr::summarise(Results = n()) %>%
     tidyr::pivot_wider(names_from = "Year", values_from = "Results") %>%
@@ -257,7 +257,7 @@ for (name in report_names){
                   "Parameter" = Char_Name)
   
   #-- Notes ---------------------------
-
+  
   Notes <- data.frame(stringsAsFactors=FALSE,
                       Table=c(paste0("Table ",a.letter,"-", seq(1,7, by=1),"      ")),
                       Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
@@ -271,12 +271,12 @@ for (name in report_names){
                                            name,
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
                                     "Number of results per year for monitoring stations that fit the criteria to assess status or trends."
-                                    ))
+                      ))
   
   # Creating appendices -------------------------------------------
-
+  
   print("Creating Appendices...")
-
+  
   xlsx_list <- list(Notes, param_sum_stn, param_sum_au, excur_stats, seaKen, owri_summary, org_sums, station_sums)
   names(xlsx_list) <- c("Notes",
                         paste0("Table_",a.letter,"1_Station_Summary"),
@@ -286,7 +286,7 @@ for (name in report_names){
                         paste0("Table_",a.letter,"5_OWRI_Summary"),
                         paste0("Table_",a.letter,"6_Results_by_Org"),
                         paste0("Table_",a.letter,"7_Results_by_Year"))
-
+  
   openxlsx::write.xlsx(xlsx_list,
                        file=paste0(output_dir, "/", xlsx_name),
                        colWidths="auto",
@@ -313,7 +313,7 @@ for (name in report_names){
                        style=openxlsx::createStyle(valign = "top", fontName = "Arial", fontSize = 10))
     
   }
-    
+  
   openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
   
   openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
@@ -332,5 +332,5 @@ for (name in report_names){
                         width = 1.07, height = 1.57, units="in")
   
   openxlsx::saveWorkbook(wb, file=paste0(output_dir, "/", xlsx_name), overwrite = TRUE)
-    
+  
 }
