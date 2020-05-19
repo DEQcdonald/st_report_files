@@ -87,10 +87,13 @@ for (name in report_names){
 
   hucs <- unique(basin_shp$HUC_8)
 
-  stations_AWQMS <- get_stations_AWQMS(basin_shp)
+  stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
   missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
+  
+  stations_log <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "OrgID")], missing_AUs[,c("MLocID", "OrgID")])
+  stations_log$missing_au <- dplyr::if_else(stations_log$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
 
-  stations_wqp <- get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
+  stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
 
   # if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
@@ -127,10 +130,12 @@ for (name in report_names){
   
   save(data_raw, file = paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   }
+  
+  stations_log$no_data <- dplyr::if_else(!stations_log$MLocID %in% unique(data_raw$MLocID) & !stations_log$missing_au, TRUE, FALSE)
 
   # Clean data and add criteria ---------------------------------------------
 
-  data_clean <- CleanData(data_raw)
+  data_clean <- odeqstatusandtrends::CleanData(data_raw)
   # add geoID
   # add TMDL ID
 
