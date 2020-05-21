@@ -6,6 +6,8 @@ library(dplyr)
 library(odeqstatusandtrends)
 # devtools::install_github('donco/odeqassessment', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(odeqassessment)
+# devtools::install_github('donco/odeqtmdl', host = 'https://api.github.com', force = TRUE, upgrade='never')
+library(odeqtmdl)
 # devtools::install_github('rmichie/wqdb/wqdb', host = 'https://api.github.com', force = TRUE, upgrade='never')
 # library(wqdb)
 # devtools::install_github('rmichie/owri/owri', host = 'https://api.github.com', upgrade='never')
@@ -61,6 +63,9 @@ missing_AUs <- NULL
 wqp_stns <- NULL
 state_param_sum_au <- data.frame()
 state_param_sum_stn <- data.frame()
+state_stations_dropped <- NULL
+state_data_dropped <- NULL
+state_status_reason <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -90,8 +95,8 @@ for (name in report_names){
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
   missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
   
-  stations_log <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "OrgID")], missing_AUs[,c("MLocID", "OrgID")])
-  stations_log$missing_au <- dplyr::if_else(stations_log$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
+  stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "OrgID")], missing_AUs[,c("MLocID", "OrgID")])
+  stations_dropped$missing_au <- dplyr::if_else(stations_dropped$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
 
   stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
@@ -125,17 +130,18 @@ for (name in report_names){
     data_raw$ELEV_Ft <- stations_AWQMS[match(data_raw$MLocID, stations_AWQMS$MLocID),
                                        c("ELEV_Ft")]
     
-    stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID),
-                                       c("AU_Name")]
-    
     save(data_raw, file = paste0(data_dir, "/", name, "_data_raw_", start.date, "-", end.date, ".RData"))
   }
+  
+  stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID), c("AU_Name")]
 
-  stations_log$no_data <- dplyr::if_else(!stations_log$MLocID %in% unique(data_raw$MLocID) & !stations_log$missing_au, TRUE, FALSE)
+  stations_dropped$no_data <- dplyr::if_else(!stations_dropped$MLocID %in% unique(data_raw$MLocID) & !stations_dropped$missing_au, TRUE, FALSE)
 
   # Clean data and add criteria ---------------------------------------------
-
+  data_dropped <- NULL
   data_clean <- odeqstatusandtrends::CleanData(data_raw)
+  data_dropped$HUC8 <- as.character(data_dropped$HUC8)
+  data_dropped$HUC12 <- as.character(data_dropped$HUC12)
   # add geoID
   # add TMDL ID
   
@@ -147,6 +153,7 @@ for (name in report_names){
   stat_summary <- NULL
   trend <- NULL
   data_clean$Spawn_type <- NA
+  status_reason <- NULL
   
   # pH ----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('pH'))){
@@ -181,7 +188,7 @@ for (name in report_names){
     data_temp <- odeqassessment::temp_assessment(data_temp)
     
     data_temp_dmax <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "Maximum")
-    if(nrow(data_temp_dmax) > 0){
+    if(any(data_temp_dmax$Reachcode %in% odeqtmdl::tmdl_db[tmdl_db$pollutant_name_AWQMS == "Temperature, water",]$ReachCode)){
       data_temp_dmax <- which_target_df(data_temp_dmax, all_obs = FALSE)
       data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "target_value")
       data_temp_dmax <- target_assessment(data_temp_dmax)
@@ -213,7 +220,7 @@ for (name in report_names){
     
     data_TP <- target_assessment(data_TP)
     
-    data_TP <- odeqassessment::TP_assessment(data_TP)
+    # data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
                                                                  periods=4, 
                                                                  year_range = c(start_year,end_year))
@@ -239,7 +246,7 @@ for (name in report_names){
     
     data_TSS <- target_assessment(data_TSS)
     
-    data_TSS <- odeqassessment::TSS_assessment(data_TSS)
+    # data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
                                                                   periods=4, 
                                                                   year_range = c(start_year,end_year))
@@ -356,12 +363,17 @@ for (name in report_names){
   
   state_param_sum_stn <- rbind(state_param_sum_stn, param_sum_stn)	
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
+  state_stations_dropped <- dplyr::bind_rows(state_stations_dropped, stations_dropped)
+  state_data_dropped <- dplyr::bind_rows(state_data_dropped, data_dropped)
+  state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
+  save(stations_dropped, data_dropped, status_reason, file = paste0(data_dir, "/", name, "_drop_info.RData"))
 }
 
 save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	
 save(state_param_sum_au, file = paste0(top_dir, "/Oregon_param_summary_by_AU.RData"))
+save(state_stations_dropped, state_data_dropped, state_status_reason, file = paste0(top_dir, "/Oregon_drop_info.RData"))
 
