@@ -63,8 +63,7 @@ missing_AUs <- NULL
 wqp_stns <- NULL
 state_param_sum_au <- data.frame()
 state_param_sum_stn <- data.frame()
-state_stations_dropped <- NULL
-state_data_dropped <- NULL
+state_drop_summary <- NULL
 state_status_reason <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
@@ -140,8 +139,7 @@ for (name in report_names){
   # Clean data and add criteria ---------------------------------------------
   data_dropped <- NULL
   data_clean <- odeqstatusandtrends::CleanData(data_raw)
-  data_dropped$HUC8 <- as.character(data_dropped$HUC8)
-  data_dropped$HUC12 <- as.character(data_dropped$HUC12)
+  drop_summary <- merge(stations_dropped, data_dropped, by = c("MLocID"), all = TRUE)
   # add geoID
   # add TMDL ID
   
@@ -316,6 +314,7 @@ for (name in report_names){
   
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   save(status, trend, excur_stats, stat_summary, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
+  rm(data_temp, data_DO, data_TSS, data_TP, data_pH, data_bact, data_temp_dmax)
   
   # Assess trends -----------------------------------------------------------
   
@@ -363,17 +362,20 @@ for (name in report_names){
   
   state_param_sum_stn <- rbind(state_param_sum_stn, param_sum_stn)	
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
-  state_stations_dropped <- dplyr::bind_rows(state_stations_dropped, stations_dropped)
-  state_data_dropped <- dplyr::bind_rows(state_data_dropped, data_dropped)
+  state_drop_summary <- dplyr::bind_rows(state_drop_summary, drop_summary)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
-  save(stations_dropped, data_dropped, status_reason, file = paste0(data_dir, "/", name, "_drop_info.RData"))
+  save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
+  save(status_reason, file = paste0(data_dir, "/", name, "_status_reason.RData"))
+  rm(data_assessed, seaken_data)
+  gc()
 }
 
 save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	
 save(state_param_sum_au, file = paste0(top_dir, "/Oregon_param_summary_by_AU.RData"))
-save(state_stations_dropped, state_data_dropped, state_status_reason, file = paste0(top_dir, "/Oregon_drop_info.RData"))
+save(state_drop_summary, state_status_reason, file = paste0(top_dir, "/Oregon_drop_summary.RData"))
+save(state_status_reason, file = paste0(top_dir, "/Oregon_status_reason.RData"))
 
