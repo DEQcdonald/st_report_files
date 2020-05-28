@@ -10,14 +10,14 @@ library(sf)
 library(base64enc)
 
 # Inputs ----
-start.date = "1999-01-01"
-end.date = "2018-12-31"
-
-report_name <- "2019 Oregon Statewide Status and Trend Report"
+start.date = "2000-01-01"
+end.date = "2020-12-31"
+year = 2020
+report_name <- paste0(year, " Oregon Statewide Status and Trend Report")
 
 final_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
@@ -96,9 +96,9 @@ for (name in report_names){
   if(final_output) {
     output_dir <- paste0(top_dir,'/Statewide Report')
   } else {
-    output_dir <- paste0(data_dir,'/WQST_2019-',name,'_DRAFT_', eval_date)
+    output_dir <- paste0(data_dir,'/WQST_', year, '-', name,'_DRAFT_', eval_date)
   }
-  data_dir <- paste0(top_dir,'/2019-', name)
+  data_dir <- paste0(top_dir,'/', year, '-', name)
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
@@ -124,6 +124,8 @@ for (name in report_names){
   load(file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   load(file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   load(file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
+  load(file = paste0(data_dir, "/", name, "_drop_summary.RData"))
+  load(file = paste0(data_dir, "/", name, "_status_reason.RData"))
   
   if(file.exists(paste0(data_dir, "/", name, "_seaken.RData"))){
     load(file = paste0(data_dir, "/", name, "_seaken.RData"))
@@ -272,12 +274,66 @@ for (name in report_names){
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
                                     "Number of results per year for monitoring stations that fit the criteria to assess status or trends."
                       ))
+
+# Dropped data summary ----------------------------------------------------
+
+  stations_AWQMS <- bind_rows(stations_AWQMS, missing_au)
+  
+  drop_summary <- drop_summary %>% 
+    dplyr::select(-OrgID) %>%
+    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
+    dplyr::left_join(stations_AWQMS, by = "MLocID") %>% 
+    dplyr::select('Station ID' = MLocID,
+                  'Station Name' = StationDes,
+                  "Subbasin Name" = HUC8_Name,
+                  HUC8,
+                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Assessment Unit ID' = AU_ID,
+                  "Latitude" = Lat_DD,
+                  "Longitude" = Long_DD,
+                  "Parameter" = Char_Name,
+                  "Sampling Organization ID" = OrgID,
+                  "Missing AU ID" = missing_au,
+                  "No Available Data" = no_data,
+                  "Data Start" = min_date,
+                  "Data End" = max_date,
+                  "Low Grade Observations" = low_grade,
+                  "Observations Missing Timestamp" = missing_datetime
+    )
+  
+  colnames(drop_summary) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(drop_summary), perl = TRUE)
+  colnames(drop_summary) <- gsub("_", " ", colnames(drop_summary), perl = TRUE)
+  colnames(drop_summary) <- sapply(colnames(drop_summary), simpleCap, USE.NAMES = FALSE)
+
+# Unassessed status reasoning ---------------------------------------------
+
+  status_reason <- status_reason %>%
+    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
+    dplyr::left_join(stations_AWQMS, by = "MLocID") %>% 
+    dplyr::select('Station ID' = MLocID,
+                  'Station Name' = StationDes,
+                  "Subbasin Name" = HUC8_Name,
+                  HUC8,
+                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Assessment Unit ID' = AU_ID,
+                  "Latitude" = Lat_DD,
+                  "Longitude" = Long_DD,
+                  "Parameter" = Char_Name,
+                  "Sampling Organization ID" = OrgID,
+                  "Status Period" = status_period,
+                  status,
+                  reason
+    )
+  
+  colnames(status_reason) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(status_reason), perl = TRUE)
+  colnames(status_reason) <- gsub("_", " ", colnames(status_reason), perl = TRUE)
+  colnames(status_reason) <- sapply(colnames(status_reason), simpleCap, USE.NAMES = FALSE)
   
   # Creating appendices -------------------------------------------
   
   print("Creating Appendices...")
   
-  xlsx_list <- list(Notes, param_sum_stn, param_sum_au, excur_stats, seaKen, owri_summary, org_sums, station_sums)
+  xlsx_list <- list(Notes, param_sum_stn, param_sum_au, excur_stats, seaKen, owri_summary, org_sums, station_sums, drop_summary, status_reason)
   names(xlsx_list) <- c("Notes",
                         paste0("Table_",a.letter,"1_Station_Summary"),
                         paste0("Table_",a.letter,"2_AU_Summary"),
@@ -285,15 +341,17 @@ for (name in report_names){
                         paste0("Table_",a.letter,"4_Trend_Stats"),
                         paste0("Table_",a.letter,"5_OWRI_Summary"),
                         paste0("Table_",a.letter,"6_Results_by_Org"),
-                        paste0("Table_",a.letter,"7_Results_by_Year"))
+                        paste0("Table_",a.letter,"7_Results_by_Year"),
+                        paste0("Table_",a.letter,"8_Dropped_Data_Summary"),
+                        paste0("Table_",a.letter,"9_Status_Reason"))
   
   openxlsx::write.xlsx(xlsx_list,
                        file=paste0(output_dir, "/", xlsx_name),
                        colWidths="auto",
-                       firstActiveRow=c(12,2,2,2,2,2,2,2), 
-                       firstRow=c(FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
-                       rowNames=c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE), borders="rows",
-                       startCol=c(2,1,1,1,1,1,1,1), startRow=c(11,1,1,1,1,1,1,1),
+                       firstActiveRow=c(12,2,2,2,2,2,2,2,2,2), 
+                       firstRow=c(FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
+                       rowNames=c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE), borders="rows",
+                       startCol=c(2,1,1,1,1,1,1,1,1,1), startRow=c(11,1,1,1,1,1,1,1,1,1),
                        headerStyle=openxlsx::createStyle(fgFill = "#000000", halign = "LEFT", textDecoration = "Bold",
                                                          wrapText = TRUE, border = "Bottom", fontColour = "white",
                                                          fontName = "Arial", fontSize = 10))
@@ -302,7 +360,7 @@ for (name in report_names){
   
   openxlsx::modifyBaseFont(wb, fontSize = 10, fontName = "Arial")
   
-  for (sheet_name in names(xlsx_list[2:8])) {
+  for (sheet_name in names(xlsx_list[2:10])) {
     
     openxlsx::setColWidths(wb, sheet=sheet_name, cols=c(1:ncol(xlsx_list[[sheet_name]])), widths = "auto")
     
