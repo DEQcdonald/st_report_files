@@ -310,11 +310,11 @@ for (name in report_names){
                   'Agricultural Water Quality Management Area'=PlanName,
                   'Assessment Unit ID' = AU_ID,
                   "Parameter" = Char_Name)
-  
+
   #-- Notes ---------------------------
   
   Notes <- data.frame(stringsAsFactors=FALSE,
-                      Table=c(paste0("Table ",a.letter,"-", seq(1,7, by=1),"      ")),
+                      Table=c(paste0("Table ",a.letter,"-", seq(1,9, by=1),"      ")),
                       Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
                                            name,"."),
                                     paste0("Water quality status results for Assessment Units within the ", name,"."),
@@ -331,10 +331,12 @@ for (name in report_names){
                                     paste0("Summary of organizations that collected data in the ", 
                                            name,
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
-                                    "Number of results per year for monitoring stations that fit the criteria to assess status or trends."
-                                    )
+                                    "Number of results per year for monitoring stations that fit the criteria to assess status or trends.",
+                                    "NEED TO DESCRIBE THIS TABLE",
+                                    "NEED TO DESCRIBE THIS TABLE"
                       )
-
+  ) 
+   
 # Dropped data summary ----------------------------------------------------
 
   stations_AWQMS <- bind_rows(stations_AWQMS, missing_au)
@@ -393,7 +395,7 @@ for (name in report_names){
   
   print("Creating Appendices...")
   
-  xlsx_list <- list(Notes, param_sum_stn, param_sum_au, excur_stats, seaKen, owri_summary, org_sums, station_sums, drop_summary, status_reason)
+  xlsx_list <- list(Notes, param_sum_stn, param_sum_au, excur_stats_all, seaKen, owri_summary, org_sums, station_sums, drop_summary, status_reason)
   names(xlsx_list) <- c("Notes",
                         paste0("Table_",a.letter,"1_Station_Summary"),
                         paste0("Table_",a.letter,"2_AU_Summary"),
