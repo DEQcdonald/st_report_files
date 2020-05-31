@@ -11,7 +11,7 @@ library(base64enc)
 
 # Inputs ----
 start.date = "2000-01-01"
-end.date = "2020-12-31"
+end.date = "2019-12-31"
 year = 2020
 report_name <- paste0(year, " Oregon Statewide Status and Trend Report")
 
