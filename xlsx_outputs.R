@@ -160,32 +160,85 @@ for (name in report_names){
     
   }
   
-  #-- Exursion Stats -----------------------
+  #-- Excursion Stats -----------------------
   
-  excur_stats <- excur_stats %>%
-    dplyr::left_join(stations_AWQMS, by="MLocID") %>%
-    dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
-    dplyr::select('Station ID' = MLocID,
-                  'Station Name' = StationDes,
-                  "Subbasin Name" = HUC8_Name,
-                  HUC8,
-                  "Agricultural Water Quality Management Area"=PlanName,
-                  'Assessment Unit ID' = AU_ID,
-                  "Latitude" = Lat_DD,
-                  "Longitude" = Long_DD,
-                  "Parameter" = Char_Name,
-                  sort(grep('results', colnames(excur_stats), value = TRUE)),
-                  sort(grep('excursions_n', colnames(excur_stats), value = TRUE)),
-                  sort(grep('percent_excursion', colnames(excur_stats), value = TRUE)),
-                  sort(grep('excursion_min', colnames(excur_stats), value = TRUE)),
-                  sort(grep('excursion_median', colnames(excur_stats), value = TRUE)),
-                  sort(grep('excursion_max', colnames(excur_stats), value = TRUE))
-    )
+  bins <- odeqstatusandtrends::status_periods(datetime=data_assessed$sample_datetime, year_range=c(min(complete.years), max(complete.years)), bins_only = TRUE)
+  bins <- sort(gsub("status_", "", bins))
   
-  colnames(excur_stats) <- gsub("(?<=[0-9])[^0-9]", "-", colnames(excur_stats), perl = TRUE)
-  colnames(excur_stats) <- gsub("_", " ", colnames(excur_stats), perl = TRUE)
-  colnames(excur_stats) <- sapply(colnames(excur_stats), simpleCap, USE.NAMES = FALSE)
-  colnames(excur_stats) <- gsub(" N ", " n ", colnames(excur_stats), perl = TRUE)
+  excur_stats_all <- data.frame()
+
+  # This isn't used but not ready to delete yet.
+  # excur_stats0 <- excur_stats %>%
+  #   tidyr::pivot_longer(cols=c(starts_with("percent_excursion"), starts_with("results_n"),
+  #                              starts_with("excursions_n"), starts_with("excursion_max"), 
+  #                              starts_with("excursion_median"), starts_with("excursion_min")),
+  #                       names_to = c("stat", "status_period"),
+  #                       names_pattern = "(.*_status_*)_(.*)")
+  
+  for(i in 1:length(bins)) {
+    
+    excur_stats1 <- excur_stats %>%
+      dplyr::right_join(status, by=c("MLocID", "Char_Name")) %>%
+      dplyr::right_join(stat_summary, by=c("MLocID", "Char_Name", "Spawn_type")) %>%
+      dplyr::mutate(Char_Name=dplyr::case_when(Char_Name=="Temperature, water" ~ paste0(Char_Name," ",Spawn_type),
+                                               Char_Name=="Dissolved oxygen (DO)" ~ paste0(Char_Name," ",Spawn_type),
+                                               TRUE ~ Char_Name)) %>%
+      dplyr::select(MLocID, Char_Name, contains(bins[i]), -contains("percent")) %>%
+      as.data.frame()
+    
+    colnames(excur_stats1) <- gsub(colnames(excur_stats1), pattern="_status", replacement = "")   
+    colnames(excur_stats1) <- gsub(colnames(excur_stats1), pattern=paste0("_",bins[i]), replacement = "")
+
+    if(!"results_n" %in% names(excur_stats1)) {
+      excur_stats3 <- data.frame(Comment = paste0("There were no stations with results in the ", gsub("_","-",bins[i])," status period."))
+    }
+    else {
+      excur_stats2 <- excur_stats1 %>%
+        dplyr::rename(status=contains("status")) %>%
+        dplyr::mutate(status_period=gsub(gsub(bins[i], pattern="status_", replacement = ""),pattern="_", replacement = "-"),
+                      excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
+                      excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), excursion_median),
+                      excursion_max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), excursion_max),
+                      min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(min, 1), min),
+                      median=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(median, 1), median),
+                      max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(max, 1), max))
+      
+      excur_stats3 <- excur_stats2 %>%
+        dplyr::filter(!is.na(results_n)) %>%
+        dplyr::mutate(results=dplyr::case_when((Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unassessed") ~ paste0("Unassessed N=",results_n," (", min,";", median,";", max,")"),
+                                               (!(Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",excursion_min,";", excursion_median,";", excursion_max,")"),
+                                               TRUE ~ paste0(excursions_n,"/",results_n))) %>%
+        dplyr::select(MLocID, status_period, Char_Name, results) %>%
+        tidyr::pivot_wider(names_from=Char_Name, values_from=results) %>%
+        dplyr::left_join(stations_AWQMS_shp, by="MLocID") %>%
+        dplyr::select("Station ID" = MLocID,
+                      "Station Name" = StationDes,
+                      "Subbasin Name" = HUC8_Name,
+                      HUC8,
+                      "Agricultural Water Quality Management Area"=PlanName,
+                      "Assessment Unit ID" = AU_ID,
+                      "Latitude" = Lat_DD,
+                      "Longitude" = Long_DD,
+                      "Status Period"=status_period,
+                      "Dissolved Oxygen"=contains("Dissolved oxygen (DO) Not_Spawn"),
+                      "Dissolved Oxygen Spawning"=contains("Dissolved oxygen (DO) Spawn"),
+                      matches("Escherichia coli"),
+                      contains("Entero"),
+                      contains("Fecal"),
+                      pH,
+                      "Temperature Non-Spawning Period"=matches("Temperature, water Not_Spawn"),
+                      "Temperature Spawning Period"=matches("Temperature, water Spawn"),
+                      "Total Phosphorus"=contains("Phosphorus"),
+                      "Total Suspended Solids"=matches("Total suspended solids")) %>%
+        as.data.frame()
+      
+    }
+    
+    excur_stats_all <- rbind(excur_stats_all, excur_stats3, stringsAsFactors=FALSE)
+  }
+  
+  excur_stats_all <- excur_stats_all %>%
+  dplyr::arrange(`Station ID`, `Status Period`)
   
   #-- Station Summary ---------------------------
   
@@ -265,7 +318,13 @@ for (name in report_names){
                       Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
                                            name,"."),
                                     paste0("Water quality status results for Assessment Units within the ", name,"."),
-                                    "Summary of the total number of results, total excursions, the percent excursion, and the minimum, maximum, and median of all excursion values for each monitoring station, parameter, and status period.",
+                                    paste0("Station summary describing the number of excursions and total number of results ",
+                                           "shown as '(excursions/results)' for each parameter during each status period. ", 
+                                           "If excursions > 0, the '(minimum;median;maximum)' of all excursion result values are provided. ",
+                                           "If stations have a total phosphorus or total suspended solids status of 'Unassessed' due to ",
+                                           "there being no TMDL targets, the (minimum;median;maximum) values for all results are provided. ",
+                                           "All minimum, median, and maximum summary results are in units of mg/L except ",
+                                           "temperature (degrees Celsius), pH (s.u.), and bacteria indicators (CFU/100mL)."),
                                     paste0("Seasonal Kendall trend test results for each parameter at monitoring stations within the ",name,"."),
                                     paste0("Summary of cumulative treatment outputs reported to the Oregon Watershed Restoration Inventory within the ", 
                                            name,"."),
@@ -273,7 +332,8 @@ for (name in report_names){
                                            name,
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
                                     "Number of results per year for monitoring stations that fit the criteria to assess status or trends."
-                      ))
+                                    )
+                      )
 
 # Dropped data summary ----------------------------------------------------
 
