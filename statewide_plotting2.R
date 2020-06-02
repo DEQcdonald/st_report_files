@@ -88,6 +88,7 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
                         "Willamette"="willamette")
 
 #name <- "Willamette"
+#name <- "Klamath"
 
 for (name in report_names){
   
@@ -144,7 +145,11 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/Temperature"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/Temperature"), recursive = TRUE)}
     
-    p <- odeqstatusandtrends::plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+    if(any(plot_data$tmdl_season)){
+      p <- odeqstatusandtrends::plot_temp_tmdl(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+    } else {
+      p <- odeqstatusandtrends::plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+    }
     
     ggsave(plot = p,
            filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, ".jpeg"),
