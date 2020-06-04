@@ -225,7 +225,7 @@ for (name in report_names){
                       matches("Escherichia coli"),
                       contains("Entero"),
                       contains("Fecal"),
-                      pH,
+                      contains("pH"),
                       "Temperature Non-Spawning Period"=matches("Temperature, water Not_Spawn"),
                       "Temperature Spawning Period"=matches("Temperature, water Spawn"),
                       "Total Phosphorus"=contains("Phosphorus"),
@@ -234,7 +234,7 @@ for (name in report_names){
       
     }
     
-    excur_stats_all <- rbind(excur_stats_all, excur_stats3, stringsAsFactors=FALSE)
+    excur_stats_all <- dplyr::bind_rows(excur_stats_all, excur_stats3)
   }
   
   excur_stats_all <- excur_stats_all %>%
