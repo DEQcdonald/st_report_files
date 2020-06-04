@@ -191,10 +191,9 @@ for (name in report_names){
 
     if(!"results_n" %in% names(excur_stats1)) {
       excur_stats3 <- data.frame(Comment = paste0("There were no stations with results in the ", gsub("_","-",bins[i])," status period."))
-    }
-    else {
+    } else {
       excur_stats2 <- excur_stats1 %>%
-        dplyr::rename(status=contains("status")) %>%
+        dplyr::rename(status=tidyr::contains("status")) %>%
         dplyr::mutate(status_period=gsub(gsub(bins[i], pattern="status_", replacement = ""),pattern="_", replacement = "-"),
                       excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
                       excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), excursion_median),
@@ -222,10 +221,10 @@ for (name in report_names){
                       "Status Period"=status_period,
                       "Dissolved Oxygen"=contains("Dissolved oxygen (DO) Not_Spawn"),
                       "Dissolved Oxygen Spawning"=contains("Dissolved oxygen (DO) Spawn"),
-                      matches("Escherichia coli"),
-                      contains("Entero"),
-                      contains("Fecal"),
-                      contains("pH"),
+                      tidyr::matches("Escherichia coli"),
+                      tidyr::contains("Entero"),
+                      tidyr::contains("Fecal"),
+                      tidyr::contains("pH"),
                       "Temperature Non-Spawning Period"=matches("Temperature, water Not_Spawn"),
                       "Temperature Spawning Period"=matches("Temperature, water Spawn"),
                       "Total Phosphorus"=contains("Phosphorus"),
