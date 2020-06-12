@@ -89,6 +89,8 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="blackrock",
 
 #name <- "Willamette"
 #name <- "Klamath"
+#name <- "Umatilla-Walla Walla-Willow"
+#name <- "Owyhee"
 
 for (name in report_names){
   
@@ -145,16 +147,28 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/Temperature"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/Temperature"), recursive = TRUE)}
     
-    if(any(plot_data$tmdl_season)){
-      p <- odeqstatusandtrends::plot_temp_tmdl(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+    if(any(!is.na(plot_data$tmdl_season))){
+      for(t in unique(plot_data$target_stat_base)){
+        if(is.na(t)){
+          plot_stat_base <- plot_data %>% dplyr::filter(is.na(target_stat_base))
+          t <- "no target"
+        } else {
+          plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
+        }
+      p <- odeqstatusandtrends::plot_temp_tmdl(data = plot_stat_base, seaKen = seaKen_temp, station = temp_station)
+      ggsave(plot = p,
+             filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, "_", t, ".jpeg"),
+             device = "jpeg",
+             width = 8, height = 6)
+      }
     } else {
       p <- odeqstatusandtrends::plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+      ggsave(plot = p,
+             filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, ".jpeg"),
+             device = "jpeg",
+             width = 8, height = 6)
     }
     
-    ggsave(plot = p,
-           filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, ".jpeg"),
-           device = "jpeg",
-           width = 8, height = 6)
     count <- count + 1
     
     temp_plots[[temp_station]] <- p
@@ -215,13 +229,21 @@ for (name in report_names){
     } else {dir.create(paste0(plot_dir, subbasin, "/TP"), recursive = TRUE)}
     
     if(!all(is.na(plot_data$Result_cen))){
-      p <- odeqstatusandtrends::plot_TP(data = plot_data, seaKen = seaKen_TP, station = TP_station)
-      
-      ggplot2::ggsave(plot = p,
-                      filename = paste0(plot_dir, subbasin, "/TP/TP_", TP_station, ".jpeg"),
-                      device = "jpeg",
-                      width = 8, height = 6)
-      TP_plots[[TP_station]] <- p
+      for(t in unique(plot_data$target_stat_base)){
+        if(is.na(t)){
+          plot_stat_base <- plot_data %>% dplyr::filter(is.na(target_stat_base))
+          t <- "no target"
+        } else {
+          plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
+        }
+        p <- odeqstatusandtrends::plot_TP(data = plot_stat_base, seaKen = seaKen_TP, station = TP_station)
+        
+        ggplot2::ggsave(plot = p,
+                        filename = paste0(plot_dir, subbasin, "/TP/TP_", TP_station, "_", t, ".jpeg"),
+                        device = "jpeg",
+                        width = 8, height = 6)
+        TP_plots[[TP_station]] <- p
+      }
     } else {print("There are no detections to plot at this station")}
     count <- count + 1
   }
@@ -248,14 +270,22 @@ for (name in report_names){
     } else {dir.create(paste0(plot_dir, subbasin, "/TSS"), recursive = TRUE)}
     
     if(!all(is.na(plot_data$Result_cen))){
-      p <- odeqstatusandtrends::plot_TSS(data = plot_data, seaKen = seaKen_TSS, station = TSS_station)
+      for(t in unique(plot_data$target_stat_base)){
+        if(is.na(t)){
+          plot_stat_base <- plot_data %>% dplyr::filter(is.na(target_stat_base))
+          t <- "no target"
+        } else {
+          plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
+          }
+      p <- odeqstatusandtrends::plot_TSS(data = plot_stat_base, seaKen = seaKen_TSS, station = TSS_station)
       
       ggplot2::ggsave(plot = p,
-                      filename = paste0(plot_dir, subbasin, "/TSS/TSS_", TSS_station, ".jpeg"),
+                      filename = paste0(plot_dir, subbasin, "/TSS/TSS_", TSS_station, "_", t, ".jpeg"),
                       device = "jpeg",
                       width = 8, height = 6)
       
       TSS_plots[[TSS_station]] <- p
+      }
     } else {print("There are no detections to plot at this station")}
     count <- count + 1
   }

@@ -6,7 +6,7 @@ library(htmltools)
 library(htmlwidgets)
 
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2019-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 
 report_areas <- sf::st_read(
   dsn = '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS',
