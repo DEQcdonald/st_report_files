@@ -135,6 +135,31 @@ for (name in report_names){
   
   print(paste0("Saving parameter summary tables..."))
   
+  #-- Notes ---------------------------
+  
+  Notes <- data.frame(stringsAsFactors=FALSE,
+                      Table=c(paste0("Table ",a.letter,"-", seq(1,9, by=1),"      ")),
+                      Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
+                                           name,"."),
+                                    paste0("Water quality status results for Assessment Units within the ", name,"."),
+                                    paste0("Station summary describing the number of excursions and total number of results ",
+                                           "shown as '(excursions/results)' for each parameter during each status period. ", 
+                                           "If excursions > 0, the '(minimum;median;maximum)' of all excursion result values are provided. ",
+                                           "If stations have a total phosphorus or total suspended solids status of 'Unassessed' due to ",
+                                           "there being no TMDL targets, the (minimum;median;maximum) values for all results are provided. ",
+                                           "All minimum, median, and maximum summary results are in units of mg/L except ",
+                                           "temperature (degrees Celsius), pH (s.u.), and bacteria indicators (CFU/100mL)."),
+                                    paste0("Seasonal Kendall trend test results for each parameter at monitoring stations within the ",name,"."),
+                                    paste0("Summary of cumulative treatment outputs reported to the Oregon Watershed Restoration Inventory within the ", 
+                                           name,"."),
+                                    paste0("Summary of organizations that collected data in the ", 
+                                           name,
+                                           ", the number of results used in this analysis, and the number of unique stations monitored."),
+                                    "Number of results per year for monitoring stations that fit the criteria to assess status or trends.",
+                                    "NEED TO DESCRIBE THIS TABLE",
+                                    "NEED TO DESCRIBE THIS TABLE")
+  )
+  
   #-- Trend Stats ----------------------------  
   
   if(is.null(seaKen) | nrow(seaKen)==0){
@@ -310,33 +335,7 @@ for (name in report_names){
                   'Assessment Unit ID' = AU_ID,
                   "Parameter" = Char_Name)
 
-  #-- Notes ---------------------------
-  
-  Notes <- data.frame(stringsAsFactors=FALSE,
-                      Table=c(paste0("Table ",a.letter,"-", seq(1,9, by=1),"      ")),
-                      Description=c(paste0("Water quality status and/or trend results at monitoring stations within the ", 
-                                           name,"."),
-                                    paste0("Water quality status results for Assessment Units within the ", name,"."),
-                                    paste0("Station summary describing the number of excursions and total number of results ",
-                                           "shown as '(excursions/results)' for each parameter during each status period. ", 
-                                           "If excursions > 0, the '(minimum;median;maximum)' of all excursion result values are provided. ",
-                                           "If stations have a total phosphorus or total suspended solids status of 'Unassessed' due to ",
-                                           "there being no TMDL targets, the (minimum;median;maximum) values for all results are provided. ",
-                                           "All minimum, median, and maximum summary results are in units of mg/L except ",
-                                           "temperature (degrees Celsius), pH (s.u.), and bacteria indicators (CFU/100mL)."),
-                                    paste0("Seasonal Kendall trend test results for each parameter at monitoring stations within the ",name,"."),
-                                    paste0("Summary of cumulative treatment outputs reported to the Oregon Watershed Restoration Inventory within the ", 
-                                           name,"."),
-                                    paste0("Summary of organizations that collected data in the ", 
-                                           name,
-                                           ", the number of results used in this analysis, and the number of unique stations monitored."),
-                                    "Number of results per year for monitoring stations that fit the criteria to assess status or trends.",
-                                    "NEED TO DESCRIBE THIS TABLE",
-                                    "NEED TO DESCRIBE THIS TABLE"
-                      )
-  ) 
-   
-# Dropped data summary ----------------------------------------------------
+  # Dropped data summary ----------------------------------------------------
 
   stations_AWQMS <- bind_rows(stations_AWQMS, missing_au)
   
@@ -366,7 +365,7 @@ for (name in report_names){
   colnames(drop_summary) <- gsub("_", " ", colnames(drop_summary), perl = TRUE)
   colnames(drop_summary) <- sapply(colnames(drop_summary), simpleCap, USE.NAMES = FALSE)
 
-# Unassessed status reasoning ---------------------------------------------
+  # Unassessed status reasoning ---------------------------------------------
 
   status_reason <- status_reason %>%
     dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
