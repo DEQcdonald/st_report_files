@@ -224,7 +224,7 @@ for (name in report_names){
                       tidyr::matches("Escherichia coli"),
                       tidyr::contains("Entero"),
                       tidyr::contains("Fecal"),
-                      tidyr::contains("pH"),
+                      pH,
                       "Temperature Non-Spawning Period"=matches("Temperature, water Not_Spawn"),
                       "Temperature Spawning Period"=matches("Temperature, water Spawn"),
                       "Total Phosphorus"=contains("Phosphorus"),
