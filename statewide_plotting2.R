@@ -49,6 +49,7 @@ gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # ----
 
+max_plot_date <- as.POSIXct(paste(end.date, "23:59:59"))
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 query_dates <- c(start.date, end.date)
 
@@ -155,14 +156,18 @@ for (name in report_names){
         } else {
           plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
         }
-      p <- odeqstatusandtrends::plot_temp_tmdl(data = plot_stat_base, seaKen = seaKen_temp, station = temp_station)
+      p <- odeqstatusandtrends::plot_temp_tmdl(data = plot_stat_base, 
+                                               seaKen = seaKen_temp, 
+                                               station = temp_station, 
+                                               max_date = max_plot_date)
       ggsave(plot = p,
              filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, "_", t, ".jpeg"),
              device = "jpeg",
              width = 8, height = 6)
       }
     } else {
-      p <- odeqstatusandtrends::plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station)
+      p <- odeqstatusandtrends::plot_temperature(data = plot_data, seaKen = seaKen_temp, station = temp_station, 
+                                                 max_date = max_plot_date)
       ggsave(plot = p,
              filename = paste0(plot_dir, subbasin, "/Temperature/temp_", temp_station, ".jpeg"),
              device = "jpeg",
@@ -195,7 +200,8 @@ for (name in report_names){
     if(dir.exists(paste0(plot_dir, subbasin, "/pH"))) {
     } else {dir.create(paste0(plot_dir, subbasin, "/pH"), recursive = TRUE)}
     
-    p <- odeqstatusandtrends::plot_pH(plot_data, seaKen_pH, pH_station)
+    p <- odeqstatusandtrends::plot_pH(plot_data, seaKen_pH, pH_station, 
+                                      max_date = max_plot_date)
     
     ggplot2::ggsave(plot = p,
                     filename = paste0(plot_dir, subbasin, "/pH/pH_", pH_station, ".jpeg"),
@@ -236,7 +242,8 @@ for (name in report_names){
         } else {
           plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
         }
-        p <- odeqstatusandtrends::plot_TP(data = plot_stat_base, seaKen = seaKen_TP, station = TP_station)
+        p <- odeqstatusandtrends::plot_TP(data = plot_stat_base, seaKen = seaKen_TP, station = TP_station, 
+                                          max_date = max_plot_date)
         
         ggplot2::ggsave(plot = p,
                         filename = paste0(plot_dir, subbasin, "/TP/TP_", TP_station, "_", t, ".jpeg"),
@@ -277,7 +284,8 @@ for (name in report_names){
         } else {
           plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
           }
-      p <- odeqstatusandtrends::plot_TSS(data = plot_stat_base, seaKen = seaKen_TSS, station = TSS_station)
+      p <- odeqstatusandtrends::plot_TSS(data = plot_stat_base, seaKen = seaKen_TSS, station = TSS_station, 
+                                         max_date = max_plot_date)
       
       ggplot2::ggsave(plot = p,
                       filename = paste0(plot_dir, subbasin, "/TSS/TSS_", TSS_station, "_", t, ".jpeg"),
@@ -318,7 +326,8 @@ for (name in report_names){
       
       # p <- plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
       
-      p_list <- odeqstatusandtrends::plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station)
+      p_list <- odeqstatusandtrends::plot_bacteria(data = plot_data, seaKen = seaKen_bact, station = bact_station, 
+                                                   max_date = max_plot_date)
       
       for(p in names(p_list)){
         print(paste("Saving", p, "plot..."))
@@ -365,7 +374,8 @@ for (name in report_names){
     } else {dir.create(paste0(plot_dir, subbasin, "/DO"), recursive = TRUE)}
     
     p_list <- odeqstatusandtrends::plot_DO(data = plot_data, seaKen = seaKen_DO, 
-                                           station = DO_station)
+                                           station = DO_station, 
+                                           max_date = max_plot_date)
     
     for(p in names(p_list)){
       print(paste("Saving", p, "plot..."))
