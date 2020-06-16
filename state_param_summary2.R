@@ -69,6 +69,7 @@ state_status_reason <- NULL
 report_names <- sort(unique(HUC_shp$REPORT))
 
 #name <- "Willamette"
+#name <- "Owyhee"
 
 for (name in report_names){
   
@@ -242,7 +243,7 @@ for (name in report_names){
     
     data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "target_value")
     
-    data_TSS <- target_assessment(data_TSS)
+    data_TSS <- target_assessment(df = data_TSS)
     
     # data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
