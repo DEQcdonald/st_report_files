@@ -65,6 +65,7 @@ state_param_sum_au <- data.frame()
 state_param_sum_stn <- data.frame()
 state_drop_summary <- NULL
 state_status_reason <- NULL
+state_target_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
@@ -366,6 +367,9 @@ for (name in report_names){
   state_drop_summary <- dplyr::bind_rows(state_drop_summary, drop_summary)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
+  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base")])
+  state_target_data <- dplyr::bind_rows(state_target_data, target_data)
+  
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
@@ -379,4 +383,5 @@ save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_stati
 save(state_param_sum_au, file = paste0(top_dir, "/Oregon_param_summary_by_AU.RData"))
 save(state_drop_summary, state_status_reason, file = paste0(top_dir, "/Oregon_drop_summary.RData"))
 save(state_status_reason, file = paste0(top_dir, "/Oregon_status_reason.RData"))
+save(state_target_data, file = paste0(top_dir, "/Oregon_target_data.RData"))
 
