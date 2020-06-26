@@ -142,9 +142,13 @@ for (name in report_names){
   data_dropped <- NULL
   data_clean <- odeqstatusandtrends::CleanData(data_raw)
   drop_summary <- merge(stations_dropped, data_dropped, by = c("MLocID"), all = TRUE)
+  
+  state_drop_summary <- dplyr::bind_rows(state_drop_summary, drop_summary)
+  save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   # add geoID
   # add TMDL ID
-  
+  rm(basin_shp, au_names, data_raw, missing_AUs, drop_summary)
+  gc()
   # Assess various parameters -----------------------------------------------
   
   data_assessed <- NULL
@@ -175,6 +179,10 @@ for (name in report_names){
     
     pH_trend <- odeqstatusandtrends::trend_stns(data_pH)
     trend <- dplyr::bind_rows(trend, pH_trend)
+    
+    #Clear up memory
+    rm(data_pH, pH_status, pH_excur_stats, pH_trend)
+    gc()
   }
   
   # Temperature----
@@ -208,6 +216,10 @@ for (name in report_names){
     
     temp_trend <- odeqstatusandtrends::trend_stns(data_temp)
     trend <- dplyr::bind_rows(trend, temp_trend)
+    
+    #Clear up memory
+    rm(data_temp, data_temp_dmax, temp_status, temp_excur_stats, temp_trend)
+    gc()
   }
   
   # TP -----
@@ -234,6 +246,10 @@ for (name in report_names){
     
     TP_trend <- odeqstatusandtrends::trend_stns(df =data_TP)
     trend <- dplyr::bind_rows(trend, TP_trend)
+    
+    #Clear up memory
+    rm(data_TP, TP_status, TP_excur_stats, TP_trend)
+    gc()
   }
   
   # TSS ----
@@ -260,6 +276,10 @@ for (name in report_names){
     
     TSS_trend <- odeqstatusandtrends::trend_stns(df =data_TSS)
     trend <- dplyr::bind_rows(trend, TSS_trend)
+    
+    #Clear up memory
+    rm(data_TSS, TSS_status, TSS_excur_stats, TSS_trend)
+    gc()
   }
   
   # Bacteria --------
@@ -286,6 +306,10 @@ for (name in report_names){
     
     bact_trend <- odeqstatusandtrends::trend_stns(data_bact)
     trend <- dplyr::bind_rows(trend, bact_trend)
+    
+    #Clear up memory
+    rm(data_bact, data_ent, data_eco, data_shell, bact_status, bact_excur_stats, bact_trend)
+    gc()
   }
   
   # Dissolved Oxygen ---
@@ -308,6 +332,10 @@ for (name in report_names){
     
     DO_trend <- odeqstatusandtrends::trend_stns(data_DO)
     trend <- dplyr::bind_rows(trend, DO_trend)
+    
+    #Clear up memory
+    rm(data_DO, DO_status, DO_excur_stats, DO_trend)
+    gc()
   }
   
   stat_summary <- odeqstatusandtrends::summary_stats(data_assessed)
@@ -316,7 +344,8 @@ for (name in report_names){
   
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   save(status, trend, excur_stats, stat_summary, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-  rm(data_temp, data_DO, data_TSS, data_TP, data_pH, data_bact, data_temp_dmax)
+  rm(stat_summary, data_clean)
+  gc()
   
   # Assess trends -----------------------------------------------------------
   
@@ -364,7 +393,6 @@ for (name in report_names){
   
   state_param_sum_stn <- rbind(state_param_sum_stn, param_sum_stn)	
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
-  state_drop_summary <- dplyr::bind_rows(state_drop_summary, drop_summary)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
   target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base")])
@@ -373,9 +401,9 @@ for (name in report_names){
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
-  save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   save(status_reason, file = paste0(data_dir, "/", name, "_status_reason.RData"))
-  rm(data_assessed, seaken_data)
+  
+  rm(data_assessed, seaken_data, param_sum_stn, param_sum_au, owri_summary, stn_orgs, au_orgs)
   gc()
 }
 
