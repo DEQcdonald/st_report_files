@@ -147,7 +147,7 @@ for (name in report_names){
   save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   # add geoID
   # add TMDL ID
-  rm(basin_shp, au_names, data_raw, missing_AUs, drop_summary)
+  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary")])
   gc()
   # Assess various parameters -----------------------------------------------
   
@@ -181,7 +181,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, pH_trend)
     
     #Clear up memory
-    rm(data_pH, pH_status, pH_excur_stats, pH_trend)
+    rm(list = ls()[ls() %in% c("data_pH", "pH_status", "pH_excur_stats", "pH_trend")])
     gc()
   }
   
@@ -218,7 +218,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, temp_trend)
     
     #Clear up memory
-    rm(data_temp, data_temp_dmax, temp_status, temp_excur_stats, temp_trend)
+    rm(list = ls()[ls() %in% c("data_temp", "data_temp_dmax", "temp_status", "temp_excur_stats", "temp_trend")])
     gc()
   }
   
@@ -248,7 +248,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, TP_trend)
     
     #Clear up memory
-    rm(data_TP, TP_status, TP_excur_stats, TP_trend)
+    rm(list = ls()[ls() %in% c("data_TP", "TP_status", "TP_excur_stats", "TP_trend")])
     gc()
   }
   
@@ -278,7 +278,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, TSS_trend)
     
     #Clear up memory
-    rm(data_TSS, TSS_status, TSS_excur_stats, TSS_trend)
+    rm(list = ls()[ls() %in% c("data_TSS", "TSS_status", "TSS_excur_stats", "TSS_trend")])
     gc()
   }
   
@@ -308,7 +308,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, bact_trend)
     
     #Clear up memory
-    rm(data_bact, data_ent, data_eco, data_shell, bact_status, bact_excur_stats, bact_trend)
+    rm(list = ls()[ls() %in% c("data_bact", "data_ent", "data_eco", "data_shell", "bact_status", "bact_excur_stats", "bact_trend")])
     gc()
   }
   
@@ -334,7 +334,7 @@ for (name in report_names){
     trend <- dplyr::bind_rows(trend, DO_trend)
     
     #Clear up memory
-    rm(data_DO, DO_status, DO_excur_stats, DO_trend)
+    rm(list = ls()[ls() %in% c("data_DO", "DO_status", "DO_excur_stats", "DO_trend")])
     gc()
   }
   
@@ -344,7 +344,7 @@ for (name in report_names){
   
   save(data_assessed, file = paste0(data_dir, "/", name, "_data_assessed.RData"))
   save(status, trend, excur_stats, stat_summary, file = paste0(data_dir, "/", name, "_status_trend_excur_stats.RData"))
-  rm(stat_summary, data_clean)
+  rm(list = ls()[ls() %in% c("stat_summary", "data_clean")])
   gc()
   
   # Assess trends -----------------------------------------------------------
@@ -403,7 +403,7 @@ for (name in report_names){
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))
   save(status_reason, file = paste0(data_dir, "/", name, "_status_reason.RData"))
   
-  rm(data_assessed, seaken_data, param_sum_stn, param_sum_au, owri_summary, stn_orgs, au_orgs)
+  rm(list = ls()[ls() %in% c("data_assessed", "seaken_data", "param_sum_stn", "param_sum_au", "owri_summary", "stn_orgs", "au_orgs")])
   gc()
 }
 
