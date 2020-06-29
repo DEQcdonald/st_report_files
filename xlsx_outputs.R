@@ -156,8 +156,8 @@ for (name in report_names){
                                            name,
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
                                     "Number of results per year for monitoring stations that fit the criteria to assess status or trends.",
-                                    "NEED TO DESCRIBE THIS TABLE",
-                                    "NEED TO DESCRIBE THIS TABLE")
+                                    "Summary of results that were obtained through the query and removed through various methods in the analysis process.",
+                                    "Summary of stations with an 'Unassessed' status and the reasoning category for that assignment.")
   )
   
   #-- Trend Stats ----------------------------  
