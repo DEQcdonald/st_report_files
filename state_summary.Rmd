@@ -473,15 +473,37 @@ $PS$ = Percent saturation dissolved oxygen.
 $DO_{Meas}$ = Measured Dissolved Oxygen in mg/L.  
 $DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r tbls(name = "eqns-DO-Theo", display="cite")`.
 
-####	Dissolved Oxygen Status Definitions
+The monthly thirty day (30-D) mean minimum, weekly seven-day minimum mean (7-Mi),
+and alternate absolute minimum (Min) were only assessed when there were sufficient continuously monitored dissolved oxygen data available.
 
-Dissolved Oxygen status assessment results are reported and presented in the following way:
+For calculating daily means and minimums, there needed to be measurements from at least 22 hours in each day. For calculating a 30-day mean minimum, there needed to be at least 29 daily mean values. For calculating a seven-day mean there needed to be at least six daily mean values.
 
-*	__Attaining__: When the number of excursions to the applicable criterion within a status period is no more than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the corresponding percent saturation allowance.
+To assess the year-round criteria using continuous data, a minimum of fifteen 30-D results must be availible during the year-round critical period (July 1 – September 30) for each status period. To assess the spawning criteria using continuous data, fifteen 7-D results must be availible during the spawning period within each status period.
 
-*	__Not Attaining__: When the number of excursions to the applicable criterion within a status period is greater than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the percent saturation allowance.
+In the absence of sufficient continuous 30-D or 7-D dissolved oxygen results, attainment of the dissolved oxygen criterion was assessed as instantaneous or “grab” measurements. The daily minimum dissolved oxygen concentration was used as the “grab” sample unit.
+
+Sites having insufficient data to be assessed as continuous data will be assessed according to the instantaneous criteria in the previous section. Where multiple samples are collected on the same day, the minimum DO concentration will be used in the assessment.
+
+####	Instantaneous Dissolved Oxygen Status Definitions
+
+Dissolved Oxygen status assessment results are reported and presented in the following way when making as assessment against the instantaneous criteria:
+
+*	__Attaining__: When the number of excursions to the applicable instantaneous criterion within a status period is no more than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the corresponding percent saturation allowance. 
+
+
+*	__Not Attaining__: When the number of excursions to the applicable instantaneous criterion within a status period is greater than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the percent saturation allowance.
 
 *	__Unassessed__: When there are fewer than five samples available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
+
+####	Continuous Dissolved Oxygen Status Definitions
+
+Dissolved Oxygen status assessment results are reported and presented in the following way when making as assessment against the continuous criteria:
+
+*	__Attaining__:  When all of the following are true: For the year-round criteria, no more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D metric percent saturation is less than the applicable criterion. No more than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, no more than one excursion of the daily minimum criteria. During spawning, no more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained, there can be no more than one excursion to the alternate minimum criteria (Min).
+
+*	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion, or an excursion to 9.0 mg/L criterion if data shows the IGDO criterion is also attained. If the year round 7-D metric is attained and there is more than one excursion to the alternate minimum criteria (Min).
+
+*	__Unassessed__: When there are fewer than fifteen 30-D results to assess the year-round criteria during the year-round critical period (July 1 – September 30) **OR** fewer than fifteen 7-D results available during the spawning period **OR** when there are insufficient 30-D or 7-D results available and there are less than five daily minimum (Min) results available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
 
 ### pH
 
@@ -668,7 +690,7 @@ tmdl_table <- odeqtmdl::tmdl_db %>%
   dplyr::distinct() %>% 
   dplyr::mutate(season_start = format(lubridate::ymd(parse_date_time(season_start, orders = "d-m")),format="%b %d"),
                 season_end = format(lubridate::ymd(parse_date_time(season_end, orders = "d-m")),format="%b %d")) %>% 
-  dplyr::mutate(period = paste0(season_start," through ",season_end)) %>% 
+  dplyr::mutate(period = paste0(season_start," - ",season_end)) %>% 
   dplyr::select(-season_start, -season_end)
 
 
