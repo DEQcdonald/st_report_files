@@ -324,7 +324,7 @@ for (name in report_names){
                                                                  year_range = c(start_year, end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_DO)
     
-    DO_status <- odeqstatusandtrends::status_stns(data_DO)
+    DO_status <- odeqstatusandtrends::status_stns(df=data_DO)
     status <- dplyr::bind_rows(status, DO_status)
     
     DO_excur_stats <- odeqstatusandtrends::excursion_stats(df=data_DO)
