@@ -239,7 +239,7 @@ Trends were evaluated over the entire twenty year period. Minimum data requireme
 
 The status assessment is an evaluation of water quality data to determine if a waterbody attains water quality standards or TMDL targets. An attainment assessment was made for bacteria (*E. coli*, *Enterococcus*, and Fecal Coliform), dissolved oxygen, pH, and temperature in relation to the applicable numeric water quality criterion. For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined.
 
-Oregon does not have explicit water quality standards for total phosphorus (TP) or total suspended solids (TSS) however sometimes these parameters are pollutants that contribute to non-attainment of water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, sediment, or other chemicals. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters. The following sections describe the water quality standards or applicable TMDL targets for each parameter assessed.
+Oregon does not have explicit water quality standards for total phosphorus (TP) or total suspended solids (TSS); however, sometimes these parameters are pollutants that contribute to non-attainment of water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, sediment, or other chemicals. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters. The following sections describe the water quality standards or applicable TMDL targets for each parameter assessed.
 
 ### Assessment Units
 
@@ -249,11 +249,11 @@ The water quality status were assessed at monitoring stations and waterbody-base
 
 The status assessment results are reported and presented in a number of ways. For each station or AU we report the status result in the following way:
 
-* __Attaining__: When results demonstrate attainment of the water quality criteria or TMDL target in a 4-year status period.
+* __Attaining__: When results demonstrate attainment of the water quality criteria or TMDL targets in a 4-year status period.
 
-* __Not Attaining__: When results do not attain the water quality criteria or TMDL target in a 4-year status period.
+* __Not Attaining__: When results do not attain the water quality criteria or TMDL targets in a 4-year status period.
 
-* __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL target to evaluate attainment against during a 4-year status period. The later condition occurs where there are total suspended solids or total phosphorus data available in an area but no TMDL targets established in that area.
+* __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL targets to evaluate attainment against during a 4-year status period. The later condition occurs where there are total phosphorus or total suspended solids data available in an area but no TMDL targets established in that area.
 
 We define “results” as a water quality observation or a calculated summary in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An “excursion” occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, and the minimum, maximum, and median excursion result values. For stations that have total phosphorus or total suspended solids status of 'Unassessed' due to there being no TMDL targets, the minimum, median, and maximum values for all results are provided. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted. The timeseries plots are displayed in the Water Quality Status and Trend web based results mapper found at the following URL https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
 
@@ -345,13 +345,13 @@ Bacteria status assessment results are reported and presented in the following w
 
 *	__Not Attaining__: When there is at least one excursion to the 126 *E. coli* organisms per 100 mL geomean criterion, **OR** when there are five or more samples and the number of excursions to the 406 *E. coli* organisms per 100 mL criterion within any 90-day period are greater than 10% of all samples according to the exact binomial test.
 
-*	__Unassessed__: When there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported either as “No Result” for insufficient samples.
+*	__Unassessed__: When there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient samples.
 
 #####	Coastal water contact recreation
 
 * __Attaining__: When there are five or more 90-day geometric mean results and all are less than or equal to 35 *Enterococci* organisms per 100 mL, **AND** when there are 10 or more samples and the number of excursions to the 130 *Enterococci* organisms per 100 mL criterion is no more than 10% of samples within a 90-day period. When there are only five to nine samples available, no more than one excursion to the 130 *Enterococci* organisms per 100 mL criterion.
 
-*	__Not Attaining__: When there are five or more a 90-day geometric mean results available and there is an excursion to the 35 *Enterococci* organisms per 100 mL criterion; **OR** when there are 10 or more samples and the number of excursions to the 130 *Enterococci* organisms per 100 mL criterion is greater than 10% of all samples within any 90-day period. When there are only five to nine samples available for a given 90-day period and there are two or more excursions to the 130 *Enterococci* organisms per 100 mL criterion.
+*	__Not Attaining__: When there are five or more a 90-day geometric mean results available and there is any excursion to the 35 *Enterococci* organisms per 100 mL criterion; **OR** when there are 10 or more samples and the number of excursions to the 130 *Enterococci* organisms per 100 mL criterion is greater than 10% of all samples within any 90-day period. When there are only five to nine samples available for a given 90-day period and there are two or more excursions to the 130 *Enterococci* organisms per 100 mL criterion.
 
 *	__Unassessed__: When a geometric mean cannot be calculated because there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient number of samples.
 
@@ -361,7 +361,7 @@ Bacteria status assessment results are reported and presented in the following w
 
 *	__Not Attaining__: When there are five or more fecal coliform samples and the median concentration greater than 14 fecal coliform organisms per 100 mL, **OR** when there are 10 or more samples and the number of excursions to the 43 fecal coliform organisms per 100 mL criterion is greater than 10% of all samples. When there are only five to nine samples available and two or more of the samples are greater than 43 fecal coliform organisms per 100 mL criterion.
 
-*	__Unassessed__: When there are less than five samples within any 90-day period. Under these circumstances, the reasons for unassessed status are reported either as “No Result” for insufficient samples.
+*	__Unassessed__: When there are less than five samples within any 90-day period. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient samples.
 
 ### Dissolved Oxygen
 
@@ -382,11 +382,11 @@ Dissolved oxygen (DO): No wastes may be discharged and no activities may be cond
 
 |  (c)	The spatial median intergravel dissolved oxygen concentration must not fall below 8.0 mg/l.
 
-(2)	For water bodies identified by the Department as providing cold-water aquatic life, the dissolved oxygen may not be less than 8.0 mg/l as an absolute minimum. Where conditions of barometric pressure, altitude, and temperature preclude attainment of the 8.0 mg/l, dissolved oxygen may not be less than 90 percent of saturation. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 8.0 mg/l as a 30-day mean minimum, 6.5 mg/l as a seven-day minimum mean, and may not fall below 6.0 mg/l as an absolute minimum (Table 21);
+(2)	For water bodies identified by the Department as providing cold-water aquatic life, the dissolved oxygen may not be less than 8.0 mg/l as an absolute minimum. Where conditions of barometric pressure, altitude, and temperature preclude attainment of the 8.0 mg/l, dissolved oxygen may not be less than 90 percent of saturation. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 8.0 mg/l as a 30-day mean minimum, 6.5 mg/l as a seven-day minimum mean, and may not fall below 6.0 mg/l as an absolute minimum;
 
-(3)	For water bodies identified by the Department as providing cool-water aquatic life, the dissolved oxygen may not be less than 6.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 6.5 mg/l as a 30-day mean minimum, 5.0 mg/l as a seven-day minimum mean, and may not fall below 4.0 mg/l as an absolute minimum (Table 21);
+(3)	For water bodies identified by the Department as providing cool-water aquatic life, the dissolved oxygen may not be less than 6.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 6.5 mg/l as a 30-day mean minimum, 5.0 mg/l as a seven-day minimum mean, and may not fall below 4.0 mg/l as an absolute minimum;
 
-(4)	For water bodies identified by the Department as providing warm-water aquatic life, the dissolved oxygen may not be less than 5.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 5.5 mg/l as a 30-day mean minimum, and may not fall below 4.0 mg/l as an absolute minimum (Table 21);
+(4)	For water bodies identified by the Department as providing warm-water aquatic life, the dissolved oxygen may not be less than 5.5 mg/l as an absolute minimum. At the discretion of the Department, when the Department determines that adequate information exists, the dissolved oxygen may not fall below 5.5 mg/l as a 30-day mean minimum, and may not fall below 4.0 mg/l as an absolute minimum;
 
 (5)	For estuarine water, the dissolved oxygen concentrations may not be less than 6.5 mg/l (for coastal water bodies);
 
@@ -484,9 +484,11 @@ In the absence of sufficient continuous 30-D or 7-D dissolved oxygen results, at
 
 Sites having insufficient data to be assessed as continuous data will be assessed according to the instantaneous criteria in the previous section. Where multiple samples are collected on the same day, the minimum DO concentration will be used in the assessment.
 
+The Intergravel Dissolved Oxygen criterion (OAR 340-041-0016(1)(a)) was not used in this report because there is no intergravel dissolved oxygen data available.
+
 ####	Instantaneous Dissolved Oxygen Status Definitions
 
-Dissolved Oxygen status assessment results are reported and presented in the following way when making as assessment against the instantaneous criteria:
+Dissolved oxygen status assessment results are reported and presented in the following way when making as assessment against the instantaneous criteria:
 
 *	__Attaining__: When the number of excursions to the applicable instantaneous criterion within a status period is no more than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the corresponding percent saturation allowance. 
 
@@ -497,7 +499,7 @@ Dissolved Oxygen status assessment results are reported and presented in the fol
 
 ####	Continuous Dissolved Oxygen Status Definitions
 
-Dissolved Oxygen status assessment results are reported and presented in the following way when making as assessment against the continuous criteria:
+Dissolved oxygen status assessment results are reported and presented in the following way when making as assessment against the continuous criteria:
 
 *	__Attaining__:  When all of the following are true: For the year-round criteria, no more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D metric percent saturation is less than the applicable criterion. No more than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, no more than one excursion of the daily minimum criteria. During spawning, no more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained, there can be no more than one excursion to the alternate minimum criteria (Min).
 
@@ -716,10 +718,9 @@ tmdls.name.tp <- sort(unique(tbl.tmdls.tp$`TMDL Document Name`))
 
 ```
 
-Oregon does not have explicit water quality standards for total phosphorus (TP) however, TP can be a pollutant that contributes to excursions of water quality standards and impairment of one or more beneficial uses. Often the excursions are for water quality standards established for dissolved oxygen, pH, or algae.
+Oregon does not have explicit water quality standards for total phosphorus (TP); however, TP can be a pollutant that contributes to excursions of water quality standards and impairment of one or more beneficial uses. Often the excursions are for water quality standards established for dissolved oxygen, pH, or algae.
 
-In this report, we evaluated status for total phosphorus in waterbodies where a Total Maximum Daily Load (TMDL) have been established and identified total phosphorus as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tp", display="cite")` summarizes the TMDLs evaluated in this report with TP concentration targets. Table 7 through Table 16 summarizes the specific TP targets in each TMDL including where the target applies, the 303(d) water quality limited parameter, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
-
+In this report, we evaluated status for total phosphorus in waterbodies where a Total Maximum Daily Load (TMDL) have been established and identified total phosphorus as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tp", display="cite")` summarizes the TMDLs evaluated in this report with TP concentration targets. Table 7 through Table 16 summarizes the specific TP targets in each TMDL including where the target applies, the 303(d) water quality limited parameters, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
 
 ```{r TMDL-TP, echo=FALSE, results='asis'}
 
@@ -785,9 +786,9 @@ tmdls.name.tss <- sort(unique(tbl.tmdls.tss$`TMDL Document Name`))
 
 ```
 
-Oregon does not have explicit water quality standards for total suspended solids (TSS) however, TSS has been identified as a pollutant that contributes to excursions of water quality standards and impairment of one or more beneficial uses. Often the excursions are for water quality standards established for sediment, metals, or other toxic chemicals.
+Oregon does not have explicit water quality standards for total suspended solids (TSS); however, TSS has been identified as a pollutant that contributes to excursions of water quality standards and impairment of one or more beneficial uses. Often the excursions are for water quality standards established for sediment, metals, or other toxic chemicals.
 
-In this report, we evaluated status for total suspended solids in the waterbodies where a Total Maximum Daily Load (TMDL) has been established and identified total suspended solids as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tss", display="cite")` summarizes the TMDLs evaluated in this report with TSS concentration targets. Table 18 through Table 21 summarizes the specific TSS targets in each TMDL including where the target applies, the 303(d) water quality limited parameter, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
+In this report, we evaluated status for total suspended solids in the waterbodies where a Total Maximum Daily Load (TMDL) has been established and identified total suspended solids as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tss", display="cite")` summarizes the TMDLs evaluated in this report with TSS concentration targets. Table 18 through Table 21 summarizes the specific TSS targets in each TMDL including where the target applies, the 303(d) water quality limited parameters, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
 
 ```{r TMDL-TSS,  echo=FALSE, results='asis'}
 
