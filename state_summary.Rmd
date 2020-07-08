@@ -1187,19 +1187,35 @@ Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for 
 
 Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
 
-Oregon Department of Environmental Quality [DEQ]. 1992. TMDLs for the Yamhill River. https://www.oregon.gov/deq/FilterDocs/YamhillTMDL1992.pdf
+Oregon Department of Environmental Quality [DEQ]. 1992a. Bear Creek Watershed TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 1998. Columbia Slough TMDL. https://www.oregon.gov/deq/FilterDocs/columbiasloughtmdl.pdf
+Oregon Department of Environmental Quality [DEQ]. 1992b. Clear Lake TMDL. https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2006. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+Oregon Department of Environmental Quality [DEQ]. 1998. Garrison Lake TMDL. https://www.oregon.gov/deq/FilterDocs/scGarrisonLakeTMDL.pdf
+
+Oregon Department of Environmental Quality [DEQ]. 2001. Umatilla River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umatilla-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2002. Upper Klamath Lake Drainage TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+
+Oregon Department of Environmental Quality [DEQ]. 2004. Snake River Hells Canyon TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/snakesubbasin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2006a. Umpqua Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umpqua-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2006b. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2007. Tenmile Lakes TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-South-Coast-Basin.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2008. Molalla-Pudding Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2010. Malheur River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/malheurtmdl.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2012. Tualatin Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2013. Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0. http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2019. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+Oregon Department of Environmental Quality [DEQ]. 2019a. Upper Klamath and Lost River Subbasin Nutrient TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+
+Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
 
 
