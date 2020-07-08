@@ -659,7 +659,7 @@ In streams designated as salmon and steelhead spawning areas, the salmon & steel
 
 ##### Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(a). 
 
-The Upper Klamath and Lost Subbasins temperature TMDL (DEQ 2019) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
+The Upper Klamath and Lost Subbasins temperature TMDL (DEQ 2019b) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
 
 ##### Applicability
 
@@ -1217,6 +1217,4 @@ Oregon Department of Environmental Quality [DEQ]. 2019a. Upper Klamath and Lost 
 
 Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
-
-
-i
+Oregon Department of Environmental Quality [DEQ]. 2020. Methodology for Oregon’s 2018 Water Quality Report and List of Water Quality Limited Waters. https://www.oregon.gov/deq/wq/Documents/irMethodologyF1820.pdf
