@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 6)
 
 
-project_dir <- paste0('N:/Status_and_Trend_Reports/2019/2019-', name, '/')
+project_dir <- paste0('N:/Status_and_Trend_Reports/2020/2020-', name, '/')
 
 load(file = paste0(project_dir, name, "_eval_date.RData"))
 load(paste0(project_dir, name, "_param_summary_by_station.RData"))
@@ -61,19 +61,52 @@ area <- area[area$REPORT %in% c(name), ]
 area <- sf::st_as_sf(area)
 area <- sf::st_transform(area, 4326)
 
-wql_streams <- sf::st_read(
-  dsn = "//deqhq1/WQNPS/Agriculture/Status_and_Trend_Analysis/R_support_files",
-  layer = "WQL_Streams_2012",
-  query = paste0("SELECT * FROM WQL_Streams_2012 WHERE HUC_4TH_CO IN ('",
-                 paste(unique(param_sum$HUC8), collapse = "', '"), "')"),
-  stringsAsFactors = FALSE, quiet = TRUE
-)
-wql_streams$Char_Name <- unlist(sapply(wql_streams$POLLUTANT, AWQMS_Char_Names, USE.NAMES = FALSE))
-wql_streams$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(wql_streams$Char_Name)
-wql_streams <- sf::st_zm(wql_streams, what = "ZM")
-wql_streams <- sf::st_transform(wql_streams, 4326)
-wql_streams <- dplyr::filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(param_sum$Char_Name))
-wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
+# wql_streams <- sf::st_read(
+#   dsn = "//deqhq1/WQNPS/Agriculture/Status_and_Trend_Analysis/R_support_files",
+#   layer = "WQL_Streams_2012",
+#   query = paste0("SELECT * FROM WQL_Streams_2012 WHERE HUC_4TH_CO IN ('",
+#                  paste(unique(param_sum$HUC8), collapse = "', '"), "')"),
+#   stringsAsFactors = FALSE, quiet = TRUE
+# )
+# wql_streams$Char_Name <- unlist(sapply(wql_streams$POLLUTANT, AWQMS_Char_Names, USE.NAMES = FALSE))
+# wql_streams$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(wql_streams$Char_Name)
+# wql_streams <- sf::st_zm(wql_streams, what = "ZM")
+# wql_streams <- sf::st_transform(wql_streams, 4326)
+# wql_streams <- dplyr::filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(param_sum$Char_Name))
+# wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
+basin_12s <- hucs[hucs$HUC_8 %in% unique(param_sum$HUC8),]$HUC_12
+basin_wql_streams_lines <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Rivers_Coast",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE HUC12 IN ('",
+                   paste(basin_12s, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+basin_wql_streams_ws <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Watershed",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE HUC12 IN ('",
+                   paste(basin_12s, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+
+basin_wql_streams_lines$Char_Name <- unlist(sapply(basin_wql_streams_lines$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
+basin_wql_streams_ws$Char_Name <- unlist(sapply(basin_wql_streams_ws$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
+basin_wql_streams_lines$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_lines$Char_Name)
+basin_wql_streams_ws$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_ws$Char_Name)
+basin_wql_streams_lines <- sf::st_zm(basin_wql_streams_lines, what = "ZM")
+basin_wql_streams_ws <- sf::st_zm(basin_wql_streams_ws, what = "ZM")
+
+basin_wql_streams_lines <- st_transform(basin_wql_streams_lines, 4326)
+basin_wql_streams_lines <- dplyr::filter(basin_wql_streams_lines[, c("AU_Name", "AU_ID", "Period", "Char_Name", "IR_category")],
+                               Char_Name %in% unique(param_sum$Char_Name))
+
+basin_wql_streams_ws <- st_transform(basin_wql_streams_ws, 4326)
+basin_wql_streams_ws <- dplyr::filter(basin_wql_streams_ws[, c("AU_Name", "AU_ID", "Period", "Char_Name", "IR_category")],
+                                      Char_Name %in% unique(param_sum$Char_Name))
+
+# basin_wql_streams_lines_shp <- basin_wql_streams_lines %>% dplyr::group_by(Char_Name) %>% dplyr::summarise(Shape = sf::st_union(Shape))
+# basin_wql_streams_ws_shp <- basin_wql_streams_ws %>% dplyr::group_by(Char_Name) %>% dplyr::summarise(Shape = sf::st_union(Shape))
 
 if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/Maps"))}
 
@@ -93,7 +126,7 @@ if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/
 A summary of status and trend results for the `r name` Basin and subbasins within the `r name` Basin are presented in this section. Full tabular results including results for each station, assessment unit, excursion statistics, and the summary of the OWRI watershed restoration or protection treatments implemented are provided in **Appendix `r a.letter`**.
 
 ```{r basinIntro, include = TRUE, results = 'asis'}
-wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/wq_limited_2012_df_temp_bact_ph_DO_TP_Sediment.csv',
+wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/WQL_assessment_units.csv',
                      stringsAsFactors = FALSE)
 
 param_sum <- param_sum[,c("AU_Name", colnames(param_sum)[colnames(param_sum) != "AU_Name"])]
@@ -181,8 +214,8 @@ for(i in unique(param_sum$Pollutant)){
   } else {parameter_name <- "pH"}
   
   if(!file.exists(paste0(project_dir, "/Maps/", gsub(",| ", "_", i), ".png"))){
-    wql_streams_i <- dplyr::filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name == i)
-    wql_streams_i <- wql_streams_i[lapply(wql_streams_i$`_ogr_geometry_`, length) != 0,]
+    basin_wql_streams_lines_i <- dplyr::filter(basin_wql_streams_lines, Char_Name == i)
+    basin_wql_streams_ws_i <- dplyr::filter(basin_wql_streams_ws, Char_Name == i)
     
     map_df <- param_sum %>% dplyr::filter(Pollutant == i) %>% dplyr::mutate(color = dplyr::if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
                                                                                                    "lightgray",
@@ -193,7 +226,14 @@ for(i in unique(param_sum$Pollutant)){
     
     map <- leaflet::leaflet(map_df, options = leaflet::leafletOptions(zoomControl = FALSE)) %>% 
       leaflet::addProviderTiles("Esri.NatGeoWorldMap") %>% 
-      leaflet::addPolylines(data = wql_streams_i,
+      leaflet::addPolygons(data = basin_wql_streams_ws_i,
+                            opacity = 1,
+                            weight = 2,
+                            color = "red",
+                           fillOpacity = 0.1,
+                           fillColor = "red",
+                           group = "WQ Listed Streams") %>% 
+      leaflet::addPolylines(data = basin_wql_streams_lines_i,
                             opacity = 1,
                             weight = 2,
                             color = "red",
@@ -217,7 +257,7 @@ for(i in unique(param_sum$Pollutant)){
   
   cat(paste0("![", 
              figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, " Basin.")),
-             "](", project_dir, "/Maps/", gsub(",| ", "_", i), ".png)"), "\n")
+             "](", project_dir, "Maps/", gsub(",| ", "_", i), ".png)"), "\n")
   
   cat("\n\n")
 }
@@ -227,9 +267,9 @@ cat("### Status\n\n")
 cat(paste0(tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
 
 au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   'Not Attaining' = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   'Not Attaining' = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 
@@ -252,9 +292,9 @@ cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Sum
 cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," Basin.\n\n"))
 
 au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
@@ -269,9 +309,9 @@ cat("\n\n")
 cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
 
 stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
@@ -331,6 +371,7 @@ for(i in unique(param_sum$HUC8)){
   
   subbasin_name <- huc_names[huc_names$HUC8 == i,]$HUC8_Name
   sub_area <- area[area$HUC_8 == i,]
+  sub_12s <- hucs[hucs$HUC_8 %in% i,]$HUC_12
   
   subbasin_output <- c(subbasin_output, knitr::knit_child("state_subbasin_summary.Rmd", envir = globalenv()))
   
