@@ -693,7 +693,7 @@ In streams designated as salmon and steelhead spawning areas, the salmon & steel
 
 ##### Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(a). 
 
-The Upper Klamath and Lost Subbasins temperature TMDL (DEQ 2019) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
+The Upper Klamath and Lost Subbasins temperature TMDL (DEQ 2019b) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
 
 ##### Applicability
 
@@ -721,28 +721,25 @@ tmdl_table <- odeqtmdl::tmdl_db %>%
                   is.na(target_conditionals_references) &
                   pollutant_name_AWQMS %in% c('Total Phosphorus, mixed forms',
                                               'Total suspended solids')) %>%
-  dplyr::select(TMDL_name, approval_year, geo_description, pollutant_name_AWQMS, impairments,target_type, target_value, target_stat_base, 
-                season_start,season_end) %>% 
+  dplyr::select(TMDL_name, approval_year, geo_description, pollutant_name_AWQMS, wq_limited_parameters, 
+                target_type, target_value, target_units, target_stat_base, season_start,season_end) %>% 
   dplyr::distinct() %>% 
-  dplyr::mutate(season_start = format(lubridate::ymd(parse_date_time(season_start, orders = "d-m")),format="%b %d"),
-                season_end = format(lubridate::ymd(parse_date_time(season_end, orders = "d-m")),format="%b %d")) %>% 
-  dplyr::mutate(period = paste0(season_start," - ",season_end)) %>% 
+  dplyr::mutate(season_start = format(lubridate::ymd(lubridate::parse_date_time(season_start, orders = "d-m")), format="%b %d"),
+                season_end = format(lubridate::ymd(lubridate::parse_date_time(season_end, orders = "d-m")), format="%b %d"),
+                period = paste0(season_start," - ",season_end),
+                target_value = dplyr::case_when(target_units == 'ug/l' ~ target_value * 0.001,
+                                                TRUE ~ target_value),
+                target_units = dplyr::case_when(target_units == 'ug/l' ~ 'mg/l',
+                                                TRUE ~ target_units),
+                target_text=as.character(target_value)) %>%
   dplyr::select(-season_start, -season_end)
-
-
-# convert target_value to string
-target_text <- transpose(strsplit(toString(tmdl_table$target_value),","))
-target_text <- data.frame(matrix(unlist(target_text),nrow=length(target_text),byrow=T))
-colnames(target_text) <- c("target_text")
-
-tmdl_table <- dplyr::bind_cols(tmdl_table,target_text)
 
 # TP TMDL SUMMARY 
 tbl.tmdls.tp <- tmdl_table %>%
   dplyr::filter(pollutant_name_AWQMS == "Total Phosphorus, mixed forms") %>% 
-  dplyr::select(TMDL_name, approval_year, impairments) %>% 
+  dplyr::select(TMDL_name, approval_year, wq_limited_parameters) %>% 
   dplyr::group_by(TMDL_name, approval_year) %>% 
-  dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(impairments), collapse = ", ")) %>% 
+  dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(wq_limited_parameters), collapse = ", ")) %>% 
   dplyr::rename(`TMDL Document Name` = TMDL_name,
                 `Year TMDL Issued` = approval_year)
 
@@ -773,10 +770,10 @@ for (i in 1:length(tmdls.name.tp)){
   year <- unique(tmdls.doc.df_1$approval_year)
   
   tmdls.doc.df_2_tp <- tmdls.doc.df_1 %>% 
-    dplyr::select(geo_description,impairments,target_text,target_stat_base,period) %>% 
+    dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
     dplyr::rename(`Geographic Area` = geo_description,
-                  `303(d) Listing Parameter` = impairments,
-                  `TP Target Concentration mg/L` = target_text,
+                  `303(d) Listing Parameter` = wq_limited_parameters,
+                  `Total Phosphorus Target Concentration mg/L` = target_text,
                   `Statistical Base` = target_stat_base,
                   `Applicable Period` = period)
   
@@ -808,9 +805,9 @@ Total phosphorus status assessment results are reported and presented in the fol
 # TSS TMDL SUMMARY 
 tbl.tmdls.tss <- tmdl_table %>%
   dplyr::filter(pollutant_name_AWQMS == "Total suspended solids") %>% 
-  dplyr::select(TMDL_name, approval_year, impairments) %>% 
+  dplyr::select(TMDL_name, approval_year, wq_limited_parameters) %>% 
   dplyr::group_by(TMDL_name, approval_year) %>% 
-  dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(impairments), collapse = ", ")) %>% 
+  dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(wq_limited_parameters), collapse = ", ")) %>% 
   dplyr::rename(`TMDL Document Name` = TMDL_name,
                 `Year TMDL Issued` = approval_year)
 
@@ -841,9 +838,9 @@ for (i in 1:length(tmdls.name.tss)){
   year <- unique(tmdls.doc.df_1$approval_year)
   
   tmdls.doc.df_2_tss <- tmdls.doc.df_1 %>% 
-    dplyr::select(geo_description,impairments,target_text,target_stat_base,period) %>% 
+    dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
     dplyr::rename(`Geographic Area` = geo_description,
-                  `303(d) Listing Parameter` = impairments,
+                  `303(d) Listing Parameter` = wq_limited_parameters,
                   `TSS Target Concentration mg/L` = target_text,
                   `Statistical Base` = target_stat_base,
                   `Applicable Period` = period)
@@ -1210,20 +1207,34 @@ Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for 
 
 Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
 
-Oregon Department of Environmental Quality [DEQ]. 1992. TMDLs for the Yamhill River. https://www.oregon.gov/deq/FilterDocs/YamhillTMDL1992.pdf
+Oregon Department of Environmental Quality [DEQ]. 1992a. Bear Creek Watershed TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 1998. Columbia Slough TMDL. https://www.oregon.gov/deq/FilterDocs/columbiasloughtmdl.pdf
+Oregon Department of Environmental Quality [DEQ]. 1992b. Clear Lake TMDL. https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2006. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+Oregon Department of Environmental Quality [DEQ]. 1998. Garrison Lake TMDL. https://www.oregon.gov/deq/FilterDocs/scGarrisonLakeTMDL.pdf
+
+Oregon Department of Environmental Quality [DEQ]. 2001. Umatilla River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umatilla-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2002. Upper Klamath Lake Drainage TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+
+Oregon Department of Environmental Quality [DEQ]. 2004. Snake River Hells Canyon TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/snakesubbasin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2006a. Umpqua Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umpqua-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2006b. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2007. Tenmile Lakes TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-South-Coast-Basin.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2008. Molalla-Pudding Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+
+Oregon Department of Environmental Quality [DEQ]. 2010. Malheur River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/malheurtmdl.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2012. Tualatin Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 2013. Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0. http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2019. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+Oregon Department of Environmental Quality [DEQ]. 2019a. Upper Klamath and Lost River Subbasin Nutrient TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
+Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
-
-i
+Oregon Department of Environmental Quality [DEQ]. 2020. Methodology for Oregon’s 2018 Water Quality Report and List of Water Quality Limited Waters. https://www.oregon.gov/deq/wq/Documents/irMethodologyF1820.pdf

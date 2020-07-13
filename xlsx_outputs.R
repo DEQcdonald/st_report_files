@@ -156,8 +156,8 @@ for (name in report_names){
                                            name,
                                            ", the number of results used in this analysis, and the number of unique stations monitored."),
                                     "Number of results per year for monitoring stations that fit the criteria to assess status or trends.",
-                                    "Summary of results that were obtained through the query and removed through various methods in the analysis process.",
-                                    "Summary of stations with an 'Unassessed' status and the reasoning category for that assignment.")
+                                    "Summary of results that were obtained through the data query and removed through various methods in the analysis process.",
+                                    "Summary of stations with an 'Unassessed' status and the reason for that assignment.")
   )
   
   #-- Trend Stats ----------------------------  
@@ -434,7 +434,7 @@ for (name in report_names){
   
   openxlsx::setColWidths(wb, sheet="Notes", cols=c(2:3), widths = c(16,100))
   
-  openxlsx::addStyle(wb, sheet="Notes", rows=c(11:18), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
+  openxlsx::addStyle(wb, sheet="Notes", rows=c(11:20), cols=c(2:3), stack=TRUE, gridExpand = TRUE,
                      style=openxlsx::createStyle(wrapText = TRUE, valign = "top", fontName = "Arial", fontSize = 10))
   
   openxlsx::writeData(wb, sheet="Notes", x=report_name, 
