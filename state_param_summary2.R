@@ -36,7 +36,7 @@ start.date = "2000-01-01"
 end.date = "2019-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
