@@ -43,34 +43,33 @@ options(kableExtra.auto_format = F)
 
 ```{r wql_streams, include= TRUE, results= 'asis'}
 
-wql_sub <- wql_data[grep(i, wql_data$HUC_4TH_CO), c('STREAM_LAK', 'LLID_STREA', 
-                                                    'MILES', 'POLLUTANT', 'SEASON', 
-                                                    'ASSESSME_1', 'CRITERIA', 
-                                                    'LISTING_ST', 'TMDL_INFO')] %>% 
-  plyr::rename(c('STREAM_LAK' = 'Waterbody',
-                 'LLID_STREA' = 'LLID',
-                 'ASSESSME_1' = 'Year Assessed',
-                 'LISTING_ST' = 'Listing Status',
-                 'POLLUTANT' = 'Pollutant'))
+wql_sub <- wql_data[wql_data$HUC12 %in% sub_12s, c("AU_Name", "AU_ID", "AU_LenMiles", "Period", "year_assessed", "Char_Name", "IR_category", "affected_uses")] %>% 
+  plyr::rename(c('AU_Name' = 'Assessment Unit',
+                 'AU_ID' = 'AU ID',
+                 'AU_LenMiles' = "Miles",
+                 'year_assessed' = 'Year Assessed',
+                 'IR_category' = 'Listing Status',
+                 'Char_Name' = 'Pollutant',
+                 'affected_uses' = 'Affected Uses'))
 if(nrow(wql_sub) > 0){
   
-  wql_sub <- wql_sub[grep("Cat 5|Cat 4A", wql_sub$`Listing Status`, ignore.case = TRUE), 
-                     c('Waterbody', 'MILES', 'Pollutant', 'SEASON', 'Year Assessed', 'CRITERIA', 'Listing Status')] %>% 
-    dplyr::arrange(Waterbody)
+  wql_sub <- wql_sub[grep("Category 5|Category 4A", wql_sub$`Listing Status`, ignore.case = TRUE), 
+                     c('Assessment Unit', 'Miles', 'Pollutant', 'Period', 'Year Assessed', 'Affected Uses', 'Listing Status')] %>% 
+    dplyr::arrange(`Assessment Unit`)
   
-  wql_sub$`Listing Status` <- gsub("Cat 4A: Water quality limited, TMDL approved", "Cat 4A", wql_sub$`Listing Status`)
-  wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing Status"] <- "Cat 5"
+  # wql_sub$`Listing Status` <- gsub("Cat 4A: Water quality limited, TMDL approved", "Cat 4A", wql_sub$`Listing Status`)
+  # wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing Status"] <- "Cat 5"
   
-  wql_sub <- wql_sub %>% dplyr::group_by(Pollutant) %>% dplyr::summarise('Segments Impaired' = n())
+  wql_sub <- wql_sub %>% dplyr::group_by(Pollutant) %>% dplyr::summarise('Assessment Units Impaired' = n())
   
   knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE,
                caption = tbls(name = paste0(subbasin_name, "_wql"),
                               caption = paste0("Number of water quality impaired stream segments in the ", 
                                                subbasin_name,
-                                               " Subbasin for the parameters assessed in this report. Impairments are summarized from the final 2012 303(d) integrated report."))) %>% 
+                                               " Subbasin for the parameters assessed in this report. Impairments are summarized from the final 2018 Integrated Report."))) %>% 
     table_style()
   
-} else {cat("There are no water quality impaired Category 4A or Category 5 stream segments in this subbasin.")}
+} else {cat("There are no water quality impaired Category 4A or Category 5 assessment units in this subbasin.")}
 
 ```
 
@@ -81,9 +80,9 @@ There are `r length(unique(par_sum_au$AU_ID))` assessment units within the `r su
 ```{r status-au-table-sum, include = TRUE, results = 'asis'}
 
 au_sum <- par_sum_au %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 
@@ -117,9 +116,9 @@ Oregon DEQ groups assessment units into four types; streams, lakes, watershed un
 ```{r status-au-table-type, include = TRUE, results = 'asis'}
 
 au_sum_type <- par_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
@@ -135,9 +134,9 @@ There are `r length(unique(par_sum$MLocID))` stations within the `r subbasin_nam
 ```{r status-stn-table-sum, include = TRUE, results = 'asis'}
 
 stn_sum <- par_sum %>% dplyr::group_by(Pollutant) %>% 
-  dplyr::summarise(Attaining = sum(status_2015_2018 == "Attaining"),
-                   "Not Attaining" = sum(status_2015_2018 == "Not Attaining"),
-                   Unassessed = sum(status_2015_2018 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
+                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
   dplyr::mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,

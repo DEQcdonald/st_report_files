@@ -36,7 +36,7 @@ start.date = "2000-01-01"
 end.date = "2019-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -95,10 +95,12 @@ for (name in report_names){
 
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
   missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
-  
+  missing_reachcodes <- stations_AWQMS[is.na(stations_AWQMS$Reachcode),"MLocID"]
   stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "OrgID")], missing_AUs[,c("MLocID", "OrgID")])
   stations_dropped$missing_au <- dplyr::if_else(stations_dropped$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
-
+  stations_dropped$missing_reachcode <- dplyr::if_else(stations_dropped$MLocID %in% missing_reachcodes, TRUE, FALSE)
+  stations_AWQMS <- stations_AWQMS %>% dplyr::filter(!is.na(Reachcode))
+  
   stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
                                    huc8 = hucs, exclude.tribal.lands = TRUE)
 
@@ -226,7 +228,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
-    data_TP <- which_target_df(data_TP)
+    data_TP <- which_target_df(df = data_TP)
     
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
     
@@ -395,7 +397,7 @@ for (name in report_names){
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
-  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base")])
+  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base", "units_conv", "tmdl", "tmdl_period")])
   state_target_data <- dplyr::bind_rows(state_target_data, target_data)
   
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
