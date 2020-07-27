@@ -107,7 +107,8 @@ ggplot2::ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "S
   ggplot2::theme_bw()+
   ggplot2::ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
 
-cap_list[[1]] <- figs(name = paste0(subbasin_name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", subbasin_name, " Subbasin by parameter."))
+cap_list[[1]] <- figs(name = paste0(subbasin_name, "_au_sum_plot"),
+                      caption = paste0("The number of assessment units in each status category for each parameter within the ", subbasin_name, "."))
 
 ```
 
@@ -159,7 +160,7 @@ ggplot2::ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "
   ggplot2::ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
 
 cap_list[[2]] <- figs(name = paste0(subbasin_name, "_stn_sum_plot"),
-                      caption = paste0("Summary plot of station status within the ", subbasin_name, " Subbasin by parameter."))
+                      caption = paste0("The number of stations in each status category for each parameter within the ", subbasin_name, "."))
 
 ```
 
