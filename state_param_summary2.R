@@ -166,7 +166,7 @@ for (name in report_names){
     print("Assessing pH...")
     data_pH <- data_clean %>% dplyr::filter(Char_Name == "pH")
     data_pH <- odeqstatusandtrends::add_criteria(data_pH)
-    data_pH <- odeqassessment::Censored_data(data_pH, criteria = 'pH_Min')
+    data_pH <- odeqassessment::Censored_data(data_pH, criteria = 'Result_Numeric')
     data_pH <- odeqassessment::pH_assessment(data_pH)
     data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
                                                                  periods=4, 
@@ -194,13 +194,13 @@ for (name in report_names){
     data_temp <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
     data_temp <- odeqstatusandtrends::add_criteria(data_temp)
     
-    data_temp <- odeqassessment::Censored_data(data_temp, criteria = "temp_crit")
+    data_temp <- odeqassessment::Censored_data(data_temp, criteria = "Result_Numeric")
     data_temp <- odeqassessment::temp_assessment(data_temp)
     
     data_temp_dmax <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "Maximum")
     if(any(data_temp_dmax$Reachcode %in% odeqtmdl::tmdl_db[tmdl_db$pollutant_name_AWQMS == "Temperature, water",]$ReachCode)){
       data_temp_dmax <- which_target_df(data_temp_dmax, all_obs = FALSE)
-      data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "target_value")
+      data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "Result_Numeric")
       data_temp_dmax <- target_assessment(data_temp_dmax)
       data_temp <- dplyr::bind_rows(data_temp, data_temp_dmax)
     }
@@ -230,7 +230,7 @@ for (name in report_names){
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
     data_TP <- which_target_df(df = data_TP)
     
-    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "MRLValue")
+    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "Result_Numeric")
     
     data_TP <- target_assessment(data_TP)
     
@@ -257,10 +257,10 @@ for (name in report_names){
   # TSS ----
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
-    data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
+    data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Result_Numeric")
     data_TSS <- which_target_df(data_TSS)
     
-    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "MRLValue")
+    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "Result_Numeric")
     
     data_TSS <- target_assessment(df = data_TSS)
     
@@ -290,7 +290,7 @@ for (name in report_names){
     data_bact <- data_clean %>% dplyr::filter(Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names('bacteria'))
     data_bact <- odeqstatusandtrends::add_criteria(data_bact)
     data_bact <- data_bact %>% dplyr::mutate(bact_crit_min = pmin(bact_crit_ss, bact_crit_geomean, bact_crit_percent, na.rm = TRUE))
-    data_bact <- odeqassessment::Censored_data(data_bact, criteria = "bact_crit_min")
+    data_bact <- odeqassessment::Censored_data(data_bact, criteria = "Result_Numeric")
     data_ent <- odeqassessment::Coastal_Contact_rec(data_bact)
     data_eco <- odeqassessment::Fresh_Contact_rec(data_bact)
     data_shell <- odeqassessment::Shell_Harvest(data_bact)
@@ -319,7 +319,7 @@ for (name in report_names){
     print("Assessing dissolved oxygen...")
     data_DO <- data_clean %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)", "Dissolved oxygen saturation", "Temperature, water"))
     data_DO <- odeqstatusandtrends::add_criteria(data_DO)
-    data_DO <- odeqassessment::Censored_data(data_DO, criteria = "DO_crit_min")
+    data_DO <- odeqassessment::Censored_data(data_DO, criteria = "Result_Numeric")
     data_DO <-  odeqassessment::DO_assessment(data_DO)
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
                                                                  periods=4, 
