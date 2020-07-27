@@ -230,7 +230,7 @@ for (name in report_names){
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
     data_TP <- which_target_df(df = data_TP)
     
-    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
+    data_TP <- odeqassessment::Censored_data(data_TP, criteria = "MRLValue")
     
     data_TP <- target_assessment(data_TP)
     
@@ -260,7 +260,7 @@ for (name in report_names){
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
     data_TSS <- which_target_df(data_TSS)
     
-    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "target_value")
+    data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "MRLValue")
     
     data_TSS <- target_assessment(df = data_TSS)
     
