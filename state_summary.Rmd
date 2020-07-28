@@ -721,7 +721,7 @@ tmdl_table <- odeqtmdl::tmdl_db %>%
                   is.na(target_conditionals_references) &
                   pollutant_name_AWQMS %in% c('Total Phosphorus, mixed forms',
                                               'Total suspended solids')) %>%
-  dplyr::select(TMDL_name, approval_year, geo_description, pollutant_name_AWQMS, wq_limited_parameters, 
+  dplyr::select(TMDL_name, TMDL_issue_year, geo_description, pollutant_name_AWQMS, wq_limited_parameters, 
                 target_type, target_value, target_units, target_stat_base, season_start,season_end) %>% 
   dplyr::distinct() %>% 
   dplyr::mutate(season_start = format(lubridate::ymd(lubridate::parse_date_time(season_start, orders = "d-m")), format="%b %d"),
@@ -737,11 +737,11 @@ tmdl_table <- odeqtmdl::tmdl_db %>%
 # TP TMDL SUMMARY 
 tbl.tmdls.tp <- tmdl_table %>%
   dplyr::filter(pollutant_name_AWQMS == "Total Phosphorus, mixed forms") %>% 
-  dplyr::select(TMDL_name, approval_year, wq_limited_parameters) %>% 
-  dplyr::group_by(TMDL_name, approval_year) %>% 
+  dplyr::select(TMDL_name, TMDL_issue_year, wq_limited_parameters) %>% 
+  dplyr::group_by(TMDL_name, TMDL_issue_year) %>% 
   dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(wq_limited_parameters), collapse = ", ")) %>% 
   dplyr::rename(`TMDL Document Name` = TMDL_name,
-                `Year TMDL Issued` = approval_year)
+                `Year TMDL Issued` = TMDL_issue_year)
 
 # TP TABLE FOR EACH TMDL DOC
 tmdls.name.tp <- sort(unique(tbl.tmdls.tp$`TMDL Document Name`))
@@ -767,7 +767,7 @@ for (i in 1:length(tmdls.name.tp)){
     dplyr::filter(pollutant_name_AWQMS == "Total Phosphorus, mixed forms") %>%  
     dplyr::filter(TMDL_name == tmdls.name.tp[i])
   
-  year <- unique(tmdls.doc.df_1$approval_year)
+  year <- unique(tmdls.doc.df_1$TMDL_issue_year)
   
   tmdls.doc.df_2_tp <- tmdls.doc.df_1 %>% 
     dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
@@ -805,11 +805,11 @@ Total phosphorus status assessment results are reported and presented in the fol
 # TSS TMDL SUMMARY 
 tbl.tmdls.tss <- tmdl_table %>%
   dplyr::filter(pollutant_name_AWQMS == "Total suspended solids") %>% 
-  dplyr::select(TMDL_name, approval_year, wq_limited_parameters) %>% 
-  dplyr::group_by(TMDL_name, approval_year) %>% 
+  dplyr::select(TMDL_name, TMDL_issue_year, wq_limited_parameters) %>% 
+  dplyr::group_by(TMDL_name, TMDL_issue_year) %>% 
   dplyr::summarise(`303(d) Listing Parameter`=paste0(unique(wq_limited_parameters), collapse = ", ")) %>% 
   dplyr::rename(`TMDL Document Name` = TMDL_name,
-                `Year TMDL Issued` = approval_year)
+                `Year TMDL Issued` = TMDL_issue_year)
 
 # TSS TABLE FOR EACH TMDL DOC
 tmdls.name.tss <- sort(unique(tbl.tmdls.tss$`TMDL Document Name`))
@@ -835,7 +835,7 @@ for (i in 1:length(tmdls.name.tss)){
     dplyr::filter(pollutant_name_AWQMS == "Total suspended solids") %>%  
     dplyr::filter(TMDL_name == tmdls.name.tss[i])
   
-  year <- unique(tmdls.doc.df_1$approval_year)
+  year <- unique(tmdls.doc.df_1$TMDL_issue_year)
   
   tmdls.doc.df_2_tss <- tmdls.doc.df_1 %>% 
     dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
