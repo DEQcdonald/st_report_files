@@ -230,6 +230,14 @@ for (name in report_names){
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
     data_TP <- which_target_df(df = data_TP)
     
+    data_TP <- data_TP %>%
+      dplyr::mutate(target_value = dplyr::case_when(target_units == 'ug/l' ~ target_value * 0.001,
+                                                      target_units == 'deg F' ~ round((target_value - 32) * 5/9, 2),
+                                                      TRUE ~ target_value),
+                    target_units = dplyr::case_when(target_units == 'ug/l' ~ 'mg/l',
+                                                    target_units == 'deg F' ~ 'deg C',
+                                                   TRUE ~ target_units))
+    
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
     
     data_TP <- target_assessment(data_TP)
@@ -259,6 +267,14 @@ for (name in report_names){
     print("Assessing total suspended solids...")
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
     data_TSS <- which_target_df(data_TSS)
+    
+    data_TSS <- data_TSS %>%
+      dplyr::mutate(target_value = dplyr::case_when(target_units == 'ug/l' ~ target_value * 0.001,
+                                                    target_units == 'deg F' ~ round((target_value - 32) * 5/9, 2),
+                                                    TRUE ~ target_value),
+                    target_units = dplyr::case_when(target_units == 'ug/l' ~ 'mg/l',
+                                                    target_units == 'deg F' ~ 'deg C',
+                                                    TRUE ~ target_units))
     
     data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "target_value")
     
