@@ -95,7 +95,7 @@ knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_
 ```
 
 
-```{r status-au-plot, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
+```{r status-au-plot, include = TRUE, results = 'asis', fig.cap = cap_list[[1]], eval.after = 'fig.cap'}
 
 cap_list <- list()
 
@@ -149,7 +149,7 @@ knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table
 ```
 
 
-```{r status-stn-plot, include = TRUE, results = 'asis', fig.cap = cap_list, eval.after = 'fig.cap'}
+```{r status-stn-plot, include = TRUE, results = 'asis', fig.cap = cap_list[[2]], eval.after = 'fig.cap'}
 
 ggplot2::ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "Status"))+
   ggplot2::geom_bar(aes(x = Pollutant, y = value, fill = Status), stat = "identity", position = "dodge")+
