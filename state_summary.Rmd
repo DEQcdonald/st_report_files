@@ -1207,9 +1207,9 @@ Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for 
 
 Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
 
-Oregon Department of Environmental Quality [DEQ]. 1992a. Bear Creek Watershed TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
+Oregon Department of Environmental Quality [DEQ]. 1991. Clear Lake TMDL. https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 1992b. Clear Lake TMDL. https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
+Oregon Department of Environmental Quality [DEQ]. 1992. Bear Creek Watershed TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
 
 Oregon Department of Environmental Quality [DEQ]. 1998. Garrison Lake TMDL. https://www.oregon.gov/deq/FilterDocs/scGarrisonLakeTMDL.pdf
 
