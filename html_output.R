@@ -16,7 +16,7 @@ library(odeqstatusandtrends)
 
 report_year <- '2020'
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # Web Maps  -------------------------------------------
