@@ -101,9 +101,9 @@ for (name in report_names){
   stations_dropped$missing_reachcode <- dplyr::if_else(stations_dropped$MLocID %in% missing_reachcodes, TRUE, FALSE)
   stations_AWQMS <- stations_AWQMS %>% dplyr::filter(!is.na(Reachcode))
   
-  stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
-                                   huc8 = hucs, exclude.tribal.lands = TRUE)
-
+  # stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
+  #                                  huc8 = hucs, exclude.tribal.lands = TRUE)
+  # 
   # if(is.data.frame(stations_wqp) && nrow(stations_wqp) > 0){
   #   print("Add these stations to the Stations Database:")
   #   print(stations_wqp)
@@ -413,7 +413,7 @@ for (name in report_names){
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
-  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base", "units_conv", "tmdl", "tmdl_period")])
+  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base", "tmdl", "tmdl_period")])
   state_target_data <- dplyr::bind_rows(state_target_data, target_data)
   
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
