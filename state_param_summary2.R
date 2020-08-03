@@ -416,6 +416,8 @@ for (name in report_names){
   target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base", "tmdl", "tmdl_period")])
   state_target_data <- dplyr::bind_rows(state_target_data, target_data)
   
+  status_reason$status_period <- gsub("status_", "", status_reason$status_period)
+  
   save(param_sum_stn, file = paste0(data_dir, "/", name, "_param_summary_by_station.RData"))
   save(param_sum_au, file = paste0(data_dir, "/", name, "_param_summary_by_AU.RData"))
   save(owri_summary, file = paste0(data_dir, "/", name, "_owri_summary_by_subbasin.RData"))

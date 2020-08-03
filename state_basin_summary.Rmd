@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 6)
 
 
-project_dir <- paste0('N:/Status_and_Trend_Reports/2020/2020-', name, '/')
+project_dir <- paste0(top_dir, '2020-', name, '/')
 
 load(file = paste0(project_dir, name, "_eval_date.RData"))
 load(paste0(project_dir, name, "_param_summary_by_station.RData"))
