@@ -66,7 +66,7 @@ if(nrow(wql_sub) > 0){
                caption = tbls(name = paste0(subbasin_name, "_wql"),
                               caption = paste0("Number of water quality impaired stream segments in the ", 
                                                subbasin_name,
-                                               " Subbasin for the parameters assessed in this report. Impairments are summarized from the final 2018 Integrated Report."))) %>% 
+                                               " Subbasin for the parameters assessed in this report. Impairments are summarized from the 2018 Integrated Report submitted for EPA approval."))) %>% 
     table_style()
   
 } else {cat("There are no water quality impaired Category 4A or Category 5 assessment units in this subbasin.")}
@@ -112,7 +112,7 @@ cap_list[[1]] <- figs(name = paste0(subbasin_name, "_au_sum_plot"),
 
 ```
 
-Oregon DEQ groups assessment units into four types; streams, lakes, watershed units, or estuaries and bays. `r tbls(name = paste0(subbasin_name, "_au_type_sum"), display="cite")` summarizes of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.
+Oregon DEQ groups assessment units into five types; streams, lakes, watershed units, estuaries or bays, and coastlines. `r tbls(name = paste0(subbasin_name, "_au_type_sum"), display="cite")` summarizes of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.
 
 ```{r status-au-table-type, include = TRUE, results = 'asis'}
 
