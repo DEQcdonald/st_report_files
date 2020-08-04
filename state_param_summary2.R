@@ -193,15 +193,14 @@ for (name in report_names){
     print("Assessing temperature...")
     data_temp <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "7DADM")
     data_temp <- odeqstatusandtrends::add_criteria(data_temp)
-    
     data_temp <- odeqassessment::Censored_data(data_temp, criteria = "temp_crit")
     data_temp <- odeqassessment::temp_assessment(data_temp)
     
     data_temp_dmax <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "Maximum")
     if(any(data_temp_dmax$Reachcode %in% odeqtmdl::tmdl_db[tmdl_db$pollutant_name_AWQMS == "Temperature, water",]$ReachCode)){
-      data_temp_dmax <- which_target_df(data_temp_dmax, all_obs = FALSE)
+      data_temp_dmax <- odeqtmdl::which_target_df(data_temp_dmax, all_obs = FALSE)
       data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "target_value")
-      data_temp_dmax <- target_assessment(data_temp_dmax)
+      data_temp_dmax <- odeqtmdl::target_assessment(data_temp_dmax)
       data_temp <- dplyr::bind_rows(data_temp, data_temp_dmax)
     }
     
@@ -228,11 +227,11 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
-    data_TP <- which_target_df(df = data_TP)
+    data_TP <- odeqtmdl::which_target_df(df = data_TP)
     
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
     
-    data_TP <- target_assessment(data_TP)
+    data_TP <- odeqtmdl::target_assessment(data_TP)
     
     # data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
@@ -258,11 +257,11 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
-    data_TSS <- which_target_df(data_TSS)
+    data_TSS <- odeqtmdl::which_target_df(data_TSS)
     
     data_TSS <- odeqassessment::Censored_data(data_TSS, criteria = "target_value")
     
-    data_TSS <- target_assessment(df = data_TSS)
+    data_TSS <- odeqtmdl::target_assessment(df = data_TSS)
     
     # data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
