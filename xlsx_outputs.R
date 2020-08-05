@@ -32,7 +32,7 @@ HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
                           integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 
 agwqma_shp <- sf::st_read(dsn = "//deqhq1/WQNPS/Status_and_Trend_Reports/GIS",
-                          layer = "ODA_AgWQMA",
+                          layer = "ODA_AgWQMA_w_Willamette",
                           stringsAsFactors = FALSE)
 
 report_names <- sort(unique(HUC_shp$REPORT))
