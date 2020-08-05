@@ -227,7 +227,7 @@ The results of this analysis inform DEQ, other state and federal agencies, and t
 
 # Analysis Area and Tribal Waters
 
-Only those waters that are under the State of Oregon’s jurisdiction are evaluated in this report. The State of Oregon communicates with Oregon's nine federally-recognized Tribes in a government-to-government relationship to develop and implement agency programs that may affect the Tribes. Oregon DEQ does not assume jurisdiction to designate beneficial uses, apply water quality standards, list impaired waters, or develop TMDLs within tribal territory, except by cooperative agreement with Tribal governments. In 2017, DEQ conducted a water quality standards georeferencing project to map the extent of designated beneficial uses, water quality standards, and assessment units for reporting of the Clean Water Act section 303(d) impaired waters list. As part of this effort, DEQ collected the best available information on the location of Tribal Reservation and off Reservation Trust Lands. DEQ only assessed waterbodies and data collected outside of Tribal Reservation or off Reservation Trust Land boundaries in the status and trends analysis.
+Only those waters that are under the State of Oregon’s jurisdiction are evaluated in this report. The State of Oregon communicates with Oregon's nine federally-recognized Tribes in a government-to-government relationship to develop and implement agency programs that may affect the Tribes. Oregon DEQ does not assume jurisdiction to designate beneficial uses, apply water quality standards, list impaired waters, or develop TMDLs within tribal territory, except by cooperative agreement with tribal governments. In 2017, DEQ conducted a water quality standards georeferencing project to map the extent of designated beneficial uses, water quality standards, and assessment units for reporting of the Clean Water Act Section 303(d) impaired waters list. As part of this effort, DEQ collected the best available information on the location of Tribal Reservation and Off-Reservation Trust Lands. DEQ only assessed waterbodies and data collected outside of Tribal Reservation or Off-Reservation Trust Land boundaries in the status and trends analysis.
 
 # Methods
 
@@ -249,15 +249,15 @@ Information about watershed improvement projects and the associated on the groun
 
 All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ data and data collected through the Volunteer Monitoring Program must have a Data Quality Level (DQL) of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the Integrated Report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
 
-Censored data were used when any results were recorded below minimum detection limits and reporting levels. Analytical test procedures include both a Method Detection Level (MDL) and a Minimum Reporting Level (MRL). The MDL is the concentration above which a sample can be discerned from a sample blank (zero). The MRL is the concentration above which an analyte can be both detected and an accurate concentration determined. DEQ use the generic term Quantitation Limit (QL) to include MDL, MRL and any other reporting limits used by third party, and report censored data in the following methods:
+Monitoring data typically includes results that are reported as "non-detects". Non-detects or censored data are reported when very small concentrations cannot be precisely measured due to limitations in field and laboratory analysis procedures. All that is known is the true result falls somewhere between zero and the reporting limit. Each analytical procedure has a Method Detection Level (MDL) and a Minimum Reporting Level (MRL). The MDL is the concentration at which a sample can be discerned from a sample blank. The MRL is the lowest concentration where an analyte can be both detected and an accurate concentration quantified. We use the generic term "Quantitation Limit" (QL) to include MRL, MDL and any other reporting limits used by third parties. For this analysis, we interpreted non-detect results using the approach described in DEQ's white paper on censored data (DEQ 2018). The approach is summarized as follows:
 
-* When the QL is greater than the numeric criteria value, ½ of the value of the water quality criteria will be substituted for any sample reported as censored.
+* When the QL was greater than the numeric criteria value or TMDL target, ½ of the value of the water quality criteria was substituted for any result reported as censored.
 
-* When the QL is less than the numeric criteria or there is no TMDL target, ½ of the value of the lowest QL will be substituted for any sample reported as censored.
+* When the QL was less than the numeric criteria or there is no TMDL target, ½ of the value of the lowest QL was substituted for any result reported as censored.
 
-* Samples reported as greater than the maximum QL, use QL value.
+* When results were reported as greater than the maximum QL, the QL value was used.
 
-Additional checks included reviewing for inconsistences in the station description and station location (latitude and longitude). Any inconsistences were corrected. If the sampling location could not be determined, or had no assigned assessment unit or reach code, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned.
+Additional QA/QC checks included reviewing for inconsistencies in the station description and station location (latitude and longitude). Any inconsistencies were corrected. If the sampling location could not be determined, or had no assigned assessment unit or reach code, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned.
 
 For samples that were taken for the purpose of auditing the field data (often called replicates or duplicates) the field samples were prioritized and the replicates removed if the DQL for both the field sample and duplicate were the same. If the DQLs were different, the sample with the higher DQL was used. For samples that appear to be replicates or samples made at various depths (i.e. the sample date/time, sample location, and sample parameter were the same) but were not labeled as replicates or depth samples, we took the mean of the samples. The samples missing sampling dates were not used. Results in units of ug/L were converted to mg/L and temperature data measured in degrees Fahrenheit were converted to degrees Celsius.
 
@@ -281,11 +281,11 @@ Trends were evaluated over the entire twenty-year period. Minimum data requireme
 
 The status assessment is an evaluation of water quality data to determine if a waterbody attains water quality standards or TMDL targets. An attainment assessment was made for bacteria (*E. coli*, *Enterococcus*, and Fecal Coliform), dissolved oxygen, pH, and temperature in relation to the applicable numeric water quality criterion. For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined. We used the 2018/2020 Integrated Report assessment methodology (DEQ 2020) to determine attainment within each status period. The methodology considers all the applicable criteria for each parameter as well as the number of excursions for attainment conclusions. The specific methodology for each status category are described for each parameter in the sections below.
 
-Oregon does not have explicit water quality standards for total phosphorus (TP) or total suspended solids (TSS); however, sometimes these parameters are pollutants that contribute to non-attainment of water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, sediment, or other chemicals. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters. The following sections describe the water quality standards or applicable TMDL targets for each parameter assessed.
+Oregon does not have statewide numeric water quality standards for total phosphorus (TP) or total suspended solids (TSS); however, sometimes these parameters are identifed as pollutants that contribute to non-attainment of other water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, or sediment. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters.
 
 ### Assessment Units
 
-Water quality status was assessed at both monitoring stations and waterbody-based assessment units (AUs). The AUs incorporate the High Resolution National Hydrography (NHDH) framework with environmentally and hydrologically relevant breaks of water bodies, and remain the same over time (fixed units). The NHDH is a digital geospatial dataset that represents the surface water of the entire United States at a scale of 1:24,000 resolution or better. It is now the national and state hydrologic framework standard, replacing the LLID system. The AUs in this report consist of “Stream”, “Watershed Units”, “Lake”, “Estuary or Bays”, and “Coastlines”. Stream assessment units are defined for the streams with a Strahler Stream Order of 5 and higher based on designated use or stream order change, or a break at a HUC 10 or watershed level. All streams with a Strahler Stream Oder of 4 or less are grouped into a watershed unit that is broken at the HUC 12 or sub-watershed scale. Lakes and reservoirs greater than 20 hectares are classified as lake assessment units defined by area. DEQ uses the Coastal and Marine Ecological Classification Standard (CMECS) to define the extent of estuaries or bays, as well as coastline assessment units. Each estuary is a unique assessment unit defined by area.
+Water quality status was assessed at both monitoring stations and waterbody-based assessment units (AUs). The AUs incorporate the High Resolution National Hydrography (NHDH) framework with environmentally and hydrologically relevant breaks of water bodies, and remain the same over time (fixed units). The NHDH is a digital geospatial dataset that represents the surface water of the entire United States at a scale of 1:24,000 resolution or better. It is now the national and state hydrologic framework standard, replacing the LLID system. The AUs in this report consist of “Stream”, “Watershed Units”, “Lake”, “Estuary or Bays”, and “Coastlines”. Stream assessment units are defined for the streams with a Strahler Stream Order (Strahler 1957; Horten 1945) of five and higher and are grouped based on designated use, stream order change, or a break at a HUC 10 or watershed boundary. All streams with a Strahler Stream Order of four or less are grouped into a watershed unit that is broken at the HUC 12 or smaller sub-watershed boundary. Lakes and reservoirs greater than 20 hectares are classified as lake assessment units. DEQ uses the Coastal and Marine Ecological Classification Standard (FGDC 2012) to define the extent of estuaries or bays, as well as coastline assessment units.
 
 ### Status Reporting and Definitions
 
@@ -297,11 +297,13 @@ The status assessment results are reported and presented in a number of ways. Fo
 
 * __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL targets to evaluate attainment against during a 4-year status period. The later condition occurs where there are total phosphorus or total suspended solids data available in an area but no TMDL targets established in that area.
 
-We define “results” as a water quality observation or a calculated summary in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An “excursion” occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, and the minimum, maximum, and median excursion result values. For stations that have total phosphorus or total suspended solids status of 'Unassessed' due to there being no TMDL targets, the minimum, median, and maximum values for all results are provided. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted. The timeseries plots are displayed in the Water Quality Status and Trend web based results mapper found at the following URL https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
+We define “results” as a water quality observation or a calculated summary in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An “excursion” occurs when a result is worse than the water quality standard or TMDL target. Having one or more excursions does not always result in a non attaining status. The critical number of excursions for a non attaining status is defined by each parameters assessment protocol.
 
-### Binomial Statistical Test
+For each parameter and within each status period, we calculate and report on the total number of results, total excursions, and the minimum, maximum, and median excursion result values. For stations that have total phosphorus or total suspended solids status of 'Unassessed' due to there being no TMDL targets, the minimum, median, and maximum values for all results are provided. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted. The timeseries plots are displayed in the Water Quality Status and Trend web-based results mapper found at the following URL https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
 
-A binomial statistical test was used for assessing status of bacteria (*E. coli* for freshwater contact recreation), instantaneous dissolved oxygen and pH. The binomial method was used to determine the number of excursions required for an attaining/non-attaining status given a certain sample size and percent excursion rate. The minimum number of excursions required to receive a non-attaining status is determined using the inverse cumulative density function of a binomial distribution as implemented in R (R Core Team, 2020) given a 90% probability, the number samples within the status period, and a 10% excursion rate, when sample size is greater than 11. The use of two excursions was required for sample size less than or equal to 11.  For consistency, we use the same probability and excursion rate as the 305(b)/303(d) Integrated Report (DEQ, 2020).
+### Exact Binomial Test
+
+An exact binomial test was used to determine the critical number of excursions required to differentiate between a non-attaining and attaining status for bacteria (*E. coli* freshwater contact recreation), instantaneous dissolved oxygen, and the pH criteria. The critical number of excursions is determined using the inverse cumulative density function of a binomial distribution as implemented in R (R Core Team, 2020) given a 90% probability, the number results within the status period, and a 10% excursion rate. When the total number of results was less than or equal to 11, only two or more excursions were required for non attainment. This approach is consistent with the methods used for the 2018/2020 305(b)/303(d) Integrated Report (DEQ, 2020).
 
 ### Bacteria
 
@@ -338,7 +340,7 @@ Results for bacteria samples were compared to the applicable bacteria criterion 
 
 #### Bacteria Assessment Protocol
 
-Bacteria related to fecal sources can impair beneficial uses of water for recreation and fishing, specially,shellfish harvesting. Oregon has established water quality standards for relevant bacterial indicators for specific designated uses and various water types (`r tbls(name = "bacteriaIndicators", display="cite")`).
+Bacteria related to fecal sources can impair beneficial uses of water for recreation and fishing, specially, shellfish harvesting. Oregon has established water quality standards for relevant bacterial indicators for specific designated uses and various water types (`r tbls(name = "bacteriaIndicators", display="cite")`).
 
 The indicators are:
 
@@ -375,7 +377,7 @@ A geometric mean is calculated on a rolling basis for each 90-day period of data
 $$GM90 = \sqrt[n]{x_{1}x_{2}...x_{n}}$$  
 
 Where:  
-$GM90$ = The geometric mean over a 90-day period.
+$GM90$ = The geometric mean over a 90-day period.  
 $n$ = number of samples.  
 $x_n$ = bacteria sample concentration, as number of organisms per 100 mL.
 
@@ -517,7 +519,7 @@ $$ PS = 100\times \frac{DO_{Meas}}{DO_{Theo}} $$
 Where:  
 $PS$ = Percent saturation dissolved oxygen.  
 $DO_{Meas}$ = Measured Dissolved Oxygen in mg/L.  
-$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r tbls(name = "eqns-DO-Theo", display="cite")`.
+$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r eqns(name = "eqns-DO-Theo", display="cite")`.
 
 The monthly thirty day (30-D) mean minimum, weekly seven-day minimum mean (7-Mi),
 and alternate absolute minimum (Min) were only assessed when there were sufficient continuously monitored dissolved oxygen data available.
@@ -549,7 +551,7 @@ Dissolved oxygen status assessment results are reported and presented in the fol
 
 *	__Attaining__:  When all of the following are true: For the year-round criteria, no more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D metric percent saturation is less than the applicable criterion. No more than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, no more than one excursion of the daily minimum criteria. During spawning, no more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained, there can be no more than one excursion of the alternate minimum criteria (Min).
 
-*	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion, or an excursion of the 9.0 mg/L criterion if data shows the IGDO criterion is also attained. If the year round 7-D metric is attained and there is more than one excursion of the alternate minimum criteria (Min).
+*	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained and there is more than one excursion of the alternate minimum criteria (Min).
 
 *	__Unassessed__: When there are fewer than fifteen 30-D results to assess the year-round criteria during the year-round critical period (July 1 – September 30) **OR** fewer than fifteen 7-D results available during the spawning period **OR** when there are insufficient 30-D or 7-D results available and there are less than five daily minimum (Min) results available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
 
@@ -660,9 +662,9 @@ Results for continuous temperature data were compared against the applicable tem
 
 #### Temperature Assessment Protocol
 
-The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. When calculating the 7DADM, in order to ensure there were sufficient continuous data to calculate the 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month could have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
+The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven-day average daily maximum (7DADM) stream temperature metric. When calculating the 7DADM, in order to ensure there were sufficient continuous data to calculate the 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month could have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
 
-The seven-day average daily maximum stream temperature (`r eqns(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
+The seven-day average daily maximum stream temperature (`r eqns(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from the maximum temperature for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
 
 `r eqns(name = "eqns-temp-7DADM", caption = "")`
 
@@ -694,6 +696,7 @@ knitr::kable(tbl.temp.criteria,
 
 
 ```
+
 
 ##### Designated Fish Uses
 
@@ -941,7 +944,7 @@ A trend assessment using Seasonal Kendall cannot be made at a monitoring station
 
 ## Watershed Restoration or Protection Actions
 
-To summarize actions taken to restore or protect watersheds and water quality, we summarized on-the-ground treatments implemented and reported to OWEB’s Oregon Watershed Restoration Inventory ([OWRI][[3.1.7]). OWRI is a repository for a significant number of actions implemented in Oregon but it does not capture all restoration or protection actions. In particular projects funded by the United States Farm Bill and many USFS and BLM projects are not included. Typically treatments reported to OWRI were implemented as part of an OWEB grant funded project. DEQ also requires federal 319 grant recipients to report outputs to OWRI. There are over 130 unique treatments identified in OWRI. The various treatments are grouped broadly into the following activity types: fish passage, fish screening, instream habitat, instream flow, riparian, road, upland, and urban. For this report we summarized the number of treatments completed in each of the status periods and the total over the twenty-year period of analysis. For each status period, only treatments completed within the four-year period counted towards the total for that period. The year the project was completed was used for multi-year projects. The totals are reported in the Appendices by subbasin for each activity type and treatment.
+To summarize actions taken to restore or protect watersheds and water quality, we summarized on-the-ground treatments implemented and reported to OWEB’s  [Oregon Watershed Restoration Inventory][3.1.7] (OWRI). OWRI is a repository for a significant number of actions implemented in Oregon but it does not capture all restoration or protection actions. In particular projects funded by the United States Farm Bill and many USFS and BLM projects are not included. Typically treatments reported to OWRI were implemented as part of an OWEB grant funded project. DEQ also requires federal 319 grant recipients to report outputs to OWRI. There are over 130 unique treatments identified in OWRI. The various treatments are grouped broadly into the following activity types: fish passage, fish screening, instream habitat, instream flow, riparian, road, upland, and urban. For this report we summarized the number of treatments completed in each of the status periods and the total over the twenty-year period of analysis. For each status period, only treatments completed within the four-year period counted towards the total for that period. The year the project was completed was used for multi-year projects. The totals are reported in the Appendices by subbasin for each activity type and treatment.
 
 # Results
 
@@ -1240,11 +1243,15 @@ for(i in basin_names){
 
 # Citations
 
+Federal Geographic Data Committee [FGDC]. 2012. FGDC-STD-018-2012. Coastal and Marine Ecological Classification Standard, June 2012. Reston, VA: Federal Geographic Data Committee
+
 Helsel, D.R. and R. M. Hirsch, 2002. Statistical Methods in Water Resources Techniques of Water Resources Investigations, Book 4, chapter A3. U.S. Geological Survey. 522 pages.
 
 Hirsch, R.M. and J.R. Slack. 1984. A nonparametric trend test for seasonal data with serial dependence. *Water Resources Research* 20(6):727-732.
 
 Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for monthly water quality data. *Water Resources Research* 18(1):107-121.
+
+Horton, R.E. 1945. Erosional development of streams and their drainage basins: hydro-physical approach to quantitative morphology. *Geological Society of America Bulletin* 56(3):275–370.
 
 Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
 
@@ -1274,6 +1281,8 @@ Oregon Department of Environmental Quality [DEQ]. 2012. Tualatin Subbasin TMDL a
 
 Oregon Department of Environmental Quality [DEQ]. 2013. Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0. http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
 
+Oregon Department of Environmental Quality [DEQ]. 2018. Integrated Report Improvements, Use of Censored Data. https://www.oregon.gov/deq/FilterDocs/iriCensoredData.pdf
+
 Oregon Department of Environmental Quality [DEQ]. 2019a. Upper Klamath and Lost River Subbasin Nutrient TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
 Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
@@ -1281,3 +1290,5 @@ Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost 
 Oregon Department of Environmental Quality [DEQ]. 2020. Methodology for Oregon’s 2018 Water Quality Report and List of Water Quality Limited Waters. https://www.oregon.gov/deq/wq/Documents/irMethodologyF1820.pdf
 
 R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/
+
+Strahler, A.N. 1952. Hypsometric (area-altitude) analysis of erosional topology. *Geological Society of America Bulletin* 63(11):1117–1142.

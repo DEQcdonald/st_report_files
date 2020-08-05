@@ -15,9 +15,7 @@ end.date = "2019-12-31"
 year = 2020
 report_name <- paste0(year, " Oregon Statewide Status and Trend Report")
 
-final_output <- TRUE
-
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
@@ -32,7 +30,7 @@ HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
                           integer64="warn.loss", verbose = FALSE, stringsAsFactors = FALSE)
 
 agwqma_shp <- sf::st_read(dsn = "//deqhq1/WQNPS/Status_and_Trend_Reports/GIS",
-                          layer = "ODA_AgWQMA",
+                          layer = "ODA_AgWQMA_w_Willamette",
                           stringsAsFactors = FALSE)
 
 report_names <- sort(unique(HUC_shp$REPORT))
@@ -92,12 +90,9 @@ for (name in report_names){
   a.letter <- appendix_letter[[name]]
   xlsx_name <- gsub(" ", "", paste0("Appendix",a.letter,name_abr,".xlsx"), fixed=TRUE)
   xlsx_name <- gsub("-","",xlsx_name, fixed=TRUE)
-  
-  if(final_output) {
-    output_dir <- paste0(top_dir,'/Statewide Report')
-  } else {
-    output_dir <- paste0(data_dir,'/WQST_', year, '-', name,'_DRAFT_', eval_date)
-  }
+
+  output_dir <- paste0(top_dir,'/Statewide Report')
+
   data_dir <- paste0(top_dir,'/', year, '-', name)
   basin_shp <- HUC_shp[HUC_shp$REPORT %in% name, ]
   
@@ -114,7 +109,7 @@ for (name in report_names){
   stations_AWQMS_shp <- sf::st_join(stations_AWQMS_shp, agwqma_shp, left=TRUE)
   
   stations_AgWQMA <- stations_AWQMS_shp %>%
-    dplyr::select(MLocID, PlanName) %>%
+    dplyr::select(MLocID, PlanNameST) %>%
     sf::st_drop_geometry() %>%
     unique()
   
@@ -172,7 +167,7 @@ for (name in report_names){
                     'Station Name' = StationDes,
                     'Subbasin Name' = HUC8_Name,
                     HUC8,
-                    'Agricultural Water Quality Management Area'=PlanName,
+                    'Agricultural Water Quality Management Area'=PlanNameST,
                     'Assessment Unit ID' = AU_ID,
                     Latitude = Lat_DD,
                     Longitude = Long_DD,
@@ -239,7 +234,7 @@ for (name in report_names){
                       "Station Name" = StationDes,
                       "Subbasin Name" = HUC8_Name,
                       HUC8,
-                      "Agricultural Water Quality Management Area"=PlanName,
+                      "Agricultural Water Quality Management Area"=PlanNameST,
                       "Assessment Unit ID" = AU_ID,
                       "Latitude" = Lat_DD,
                       "Longitude" = Long_DD,
@@ -272,7 +267,7 @@ for (name in report_names){
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
                   HUC8,
-                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Agricultural Water Quality Management Area'=PlanNameST,
                   'Assessment Unit ID' = AU_ID,
                   "Latitude" = Lat_DD,
                   "Longitude" = Long_DD,
@@ -325,13 +320,13 @@ for (name in report_names){
     dplyr::mutate(#Basin = name,
       Year = lubridate::year(sample_datetime),
       HUC8_Name = stations_AWQMS[match(HUC8, stations_AWQMS$HUC8),]$HUC8_Name) %>%
-    dplyr::group_by(MLocID, StationDes, HUC8_Name, HUC8, PlanName, AU_ID, Char_Name, Year) %>%
+    dplyr::group_by(MLocID, StationDes, HUC8_Name, HUC8, PlanNameST, AU_ID, Char_Name, Year) %>%
     dplyr::summarise(Results = n()) %>%
     tidyr::pivot_wider(names_from = "Year", values_from = "Results") %>%
     dplyr::rename('Station ID' = MLocID,
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
-                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Agricultural Water Quality Management Area'=PlanNameST,
                   'Assessment Unit ID' = AU_ID,
                   "Parameter" = Char_Name)
 
@@ -347,7 +342,7 @@ for (name in report_names){
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
                   HUC8,
-                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Agricultural Water Quality Management Area'=PlanNameST,
                   'Assessment Unit ID' = AU_ID,
                   "Latitude" = Lat_DD,
                   "Longitude" = Long_DD,
@@ -374,7 +369,7 @@ for (name in report_names){
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,
                   HUC8,
-                  'Agricultural Water Quality Management Area'=PlanName,
+                  'Agricultural Water Quality Management Area'=PlanNameST,
                   'Assessment Unit ID' = AU_ID,
                   "Latitude" = Lat_DD,
                   "Longitude" = Long_DD,

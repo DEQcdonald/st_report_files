@@ -37,9 +37,9 @@ options(kableExtra.auto_format = F)
 ```
 
 
-#### `r paste(subbasin_name)`
+#### `r paste(subbasin_name)` Subbasin
 
-##### Water Quality Limited Stream Segments 
+##### Water Quality Limited Assessment Units 
 
 ```{r wql_streams, include= TRUE, results= 'asis'}
 
@@ -60,16 +60,16 @@ if(nrow(wql_sub) > 0){
   # wql_sub$`Listing Status` <- gsub("Cat 4A: Water quality limited, TMDL approved", "Cat 4A", wql_sub$`Listing Status`)
   # wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing Status"] <- "Cat 5"
   
-  wql_sub <- wql_sub %>% dplyr::group_by(Pollutant) %>% dplyr::summarise('Assessment Units Impaired' = n())
+  wql_sub <- wql_sub %>% dplyr::group_by(Pollutant) %>% dplyr::summarise('Number of Water Quality Limited Assessment Units' = n())
   
   knitr::kable(wql_sub, format = table_format, padding = 0, digits = 1, row.names = FALSE,
                caption = tbls(name = paste0(subbasin_name, "_wql"),
-                              caption = paste0("Number of water quality impaired stream segments in the ", 
+                              caption = paste0("Number of water quality limited assessment units in the ", 
                                                subbasin_name,
-                                               " Subbasin for the parameters assessed in this report. Impairments are summarized from the 2018 Integrated Report submitted for EPA approval."))) %>% 
+                                               " Subbasin for the parameters assessed in this report. Listed assessment units are summarized from the 2018/2020 Integrated Report submitted for EPA approval."))) %>% 
     table_style()
   
-} else {cat("There are no water quality impaired Category 4A or Category 5 assessment units in this subbasin.")}
+} else {cat("There are no water quality limited Category 4A or Category 5 assessment units in this subbasin.")}
 
 ```
 
