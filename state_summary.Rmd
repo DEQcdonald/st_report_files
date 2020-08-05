@@ -227,7 +227,7 @@ The results of this analysis inform DEQ, other state and federal agencies, and t
 
 # Analysis Area and Tribal Waters
 
-Only those waters that are under the State of Oregon’s jurisdiction are evaluated in this report. The State of Oregon communicates with Oregon's nine federally-recognized Tribes in a government-to-government relationship to develop and implement agency programs that may affect the Tribes. Oregon DEQ does not assume jurisdiction to designate beneficial uses, apply water quality standards, list impaired waters, or develop TMDLs within tribal territory, except by cooperative agreement with Tribal governments. In 2017, DEQ conducted a water quality standards georeferencing project to map the extent of designated beneficial uses, water quality standards, and assessment units for reporting of the Clean Water Act section 303(d) impaired waters list. As part of this effort, DEQ collected the best available information on the location of Tribal Reservation and off Reservation Trust Lands. DEQ only assessed waterbodies and data collected outside of Tribal Reservation or off Reservation Trust Land boundaries in the status and trends analysis.
+Only those waters that are under the State of Oregon’s jurisdiction are evaluated in this report. The State of Oregon communicates with Oregon's nine federally-recognized Tribes in a government-to-government relationship to develop and implement agency programs that may affect the Tribes. Oregon DEQ does not assume jurisdiction to designate beneficial uses, apply water quality standards, list impaired waters, or develop TMDLs within tribal territory, except by cooperative agreement with tribal governments. In 2017, DEQ conducted a water quality standards georeferencing project to map the extent of designated beneficial uses, water quality standards, and assessment units for reporting of the Clean Water Act Section 303(d) impaired waters list. As part of this effort, DEQ collected the best available information on the location of Tribal Reservation and Off-Reservation Trust Lands. DEQ only assessed waterbodies and data collected outside of Tribal Reservation or Off-Reservation Trust Land boundaries in the status and trends analysis.
 
 # Methods
 
@@ -297,7 +297,7 @@ The status assessment results are reported and presented in a number of ways. Fo
 
 * __Unassessed__: When there are no results available or when there are results but no numeric water quality criteria or TMDL targets to evaluate attainment against during a 4-year status period. The later condition occurs where there are total phosphorus or total suspended solids data available in an area but no TMDL targets established in that area.
 
-We define “results” as a water quality observation or a calculated summary in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An “excursion” occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, and the minimum, maximum, and median excursion result values. For stations that have total phosphorus or total suspended solids status of 'Unassessed' due to there being no TMDL targets, the minimum, median, and maximum values for all results are provided. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted. The timeseries plots are displayed in the Water Quality Status and Trend web based results mapper found at the following URL https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
+We define “results” as a water quality observation or a calculated summary in the statistical units of the water quality criteria (i.e. geomean or 7-day average daily maximum). An “excursion” occurs when a result is worse than the water quality standard or TMDL target. For each parameter and within each status period, we calculate and report on the total number of results, total excursions, and the minimum, maximum, and median excursion result values. For stations that have total phosphorus or total suspended solids status of 'Unassessed' due to there being no TMDL targets, the minimum, median, and maximum values for all results are provided. Results are also plotted as a timeseries with the applicable water quality standard or TMDL target included on the plot. Excursions are noted. The timeseries plots are displayed in the Water Quality Status and Trends web-based result mapper found at the following URL https://www.oregon.gov/deq/wq/programs/Pages/wqstatustrends.aspx.
 
 ### Binomial Statistical Test
 
@@ -338,7 +338,7 @@ Results for bacteria samples were compared to the applicable bacteria criterion 
 
 #### Bacteria Assessment Protocol
 
-Bacteria related to fecal sources can impair beneficial uses of water for recreation and fishing, specially,shellfish harvesting. Oregon has established water quality standards for relevant bacterial indicators for specific designated uses and various water types (`r tbls(name = "bacteriaIndicators", display="cite")`).
+Bacteria related to fecal sources can impair beneficial uses of water for recreation and fishing, specially, shellfish harvesting. Oregon has established water quality standards for relevant bacterial indicators for specific designated uses and various water types (`r tbls(name = "bacteriaIndicators", display="cite")`).
 
 The indicators are:
 
@@ -375,7 +375,7 @@ A geometric mean is calculated on a rolling basis for each 90-day period of data
 $$GM90 = \sqrt[n]{x_{1}x_{2}...x_{n}}$$  
 
 Where:  
-$GM90$ = The geometric mean over a 90-day period.
+$GM90$ = The geometric mean over a 90-day period.  
 $n$ = number of samples.  
 $x_n$ = bacteria sample concentration, as number of organisms per 100 mL.
 
@@ -517,7 +517,7 @@ $$ PS = 100\times \frac{DO_{Meas}}{DO_{Theo}} $$
 Where:  
 $PS$ = Percent saturation dissolved oxygen.  
 $DO_{Meas}$ = Measured Dissolved Oxygen in mg/L.  
-$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r tbls(name = "eqns-DO-Theo", display="cite")`.
+$DO_{Theo}$ = Theoretical Dissolved Oxygen in mg/L from `r eqns(name = "eqns-DO-Theo", display="cite")`.
 
 The monthly thirty day (30-D) mean minimum, weekly seven-day minimum mean (7-Mi),
 and alternate absolute minimum (Min) were only assessed when there were sufficient continuously monitored dissolved oxygen data available.
@@ -549,7 +549,7 @@ Dissolved oxygen status assessment results are reported and presented in the fol
 
 *	__Attaining__:  When all of the following are true: For the year-round criteria, no more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D metric percent saturation is less than the applicable criterion. No more than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, no more than one excursion of the daily minimum criteria. During spawning, no more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained, there can be no more than one excursion of the alternate minimum criteria (Min).
 
-*	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion, or an excursion of the 9.0 mg/L criterion if data shows the IGDO criterion is also attained. If the year round 7-D metric is attained and there is more than one excursion of the alternate minimum criteria (Min).
+*	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained and there is more than one excursion of the alternate minimum criteria (Min).
 
 *	__Unassessed__: When there are fewer than fifteen 30-D results to assess the year-round criteria during the year-round critical period (July 1 – September 30) **OR** fewer than fifteen 7-D results available during the spawning period **OR** when there are insufficient 30-D or 7-D results available and there are less than five daily minimum (Min) results available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
 
@@ -660,9 +660,9 @@ Results for continuous temperature data were compared against the applicable tem
 
 #### Temperature Assessment Protocol
 
-The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven day average daily maximum (7DADM) stream temperature metric. When calculating the 7DADM, in order to ensure there were sufficient continuous data to calculate the 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month could have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
+The applicable temperature criteria in `r tbls(name="tbl.temp.criteria", display="cite")` is based on the seven-day average daily maximum (7DADM) stream temperature metric. When calculating the 7DADM, in order to ensure there were sufficient continuous data to calculate the 7DADM, at least one observation per hour from noon to midnight must have been recorded. In addition, each month could have no more than one day of missing observations to ensure that no more than 10% of the 7DADM results in that month were missing.
 
-The seven-day average daily maximum stream temperature (`r eqns(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from Tmax for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
+The seven-day average daily maximum stream temperature (`r eqns(name="eqns-temp-7DADM", display="cite")`) is an average of the daily maximum water temperatures for seven consecutive days. The average daily maximum temperature value for each seven-day period is assigned to the last (7th) calendar day of each period. The 7DADM is repeated for each consecutive 7-day period on a moving or rolling basis. For example, the 7DADM for August 10 is calculated from the maximum temperature for August 4 to August 10; the 7DADM for August 11 is calculated from August 5 to 11, etc.
 
 `r eqns(name = "eqns-temp-7DADM", caption = "")`
 
@@ -694,6 +694,7 @@ knitr::kable(tbl.temp.criteria,
 
 
 ```
+
 
 ##### Designated Fish Uses
 
