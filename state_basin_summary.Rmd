@@ -121,9 +121,9 @@ if(!dir.exists(paste0(project_dir, "/Maps"))) {dir.create(paste0(project_dir, "/
 </w:p>
 ```
 
-## `r name` Basin
+## `r name`
 
-A summary of status and trend results for the `r name` Basin and subbasins within the `r name` Basin are presented in this section. Full tabular results including results for each station, assessment unit, excursion statistics, and the summary of the OWRI watershed restoration or protection treatments implemented are provided in **Appendix `r a.letter`**.
+A summary of status and trend results for the `r name` and all subbasins within the `r name` are presented in this section. Full tabular results including results for each station, assessment unit, excursion statistics, and the summary of the OWRI watershed restoration or protection treatments implemented are provided in **Appendix `r a.letter`**.
 
 ```{r basinIntro, include = TRUE, results = 'asis'}
 wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/WQL_assessment_units.csv',
@@ -182,7 +182,7 @@ param_summary <- unique(param_sum$Pollutant)
 
 cat("\n\n")
 
-cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTANT)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
+cat(paste0("Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, ". These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
@@ -256,7 +256,7 @@ for(i in unique(param_sum$Pollutant)){
   }
   
   cat(paste0("![", 
-             figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, " Basin.")),
+             figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, ".")),
              "](", project_dir, "Maps/", gsub(",| ", "_", i), ".png)"), "\n")
   
   cat("\n\n")
@@ -274,7 +274,7 @@ au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>%
   dplyr::rename(Pollutant = Char_Name)
 
 knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
-             caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, " Basin."))
+             caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, "."))
 ) %>% table_style()
 
 cat("\n\n")
@@ -287,9 +287,9 @@ ggplot2::ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "S
   ggplot2::theme_bw()+
   ggplot2::ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
 
-cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " Basin by parameter."))
+cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " by parameter."))
 
-cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," Basin.\n\n"))
+cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name,".\n\n"))
 
 au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -300,7 +300,7 @@ au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>%
 
 knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
-             caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " Basin status summary of assessment units by type."))
+             caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " status summary of assessment units by type."))
 ) %>% table_style()
 
 
@@ -316,7 +316,7 @@ stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>%
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
-             caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, " Basin."))
+             caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, "."))
 ) %>% table_style()
 
 cat("\n\n")
@@ -329,7 +329,7 @@ ggplot2::ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "
   ggplot2::theme_bw()+
   ggplot2::ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
 
-cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " Basin by parameter."))
+cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " by parameter."))
 
 cat("\n\n")
 cat("### Trend\n\n")
@@ -347,7 +347,7 @@ stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>%
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
-             caption = tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " Basin summary of trends at stations across the state."))
+             caption = tbls(name = paste0(name, "_stn_trend_sum"), caption = paste0(name, " summary of trends at stations across the state."))
 ) %>% table_style()
 
 cat("\n\n")
