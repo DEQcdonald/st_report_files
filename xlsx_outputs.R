@@ -35,13 +35,13 @@ agwqma_shp <- sf::st_read(dsn = "//deqhq1/WQNPS/Status_and_Trend_Reports/GIS",
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-appendix_letter <- list("Black Rock Desert-Humboldt"="A",
+appendix_letter <- list("Black Rock Desert-Humboldt Basin"="A",
                         "Columbia River"="B",
-                        "Deschutes"="C",
+                        "Deschutes Basin"="C",
                         "Goose Lake"="D",
-                        "Grande Ronde"="E",
-                        "John Day"="F",
-                        "Klamath"="G",
+                        "Grande Ronde Basin"="E",
+                        "John Day Basin"="F",
+                        "Klamath Basin"="G",
                         "Malheur"="H",
                         "Mid-Coast"="I",
                         "Middle Columbia-Hood"="J",
@@ -49,22 +49,22 @@ appendix_letter <- list("Black Rock Desert-Humboldt"="A",
                         "Oregon Closed Basins"="L",
                         "Owyhee"="M",
                         "Powder-Burnt"="N",
-                        "Rogue"="O",
+                        "Rogue Basin"="O",
                         "Sandy"="P",
                         "Snake River"="Q",
                         "South Coast"="R",
                         "Umatilla-Walla Walla-Willow"="S",
-                        "Umpqua"="T",
-                        "Willamette"="U")
+                        "Umpqua Basin"="T",
+                        "Willamette Basin"="U")
 
 # document name used for web download
-report_name_abr <- list("Black Rock Desert-Humboldt"="BlackRock",
+report_name_abr <- list("Black Rock Desert-Humboldt Basin"="BlackRock",
                         "Columbia River"="ColumbiaRiver",
-                        "Deschutes"="Deschutes",
+                        "Deschutes Basin"="Deschutes",
                         "Goose Lake"="GooseLake",
-                        "Grande Ronde"="GrandeRonde",
-                        "John Day"="JohnDay",
-                        "Klamath"="Klamath",
+                        "Grande Ronde Basin"="GrandeRonde",
+                        "John Day Basin"="JohnDay",
+                        "Klamath Basin"="Klamath",
                         "Malheur"="Malheur",
                         "Mid-Coast"="MidCoast",
                         "Middle Columbia-Hood"="MidColumbia",
@@ -72,15 +72,15 @@ report_name_abr <- list("Black Rock Desert-Humboldt"="BlackRock",
                         "Oregon Closed Basins"="ClosedBasins",
                         "Owyhee"="Owyhee",
                         "Powder-Burnt"="PowderBurnt",
-                        "Rogue"="Rogue",
+                        "Rogue Basin"="Rogue",
                         "Sandy"="Sandy",
                         "Snake River"="SnakeRiver",
                         "South Coast"="SouthCoast",
                         "Umatilla-Walla Walla-Willow"="Umatilla",
-                        "Umpqua"="Umpqua",
-                        "Willamette"="Willamette")
+                        "Umpqua Basin"="Umpqua",
+                        "Willamette Basin"="Willamette")
 
-#name <- "Willamette"
+#name <- "Willamette Basin"
 #name <- "Owyhee"
 #name <- "Umatilla-Walla Walla-Willow"
 
