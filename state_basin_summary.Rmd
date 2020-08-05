@@ -182,7 +182,7 @@ param_summary <- unique(param_sum$Pollutant)
 
 cat("\n\n")
 
-cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$POLLUTANT)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
+cat(paste0("The ", name, " basin is listed for ", length(unique(wql_data$Char_Name)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, " basin. These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ", 
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
@@ -200,22 +200,64 @@ landuse_output <- knitr::knit_child("state_landuse_summary.Rmd", envir = globale
 
 `r paste(landuse_output, collapse = "\n")`
 
+### Parameter Maps
+
+
+```{r caps, include = FALSE}
+for(i in param_summary){
+  if(i != "pH"){
+    parameter_name <- simpleCap(i)
+  } else {parameter_name <- "pH"}
+  figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, " Basin."))
+}
+```
+
+
+`r paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by current status. The water quality listed streams for each parameter are included in the maps as red lines.")`
+
+
 ```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}
 
 cap_list <- list()
 
-cat("### Parameter Maps\n\n")
-
-cat(paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by current status. The water quality listed streams for each parameter are included in the maps as red lines."), "\n\n")
-
-for(i in unique(param_sum$Pollutant)){
+for(i in param_summary){
   if(i != "pH"){
     parameter_name <- simpleCap(i)
   } else {parameter_name <- "pH"}
   
   if(!file.exists(paste0(project_dir, "/Maps/", gsub(",| ", "_", i), ".png"))){
+    
     basin_wql_streams_lines_i <- dplyr::filter(basin_wql_streams_lines, Char_Name == i)
     basin_wql_streams_ws_i <- dplyr::filter(basin_wql_streams_ws, Char_Name == i)
+    
+    if(name == "Columbia River"){
+
+    columbia_aus <- sf::st_read(
+      dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+      layer = "Columbia_River", quiet = TRUE
+    )$AU_ID
+
+    basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% columbia_aus)
+    basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% columbia_aus)
+
+  } else if(name == "Snake River"){
+
+    snake_aus <- c(
+      sf::st_read(
+        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+        layer = "Snake_River_Lines", quiet = TRUE)$AU_ID,
+      sf::st_read(
+        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+        layer = "Snake_River_waterbodies", quiet = TRUE)$AU_ID,
+      sf::st_read(
+        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+        layer = "Snake_River_Watershed", quiet = TRUE)$AU_ID
+    )
+
+    basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% snake_aus)
+    basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% snake_aus)
+
+  }
     
     map_df <- param_sum %>% dplyr::filter(Pollutant == i) %>% dplyr::mutate(color = dplyr::if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
                                                                                                    "lightgray",
@@ -256,7 +298,8 @@ for(i in unique(param_sum$Pollutant)){
   }
   
   cat(paste0("![", 
-             figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, " Basin.")),
+             # figs(name = paste0(name, "_", i, "_map"), caption = paste0("Summary map of the status of ", i, " across the ", name, " Basin.")),
+             figs(name = paste0(name, "_", i, "_map")),
              "](", project_dir, "Maps/", gsub(",| ", "_", i), ".png)"), "\n")
   
   cat("\n\n")
