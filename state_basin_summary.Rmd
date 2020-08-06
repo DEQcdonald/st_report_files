@@ -90,6 +90,35 @@ basin_wql_streams_ws <- sf::st_read(
     stringsAsFactors = FALSE
   )
 
+if(name == "Columbia River"){
+  
+  columbia_aus <- sf::st_read(
+    dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+    layer = "Columbia_River", quiet = TRUE
+  )$AU_ID
+  
+  basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% columbia_aus)
+  basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% columbia_aus)
+  
+} else if(name == "Snake River"){
+  
+  snake_aus <- c(
+    sf::st_read(
+      dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+      layer = "Snake_River_Lines", quiet = TRUE)$AU_ID,
+    sf::st_read(
+      dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+      layer = "Snake_River_waterbodies", quiet = TRUE)$AU_ID,
+    sf::st_read(
+      dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
+      layer = "Snake_River_Watershed", quiet = TRUE)$AU_ID
+  )
+  
+  basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% snake_aus)
+  basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% snake_aus)
+  
+}
+
 basin_wql_streams_lines$Char_Name <- unlist(sapply(basin_wql_streams_lines$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
 basin_wql_streams_ws$Char_Name <- unlist(sapply(basin_wql_streams_ws$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
 basin_wql_streams_lines$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_lines$Char_Name)
@@ -128,6 +157,16 @@ A summary of status and trend results for the `r name` and all subbasins within 
 ```{r basinIntro, include = TRUE, results = 'asis'}
 wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/WQL_assessment_units.csv',
                      stringsAsFactors = FALSE)
+
+if(name == "Columbia River"){
+  
+  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% columbia_aus)
+  
+} else if(name == "Snake River"){
+  
+  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% snake_aus)
+  
+} else {wql_data <- wql_data %>% dplyr::filter(HUC12 %in% basin_12s)}
 
 param_sum <- param_sum[,c("AU_Name", colnames(param_sum)[colnames(param_sum) != "AU_Name"])]
 param_sum$AU_Type <- dplyr::if_else(grepl("_SR_", param_sum$AU_ID),
@@ -229,35 +268,6 @@ for(i in param_summary){
     
     basin_wql_streams_lines_i <- dplyr::filter(basin_wql_streams_lines, Char_Name == i)
     basin_wql_streams_ws_i <- dplyr::filter(basin_wql_streams_ws, Char_Name == i)
-    
-    if(name == "Columbia River"){
-
-    columbia_aus <- sf::st_read(
-      dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
-      layer = "Columbia_River", quiet = TRUE
-    )$AU_ID
-
-    basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% columbia_aus)
-    basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% columbia_aus)
-
-  } else if(name == "Snake River"){
-
-    snake_aus <- c(
-      sf::st_read(
-        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
-        layer = "Snake_River_Lines", quiet = TRUE)$AU_ID,
-      sf::st_read(
-        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
-        layer = "Snake_River_waterbodies", quiet = TRUE)$AU_ID,
-      sf::st_read(
-        dsn = "//deqhq1/wqnps/Status_and_Trend_Reports/GIS/Assessment_Units.gdb",
-        layer = "Snake_River_Watershed", quiet = TRUE)$AU_ID
-    )
-
-    basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% snake_aus)
-    basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% snake_aus)
-
-  }
     
     map_df <- param_sum %>% dplyr::filter(Pollutant == i) %>% dplyr::mutate(color = dplyr::if_else(!!status_current %in% c("Unassessed", "Insufficient Data"),
                                                                                                    "lightgray",
