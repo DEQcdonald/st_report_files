@@ -160,13 +160,16 @@ wql_data <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/
 
 if(name == "Columbia River"){
   
-  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% columbia_aus)
+  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% columbia_aus, 
+                                         Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names(c("tp", "pH", "temperature", "bacteria", "tss", "do")))
   
 } else if(name == "Snake River"){
   
-  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% snake_aus)
+  wql_data <- wql_data %>% dplyr::filter(AU_ID %in% snake_aus, 
+                                         Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names(c("tp", "pH", "temperature", "bacteria", "tss", "do")))
   
-} else {wql_data <- wql_data %>% dplyr::filter(HUC12 %in% basin_12s)}
+} else {wql_data <- wql_data %>% dplyr::filter(HUC12 %in% basin_12s, 
+                                         Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names(c("tp", "pH", "temperature", "bacteria", "tss", "do")))}
 
 param_sum <- param_sum[,c("AU_Name", colnames(param_sum)[colnames(param_sum) != "AU_Name"])]
 param_sum$AU_Type <- dplyr::if_else(grepl("_SR_", param_sum$AU_ID),
