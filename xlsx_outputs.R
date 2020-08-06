@@ -35,11 +35,11 @@ agwqma_shp <- sf::st_read(dsn = "//deqhq1/WQNPS/Status_and_Trend_Reports/GIS",
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-appendix_letter <- list("Black Rock Desert-Humboldt Basin"="A",
+appendix_letter <- list("Black Rock Desert Basin"="A",
                         "Columbia River"="B",
                         "Deschutes Basin"="C",
                         "Goose Lake"="D",
-                        "Grande Ronde Basin"="E",
+                        "Grande Ronde"="E",
                         "John Day Basin"="F",
                         "Klamath Basin"="G",
                         "Malheur"="H",
@@ -58,11 +58,11 @@ appendix_letter <- list("Black Rock Desert-Humboldt Basin"="A",
                         "Willamette Basin"="U")
 
 # document name used for web download
-report_name_abr <- list("Black Rock Desert-Humboldt Basin"="BlackRock",
+report_name_abr <- list("Black Rock Desert Basin"="BlackRock",
                         "Columbia River"="ColumbiaRiver",
                         "Deschutes Basin"="Deschutes",
                         "Goose Lake"="GooseLake",
-                        "Grande Ronde Basin"="GrandeRonde",
+                        "Grande Ronde"="GrandeRonde",
                         "John Day Basin"="JohnDay",
                         "Klamath Basin"="Klamath",
                         "Malheur"="Malheur",

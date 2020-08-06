@@ -66,11 +66,11 @@ charnames <- data.frame(awqms = c("Temperature, water", "Dissolved oxygen (DO)",
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-report_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
+report_name_abr <- list("Black Rock Desert Basin"="blackrock",
                         "Columbia River"="columbiariv",
                         "Deschutes Basin"="deschutes",
                         "Goose Lake"="gooselake",
-                        "Grande Ronde Basin"="granderonde",
+                        "Grande Ronde"="granderonde",
                         "John Day Basin"="johnday",
                         "Klamath Basin"="klamath",
                         "Malheur"="malheur",
@@ -85,7 +85,7 @@ report_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
                         "Snake River"="snakeriv",
                         "South Coast"="scoast",
                         "Umatilla-Walla Walla-Willow"="umatilla",
-                        "Umpqua"="umpqua",
+                        "Umpqua Basin"="umpqua",
                         "Willamette Basin"="willamette")
 
 #name <- "Willamette Basin"

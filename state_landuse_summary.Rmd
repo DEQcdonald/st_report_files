@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       eval = TRUE
                       )
 
-landuse_map_check <- if(name %in% c("Black Rock Desert-Humboldt Basin", "Columbia River", "Goose Lake", "Oregon Closed Basins", "Snake River")){FALSE}else{TRUE}
+landuse_map_check <- if(name %in% c("Black Rock Desert Basin", "Columbia River", "Goose Lake", "Oregon Closed Basins", "Snake River")){FALSE}else{TRUE}
 
 ```
 

@@ -17,11 +17,11 @@ logo <- base64enc::base64encode("//deqhq1/WQNPS/Status_and_Trend_Reports/Figures
 
 report_areas <- sf::st_transform(report_areas, 4326)
 
-report_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
+report_name_abr <- list("Black Rock Desert Basin"="blackrock",
                         "Columbia River"="columbiariv",
                         "Deschutes Basin"="deschutes",
                         "Goose Lake"="gooselake",
-                        "Grande Ronde Basin"="granderonde",
+                        "Grande Ronde"="granderonde",
                         "John Day Basin"="johnday",
                         "Klamath Basin"="klamath",
                         "Malheur"="malheur",
@@ -39,11 +39,11 @@ report_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
                         "Umpqua Basin"="umpqua",
                         "Willamette Basin"="willamette")
 
-map_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
+map_name_abr <- list("Black Rock Desert Basin"="blackrock",
                      "Columbia River"="columbiariv",
                      "Deschutes Basin"="deschutes",
                      "Goose Lake"="gooselake",
-                     "Grande Ronde Basin"="granderonde",
+                     "Grande Ronde"="granderonde",
                      "John Day Basin"="johnday",
                      "Klamath Basin"="klamath",
                      "Malheur"="malheur",
@@ -89,11 +89,11 @@ map_locator <- leaflet::leaflet(report_areas) %>% leaflet::addTiles() %>%
                        # popup = ~paste0("", map_link), 
                        stroke = FALSE, fill = TRUE, fillOpacity = 0.5, fillColor = ~color,
                        highlightOptions = leaflet::highlightOptions(fillColor = "black", fillOpacity = 0.75)) %>% 
-  leaflet::addPolygons(group = "Subbasin Polygons",
+  leaflet::addPolygons(group = "HUC8 Subbasins",
                        color = "black", weight = 2, opacity = 1, fill = FALSE) %>% 
-  leaflet::addPolygons(data = basin_shp, group = "Basin Polygons",
+  leaflet::addPolygons(data = basin_shp, group = "HUC6 Basins",
                        color = "black", weight = 4, opacity = 1, fill = FALSE) %>%  
-  leaflet::addLayersControl(overlayGroups = c("Subbasin Polygons", "Basin Polygons", "Map Polygons"),
+  leaflet::addLayersControl(overlayGroups = c("HUC8 Subbasins", "HUC6 Basins", "Map Polygons"),
                             options = leaflet::layersControlOptions(collapsed = FALSE, autoZIndex = TRUE)
   ) %>%
   leaflet::addControl(position = "bottomright", className = "logo",

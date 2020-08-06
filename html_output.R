@@ -26,11 +26,11 @@ HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-map_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
+map_name_abr <- list("Black Rock Desert Basin"="blackrock",
                      "Columbia River"="columbiariv",
                      "Deschutes Basin"="deschutes",
                      "Goose Lake"="gooselake",
-                     "Grande Ronde Basin"="granderonde",
+                     "Grande Ronde"="granderonde",
                      "John Day Basin"="johnday",
                      "Klamath Basin"="klamath",
                      "Malheur"="malheur",
@@ -53,11 +53,11 @@ map_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
                      "Willamette-Santiam-Upper"="will_san_upper",
                      "Willamette-Tualatin"="will_tualatin")
 
-report_name_abr <- list("Black Rock Desert-Humboldt Basin"="blackrock",
+report_name_abr <- list("Black Rock Desert Basin"="blackrock",
                         "Columbia River"="columbiariv",
                         "Deschutes Basin"="deschutes",
                         "Goose Lake"="gooselake",
-                        "Grande Ronde Basin"="granderonde",
+                        "Grande Ronde"="granderonde",
                         "John Day Basin"="johnday",
                         "Klamath Basin"="klamath",
                         "Malheur"="malheur",
