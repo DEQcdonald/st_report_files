@@ -412,7 +412,7 @@ for (name in report_names){
   state_param_sum_au <- rbind(state_param_sum_au, param_sum_au)
   state_status_reason <- dplyr::bind_rows(state_status_reason, status_reason)
   
-  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_stat_base", "tmdl", "tmdl_period")])
+  target_data <- unique(data_assessed[, c("MLocID", "Char_Name", "target_value", "target_units", "target_stat_base", "tmdl", "tmdl_period")])
   state_target_data <- dplyr::bind_rows(state_target_data, target_data)
   
   status_reason$status_period <- gsub("status_", "", status_reason$status_period)
