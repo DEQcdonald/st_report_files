@@ -1025,13 +1025,13 @@ for(i in unique(state_param_sum_stn$Char_Name)){
       leaflet::addPolygons(data = wql_streams_ws_i,
                             opacity = 1,
                             weight = 2,
-                            color = "red",
+                            color = "#ff33be",
                            fillOpacity = 0.1,
-                           fillColor = "red") %>% 
+                           fillColor = "#ff33be") %>% 
       leaflet::addPolylines(data = wql_streams_lines_i,
                             opacity = 1,
                             weight = 2,
-                            color = "red"
+                            color = "#ff33be"
       ) %>%
       leaflet::addPolygons(data = HUC_shp, fill = FALSE, opacity = 1, weight = 1.5, color = "black") %>%
       leaflet::addCircleMarkers(data = map_df, lng = ~Long_DD, lat = ~Lat_DD,
