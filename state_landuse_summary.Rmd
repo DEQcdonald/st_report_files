@@ -49,23 +49,23 @@ landuse.huc8.df <- nlcd_huc8_df %>%
                                           VALUE_21,VALUE_22,VALUE_23,VALUE_24,
                                           VALUE_31,VALUE_41,VALUE_42,VALUE_43,
                                           VALUE_52,VALUE_71,VALUE_81,VALUE_82,
-                                          VALUE_90,VALUE_95) * 0.001),
+                                          VALUE_90,VALUE_95) * 0.001^2),
                    PerUrbanWs = round(sum(VALUE_21,
                                           VALUE_22,
                                           VALUE_23,
-                                          VALUE_24) * 0.001 / WsAreaSqKm * 100, 1),
+                                          VALUE_24) * 0.001^2 / WsAreaSqKm * 100, 1),
                    PerForestWs = round(sum(VALUE_41,
                                            VALUE_42,
                                            VALUE_43,
-                                           VALUE_90) * 0.001 / WsAreaSqKm * 100, 1),
+                                           VALUE_90) * 0.001^2 / WsAreaSqKm * 100, 1),
                    PerAgWs = round(sum(VALUE_81,
-                                       VALUE_82) * 0.001 / WsAreaSqKm * 100, 1),
+                                       VALUE_82) * 0.001^2 / WsAreaSqKm * 100, 1),
                    PerRangeWs = round(sum(VALUE_52,
-                                          VALUE_71) * 0.001 / WsAreaSqKm * 100, 1),
+                                          VALUE_71) * 0.001^2 / WsAreaSqKm * 100, 1),
                    PerOtherWs = round(sum(VALUE_11,
                                           VALUE_12,
                                           VALUE_31,
-                                          VALUE_95) * 0.001 / WsAreaSqKm * 100, 1))
+                                          VALUE_95) * 0.001^2 / WsAreaSqKm * 100, 1))
 
 landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_names$HUC8),]$HUC8_Name
 landuse.huc8.df <- landuse.huc8.df %>% dplyr::filter(!is.na(HUC_8_NAME))

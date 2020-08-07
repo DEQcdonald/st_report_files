@@ -112,7 +112,7 @@ cap_list[[1]] <- figs(name = paste0(subbasin_name, "_au_sum_plot"),
 
 ```
 
-Oregon DEQ groups assessment units into five types; streams, lakes, watershed units, estuaries or bays, and coastlines. `r tbls(name = paste0(subbasin_name, "_au_type_sum"), display="cite")` summarizes of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.
+Oregon DEQ groups assessment units into five types: "Stream", "Watershed Unit", "Lake", "Estuary or Bay", and "Coastline". `r tbls(name = paste0(subbasin_name, "_au_type_sum"), display="cite")` summarizes of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type.
 
 ```{r status-au-table-type, include = TRUE, results = 'asis'}
 
