@@ -75,7 +75,7 @@ if(nrow(wql_sub) > 0){
 
 ##### Status
 
-There are `r length(unique(par_sum_au$AU_ID))` assessment units within the `r subbasin_name` subbasin that were included in this report. `r tbls(name = paste0(subbasin_name, "_au_sum"), display="cite")` and `r figs(name = paste0(subbasin_name, "_au_sum_plot"), display="cite")` summarizes the number of attaining, not attaining, and unassessed assessment units by parameter.
+There are `r length(unique(par_sum_au$AU_ID))` assessment units within the `r subbasin_name` subbasin that had stations with available data to be included in this report. Some assessment units did not contain stations with targets or sufficient available data to determine attainment status and are listed as unassessed. `r tbls(name = paste0(subbasin_name, "_au_sum"), display="cite")` and `r figs(name = paste0(subbasin_name, "_au_sum_plot"), display="cite")` summarizes the number of attaining, not attaining, and unassessed assessment units by parameter for the current status period.
 
 ```{r status-au-table-sum, include = TRUE, results = 'asis'}
 
@@ -130,7 +130,7 @@ knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = t
 
 ```
 
-There are `r length(unique(par_sum$MLocID))` stations within the `r subbasin_name` subbasin that were included in this report.  `r tbls(name = paste0(subbasin_name, "_stn_sum"), display="cite")` and `r figs(name = paste0(subbasin_name, "_stn_sum_plot"), display="cite")` summarizes the number of attaining, not attaining, and unassessed stations by parameter.
+There are `r length(unique(par_sum$MLocID))` stations within the `r subbasin_name` subbasin with available data included in this report. Stations without targets or without sufficient data to determine attainment are listed as unassessed. The reason for a station's unassessed status can be found in the appendix for this area. `r tbls(name = paste0(subbasin_name, "_stn_sum"), display="cite")` and `r figs(name = paste0(subbasin_name, "_stn_sum_plot"), display="cite")` summarizes the number of attaining, not attaining, and unassessed stations by parameter for the current status period.
 
 ```{r status-stn-table-sum, include = TRUE, results = 'asis'}
 
