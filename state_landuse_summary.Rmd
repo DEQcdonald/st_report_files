@@ -40,6 +40,28 @@ landuse_map_check <- if(name %in% c("Black Rock Desert Basin", "Columbia River",
 
 lu_dir <- "N:/Status_and_Trend_Reports"
 nlcd_huc8_df <- read.csv(paste0(lu_dir,"/Lookups_Statewide/NLCD_2016_LU_sqm_by_HUC8_ReportUnit.txt"), quote="", stringsAsFactors=FALSE)
+name_conversion <- list("Black Rock Desert-Humboldt"="Black Rock Desert Basin",
+                        "Columbia River"="Columbia River",
+                        "Deschutes"="Deschutes Basin",
+                        "Goose Lake"="Goose Lake",
+                        "Grande Ronde"="Grande Ronde",
+                        "John Day"="John Day Basin",
+                        "Klamath"="Klamath Basin",
+                        "Malheur"="Malheur",
+                        "Mid-Coast"="Mid-Coast",
+                        "Middle Columbia-Hood"="Middle Columbia-Hood",
+                        "North Coast-Lower Columbia"="North Coast-Lower Columbia",
+                        "Oregon Closed Basins"="Oregon Closed Basins",
+                        "Owyhee"="Owyhee",
+                        "Powder-Burnt"="Powder-Burnt",
+                        "Rogue"="Rogue Basin",
+                        "Sandy"="Sandy",
+                        "Snake River"="Snake River",
+                        "South Coast"="South Coast",
+                        "Umatilla-Walla Walla-Willow"="Umatilla-Walla Walla-Willow",
+                        "Umpqua"="Umpqua Basin",
+                        "Willamette"="Willamette Basin")
+nlcd_huc8_df$ReportUnit <- unlist(name_conversion[nlcd_huc8_df$ReportUnit])
 
 #Reclass the NLCD
 landuse.huc8.df <- nlcd_huc8_df %>% 

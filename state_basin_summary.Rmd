@@ -97,8 +97,8 @@ if(name == "Columbia River"){
     layer = "Columbia_River", quiet = TRUE
   )$AU_ID
   
-  basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% columbia_aus)
-  basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% columbia_aus)
+  basin_wql_streams_lines <- basin_wql_streams_lines %>% dplyr::filter(AU_ID %in% columbia_aus)
+  basin_wql_streams_ws <- basin_wql_streams_ws %>% dplyr::filter(AU_ID %in% columbia_aus)
   
 } else if(name == "Snake River"){
   
@@ -114,8 +114,8 @@ if(name == "Columbia River"){
       layer = "Snake_River_Watershed", quiet = TRUE)$AU_ID
   )
   
-  basin_wql_streams_lines_i <- basin_wql_streams_lines_i %>% dplyr::filter(AU_ID %in% snake_aus)
-  basin_wql_streams_ws_i <- basin_wql_streams_ws_i %>% dplyr::filter(AU_ID %in% snake_aus)
+  basin_wql_streams_lines <- basin_wql_streams_lines %>% dplyr::filter(AU_ID %in% snake_aus)
+  basin_wql_streams_ws <- basin_wql_streams_ws %>% dplyr::filter(AU_ID %in% snake_aus)
   
 }
 
