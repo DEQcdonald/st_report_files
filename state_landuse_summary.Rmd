@@ -19,7 +19,7 @@ library(knitr)
 knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       warning=FALSE,
-                      error = TRUE,
+                      error = FALSE,
                       cache = FALSE,
                       cache.comments = FALSE,
                       include = TRUE,

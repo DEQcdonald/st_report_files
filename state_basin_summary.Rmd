@@ -75,20 +75,6 @@ area <- sf::st_transform(area, 4326)
 # wql_streams <- dplyr::filter(wql_streams[, c("STREAM_NAM", "SEGMENT_ID", "SEASON", "Char_Name", "LISTING_ST", "TMDL_INFO")], Char_Name %in% unique(param_sum$Char_Name))
 # wql_streams <- wql_streams[lapply(wql_streams$`_ogr_geometry_`, length) != 0,]
 basin_12s <- hucs[hucs$HUC_8 %in% unique(param_sum$HUC8),]$HUC_12
-basin_wql_streams_lines <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Rivers_Coast",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE HUC12 IN ('",
-                   paste(basin_12s, collapse = "', '"), "')"),
-    stringsAsFactors = FALSE
-  )
-basin_wql_streams_ws <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Watershed",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE HUC12 IN ('",
-                   paste(basin_12s, collapse = "', '"), "')"),
-    stringsAsFactors = FALSE
-  )
 
 if(name == "Columbia River"){
   
@@ -97,8 +83,20 @@ if(name == "Columbia River"){
     layer = "Columbia_River", quiet = TRUE
   )$AU_ID
   
-  basin_wql_streams_lines <- basin_wql_streams_lines %>% dplyr::filter(AU_ID %in% columbia_aus)
-  basin_wql_streams_ws <- basin_wql_streams_ws %>% dplyr::filter(AU_ID %in% columbia_aus)
+  basin_wql_streams_lines <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Rivers_Coast",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE AU_ID IN ('",
+                   paste(columbia_aus, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+  basin_wql_streams_ws <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Watershed",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE AU_ID IN ('",
+                   paste(columbia_aus, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
   
 } else if(name == "Snake River"){
   
@@ -114,21 +112,54 @@ if(name == "Columbia River"){
       layer = "Snake_River_Watershed", quiet = TRUE)$AU_ID
   )
   
-  basin_wql_streams_lines <- basin_wql_streams_lines %>% dplyr::filter(AU_ID %in% snake_aus)
-  basin_wql_streams_ws <- basin_wql_streams_ws %>% dplyr::filter(AU_ID %in% snake_aus)
+  basin_wql_streams_lines <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Rivers_Coast",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE AU_ID IN ('",
+                   paste(snake_aus, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+  basin_wql_streams_ws <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Watershed",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE AU_ID IN ('",
+                   paste(snake_aus, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+  
+} else {
+  basin_wql_streams_lines <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Rivers_Coast",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE HUC12 IN ('",
+                   paste(basin_12s, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+  basin_wql_streams_ws <- sf::st_read(
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
+    layer = "Impaired_Pollutant_Watershed",
+    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE HUC12 IN ('",
+                   paste(basin_12s, collapse = "', '"), "')"),
+    stringsAsFactors = FALSE
+  )
+}
+
+if(NROW(basin_wql_streams_lines) > 0){
+  basin_wql_streams_lines$Char_Name <- unlist(sapply(basin_wql_streams_lines$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
+  basin_wql_streams_lines$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_lines$Char_Name)
+  
+} else if(NROW(basin_wql_streams_ws) > 0){
+  basin_wql_streams_ws$Char_Name <- unlist(sapply(basin_wql_streams_ws$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
+  basin_wql_streams_ws$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_ws$Char_Name)
   
 }
 
-basin_wql_streams_lines$Char_Name <- unlist(sapply(basin_wql_streams_lines$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
-basin_wql_streams_ws$Char_Name <- unlist(sapply(basin_wql_streams_ws$Char_Name, AWQMS_Char_Names, USE.NAMES = FALSE))
-basin_wql_streams_lines$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_lines$Char_Name)
-basin_wql_streams_ws$Char_Name <- odeqstatusandtrends::AWQMS_to_standard(basin_wql_streams_ws$Char_Name)
 basin_wql_streams_lines <- sf::st_zm(basin_wql_streams_lines, what = "ZM")
 basin_wql_streams_ws <- sf::st_zm(basin_wql_streams_ws, what = "ZM")
 
 basin_wql_streams_lines <- st_transform(basin_wql_streams_lines, 4326)
 basin_wql_streams_lines <- dplyr::filter(basin_wql_streams_lines[, c("AU_Name", "AU_ID", "Period", "Char_Name", "IR_category")],
-                               Char_Name %in% unique(param_sum$Char_Name))
+                                         Char_Name %in% unique(param_sum$Char_Name))
 
 basin_wql_streams_ws <- st_transform(basin_wql_streams_ws, 4326)
 basin_wql_streams_ws <- dplyr::filter(basin_wql_streams_ws[, c("AU_Name", "AU_ID", "Period", "Char_Name", "IR_category")],
