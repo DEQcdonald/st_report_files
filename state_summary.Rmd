@@ -247,13 +247,13 @@ Information about watershed improvement projects and the associated on the groun
 
 ## QA/QC Requirements
 
-All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ data and data collected through the Volunteer Monitoring Program must have a Data Quality Level (DQL) of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the Integrated Report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
+All data used in the Status and Trends Report must have a project plan (Quality Assurance Project Plan (QAPP) or similar) or use widely accepted sampling and analysis methods. Internal DEQ data and data collected through the Volunteer Monitoring Program must have a Data Quality Level (DQL) of A or B. Data quality levels for parameters measured in the field are assigned following [DEQ’s Data Quality Matrix][3.2.1] (DEQ, 2013). The data quality matrix defines the accuracy and precision criteria for field audits and calibration verifications respectively. Analytical or laboratory analyzed data are assigned data quality levels based on quality control and assurance protocols and internal data review. Data submitted through the Integrated Report call for data or originally obtained from the Water Quality Portal were included if they had a result status of “Final”, “Accepted”, or “Validated”. We relied on the quality control checks implemented by OWEB for treatment data obtained from OWRI.
 
-Monitoring data typically includes results that are reported as "non-detects". Non-detects or censored data are reported when very small concentrations cannot be precisely measured due to limitations in field and laboratory analysis procedures. All that is known is the true result falls somewhere between zero and the reporting limit. Each analytical procedure has a Method Detection Level (MDL) and a Minimum Reporting Level (MRL). The MDL is the concentration at which a sample can be discerned from a sample blank. The MRL is the lowest concentration where an analyte can be both detected and an accurate concentration quantified. We use the generic term "Quantitation Limit" (QL) to include MRL, MDL and any other reporting limits used by third parties. For this analysis, we interpreted non-detect results using the approach described in DEQ's white paper on censored data (DEQ 2018). The approach is summarized as follows:
+Monitoring data typically includes results that are reported as "non-detects". Non-detects or censored data are reported when very small concentrations cannot be precisely measured due to limitations in field and laboratory analysis procedures. All that is known is the true result falls somewhere between zero and the reporting limit. Each analytical procedure has a Method Detection Level (MDL) and a Minimum Reporting Level (MRL). The MDL is the concentration at which a sample can be discerned from a sample blank. The MRL is the lowest concentration where an analyte can be both detected and an accurate concentration quantified. We use the generic term "Quantitation Limit" (QL) to include MRL, MDL and any other reporting limits used by third parties. For this analysis, we interpreted non-detect results using the approach described in DEQ's white paper on censored data (DEQ, 2018). The approach is summarized as follows:
 
 * When the QL was greater than the numeric criteria value or TMDL target, ½ of the value of the water quality criteria was substituted for any result reported as censored.
 
-* When the QL was less than the numeric criteria or there is no TMDL target, ½ of the value of the lowest QL was substituted for any result reported as censored.
+* When the QL was less than the numeric criteria or TMDL target, or there was no TMDL target, ½ of the value of the lowest QL was substituted for any result reported as censored.
 
 * When results were reported as greater than the maximum QL, the QL value was used.
 
@@ -279,13 +279,13 @@ Trends were evaluated over the entire twenty-year period. Minimum data requireme
 
 ## Water Quality Status Assessment
 
-The status assessment is an evaluation of water quality data to determine if a waterbody attains water quality standards or TMDL targets. An attainment assessment was made for bacteria (*E. coli*, *Enterococcus*, and Fecal Coliform), dissolved oxygen, pH, and temperature in relation to the applicable numeric water quality criterion. For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined. We used the 2018/2020 Integrated Report assessment methodology (DEQ 2020) to determine attainment within each status period. The methodology considers all the applicable criteria for each parameter as well as the number of excursions for attainment conclusions. The specific methodology for each status category are described for each parameter in the sections below.
+The status assessment is an evaluation of water quality data to determine if a waterbody attains water quality standards or TMDL targets. An attainment assessment was made for bacteria (*E. coli*, *Enterococcus*, and Fecal Coliform), dissolved oxygen, pH, and temperature in relation to the applicable numeric water quality criterion. For some waterbodies the applicable water quality criterion for these parameters is a narrative non-numeric criterion. In this situation, status was not determined. We used the 2018/2020 Integrated Report assessment methodology (DEQ, 2020) to determine attainment within each status period. The methodology considers all the applicable criteria for each parameter as well as the number of excursions for attainment conclusions. The specific methodology for each status category are described for each parameter in the sections below.
 
 Oregon does not have statewide numeric water quality standards for total phosphorus (TP) or total suspended solids (TSS); however, sometimes these parameters are identifed as pollutants that contribute to non-attainment of other water quality standards. Often the impairment is based on standards established for dissolved oxygen, pH, or sediment. An attainment assessment was made for total phosphorus (TP) or total suspended solids (TSS) where a TMDL target has been established for these parameters.
 
 ### Assessment Units
 
-Water quality status was assessed at both monitoring stations and waterbody-based assessment units (AUs). The AUs incorporate the High Resolution National Hydrography (NHDH) framework with environmentally and hydrologically relevant breaks of water bodies, and remain the same over time (fixed units). The NHDH is a digital geospatial dataset that represents the surface water of the entire United States at a scale of 1:24,000 resolution or better. It is now the national and state hydrologic framework standard, replacing the LLID system. The AUs in this report consist of “Stream”, “Watershed Units”, “Lake”, “Estuary or Bays”, and “Coastlines”. Stream assessment units are defined for the streams with a Strahler Stream Order (Strahler 1957; Horten 1945) of five and higher and are grouped based on designated use, stream order change, or a break at a HUC 10 or watershed boundary. All streams with a Strahler Stream Order of four or less are grouped into a watershed unit that is broken at the HUC 12 or smaller sub-watershed boundary. Lakes and reservoirs greater than 20 hectares are classified as lake assessment units. DEQ uses the Coastal and Marine Ecological Classification Standard (FGDC 2012) to define the extent of estuaries or bays, as well as coastline assessment units.
+Water quality status was assessed at both monitoring stations and waterbody-based assessment units (AUs). The AUs incorporate the High Resolution National Hydrography (NHDH) framework with environmentally and hydrologically relevant breaks of water bodies, and remain the same over time (fixed units). The NHDH is a digital geospatial dataset that represents the surface water of the entire United States at a scale of 1:24,000 resolution or better. It is now the national and state hydrologic framework standard, replacing the LLID system. The AUs in this report consist of “Stream”, “Watershed Unit”, “Lake”, “Estuary or Bay”, and “Coastline”. Stream assessment units are defined for the streams with a Strahler Stream Order (Strahler, 1952; Horten, 1945) of five and higher and are grouped based on designated use, stream order change, or a break at a HUC 10 or watershed boundary. All streams with a Strahler Stream Order of four or less are grouped into a watershed unit that is broken at the HUC 12 or smaller sub-watershed boundary. Lakes and reservoirs greater than 20 hectares are classified as lake assessment units. DEQ uses the Coastal and Marine Ecological Classification Standard (FGDC, 2012) to define the extent of estuaries or bays, as well as coastline assessment units.
 
 ### Status Reporting and Definitions
 
@@ -708,7 +708,7 @@ In streams designated as salmon and steelhead spawning areas, the salmon & steel
 
 ##### Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(a). 
 
-The Upper Klamath and Lost Subbasins temperature TMDL (DEQ 2019b) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
+The Upper Klamath and Lost Subbasins temperature TMDL (DEQ, 2019b) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
 
 ##### Applicability
 
@@ -766,7 +766,7 @@ tmdls.name.tp <- sort(unique(tbl.tmdls.tp$`TMDL Document Name`))
 
 Oregon does not have explicit water quality standards for total phosphorus (TP); however, TP can be a pollutant that contributes to excursions of water quality standards and impairment of one or more beneficial uses. Often the excursions are for water quality standards established for dissolved oxygen, pH, chlorophyll a, or algae.
 
-In this report, we evaluated status for total phosphorus in waterbodies where a Total Maximum Daily Load (TMDL) has been established and identified total phosphorus as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tp", display="cite")` summarizes the TMDLs evaluated in this report with TP concentration targets. Table 7 through Table 16 summarizes the specific TP targets in each TMDL including where the target applies, the 303(d) water quality limited parameters, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
+In this report, we evaluated status for total phosphorus in waterbodies where a Total Maximum Daily Load (TMDL) has been established and identified total phosphorus as a pollutant with specific concentration targets. `r tbls(name="tbl.tmdls.tp", display="cite")` summarizes the TMDLs evaluated in this report with TP concentration targets. Table 6 through Table 16 summarizes the specific TP targets in each TMDL including where the target applies, the 303(d) water quality limited parameters, the statistical base for each TMDL target, and the applicable calendar period when the TMDL target applies.
 
 ```{r TMDL-TP, echo=FALSE, results='asis'}
 
@@ -795,7 +795,7 @@ for (i in 1:length(tmdls.name.tp)){
   if(NROW(tmdls.doc.df_2_tp) > 0){
   print(knitr::kable(tmdls.doc.df_2_tp, format = "pandoc", padding = 2, 
                      caption = tbls(name = paste0("tmdls.doc.df_2_tp", tmdls.name.tp[i]),
-                                    caption = paste0("Total phosphorus targets in ", tmdls.name.tp[i], " (DEQ ", year, ")."))))
+                                    caption = paste0("Total phosphorus targets in ", tmdls.name.tp[i], " (DEQ, ", year, ")."))))
   }
 }
 
@@ -936,7 +936,7 @@ DEQ calculated trends for bacteria, dissolved oxygen, pH, temperature, total pho
 
 ### Seasonal Kendall Test
 
-A Seasonal Kendall test (Hirsch et al. 1982, Hirsch and Slack 1984, and Helsel and Hirsch 2002) was used for the trend evaluation. A Seasonal Kendall test is a nonparametric method used to test for a monotonic trend and can account for the influence of seasonal fluctuations by calculating a Mann-Kendall test (Mann 1945) on each defined season separately. A season can be any time period. In this analysis each calendar month defined a season. Multiple observations within any given month were collapsed into a single value using the median. After computing the Mann-Kendall for each season, the seasonal statistics are summed, and the variance and Z statistic are computed.
+A Seasonal Kendall test (Hirsch et al., 1982, Hirsch and Slack, 1984, and Helsel and Hirsch, 2002) was used for the trend evaluation. A Seasonal Kendall test is a nonparametric method used to test for a monotonic trend and can account for the influence of seasonal fluctuations by calculating a Mann-Kendall test (Mann, 1945) on each defined season separately. A season can be any time period. In this analysis each calendar month defined a season. Multiple observations within any given month were collapsed into a single value using the median. After computing the Mann-Kendall for each season, the seasonal statistics are summed, and the variance and Z statistic are computed.
 
 For each parameter at each station where there were sufficient data to evaluate trend, the null hypothesis is that there is no monotonic trend over time. The alternative hypothesis is that for one or more seasons, there is an upward, downward, or steady monotonic trend over time. The null hypothesis is rejected (and we determine there is a trend) if the Z statistic (two-tailed p value) <= 0.20.
 
@@ -1243,52 +1243,55 @@ for(i in basin_names){
 
 # Citations
 
-Federal Geographic Data Committee [FGDC]. 2012. FGDC-STD-018-2012. Coastal and Marine Ecological Classification Standard, June 2012. Reston, VA: Federal Geographic Data Committee
+Federal Geographic Data Committee (FGDC). 2012. "Coastal and Marine Ecological Classification Standard FGDC-STD-018-2012". *Marine and Coastal Spatial Data Subcommittee*.  https://www.fgdc.gov/standards/projects/cmecs-folder/CMECS_Version_06-2012_FINAL.pdf
 
-Helsel, D.R. and R. M. Hirsch, 2002. Statistical Methods in Water Resources Techniques of Water Resources Investigations, Book 4, chapter A3. U.S. Geological Survey. 522 pages.
+Helsel, D.R. and R. M. Hirsch. 2002. "Techniques of Water Resources Investigations" in *Statistical Methods in Water Resources*, Book 4. chapter A3. U.S. Geological Survey. 522 pages.
 
-Hirsch, R.M. and J.R. Slack. 1984. A nonparametric trend test for seasonal data with serial dependence. *Water Resources Research* 20(6):727-732.
+Hirsch, R.M. and J.R. Slack. 1984. "A nonparametric trend test for seasonal data with serial dependence." *Water Resources Research* 20(6):727-732.
 
-Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. Techniques of trend analysis for monthly water quality data. *Water Resources Research* 18(1):107-121.
+Hirsch, R.M., J.R. Slack and R.A. Smith. 1982. "Techniques of trend analysis for monthly water quality data." *Water Resources Research* 18(1):107-121.
 
-Horton, R.E. 1945. Erosional development of streams and their drainage basins: hydro-physical approach to quantitative morphology. *Geological Society of America Bulletin* 56(3):275–370.
+Horton, R.E. 1945. "Erosional development of streams and their drainage basins: hydro-physical approach to quantitative morphology." *Geological Society of America Bulletin* 56(3):275–370.
 
-Mann, H. B., 1945, Nonparametric test against trend: *Econometrica* 13, 245-259.
+Mann, H. B. 1945. "Nonparametric test against trend." *Econometrica* 13:245-259.
 
-Oregon Department of Environmental Quality [DEQ]. 1991. Clear Lake TMDL. https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
+Oregon Department of Environmental Quality (DEQ). 1991a. "Bear Creek Watershed TMDL." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 1992. Bear Creek Watershed TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Rogue-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 1991b. "Clear Lake TMDL." https://www.oregon.gov/deq/FilterDocs/ClearLakeTMDL.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 1998. Garrison Lake TMDL. https://www.oregon.gov/deq/FilterDocs/scGarrisonLakeTMDL.pdf
+Oregon Department of Environmental Quality (DEQ). 1991c. "TMDLs for the Yamhill River."
+https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2001. Umatilla River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umatilla-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 1998. "Garrison Lake TMDL." https://www.oregon.gov/deq/FilterDocs/scGarrisonLakeTMDL.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2002. Upper Klamath Lake Drainage TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+Oregon Department of Environmental Quality (DEQ). 2001. "Umatilla River Basin TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umatilla-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2004. Snake River Hells Canyon TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/snakesubbasin.aspx
+Oregon Department of Environmental Quality (DEQ). 2002. "Upper Klamath Lake Drainage TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
-Oregon Department of Environmental Quality [DEQ]. 2006a. Umpqua Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umpqua-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 2003. "Snake River Hells Canyon TMDL." https://www.oregon.gov/deq/wq/tmdls/Pages/snakesubbasin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2006b. Willamette Basin TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 2006a. "Umpqua Basin TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Umpqua-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2007. Tenmile Lakes TMDL. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-South-Coast-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 2006b. "Willamette Basin TMDL." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2008. Molalla-Pudding Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 2007. "Tenmile Lakes TMDL." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-South-Coast-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2010. Malheur River Basin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/malheurtmdl.aspx
+Oregon Department of Environmental Quality (DEQ). 2008. "Molalla-Pudding Subbasin TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2012. Tualatin Subbasin TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
+Oregon Department of Environmental Quality (DEQ). 2010. "Malheur River Basin TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/malheurtmdl.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2013. Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0. http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
+Oregon Department of Environmental Quality (DEQ). 2012. "Tualatin Subbasin TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Willamette-Basin.aspx
 
-Oregon Department of Environmental Quality [DEQ]. 2018. Integrated Report Improvements, Use of Censored Data. https://www.oregon.gov/deq/FilterDocs/iriCensoredData.pdf
+Oregon Department of Environmental Quality (DEQ). 2013. "Data validation criteria for water quality parameters measured in the field. DEQ04-LAB-0003-QAG Version5.0." http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2019a. Upper Klamath and Lost River Subbasin Nutrient TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+Oregon Department of Environmental Quality (DEQ). 2018. "Integrated Report Improvements, Use of Censored Data." https://www.oregon.gov/deq/FilterDocs/iriCensoredData.pdf
 
-Oregon Department of Environmental Quality [DEQ]. 2019b. Upper Klamath and Lost Subbasins Temperature TMDL and WQMP. https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+Oregon Department of Environmental Quality (DEQ). 2019a. "Upper Klamath and Lost River Subbasin Nutrient TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
 
-Oregon Department of Environmental Quality [DEQ]. 2020. Methodology for Oregon’s 2018 Water Quality Report and List of Water Quality Limited Waters. https://www.oregon.gov/deq/wq/Documents/irMethodologyF1820.pdf
+Oregon Department of Environmental Quality (DEQ). 2019b. "Upper Klamath and Lost Subbasins Temperature TMDL and WQMP." https://www.oregon.gov/deq/wq/tmdls/Pages/TMDLs-Klamath-Basin.aspx#2019tmdl
+
+Oregon Department of Environmental Quality (DEQ). 2020. "Methodology for Oregon’s 2018 Water Quality Report and List of Water Quality Limited Waters." https://www.oregon.gov/deq/wq/Documents/irMethodologyF1820.pdf
 
 R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/
 
-Strahler, A.N. 1952. Hypsometric (area-altitude) analysis of erosional topology. *Geological Society of America Bulletin* 63(11):1117–1142.
+Strahler, A.N. 1952. "Hypsometric (area-altitude) analysis of erosional topology." *Geological Society of America Bulletin* 63(11):1117–1142.
