@@ -1245,7 +1245,7 @@ for(i in basin_names){
 
 Federal Geographic Data Committee (FGDC). 2012. "Coastal and Marine Ecological Classification Standard FGDC-STD-018-2012". *Marine and Coastal Spatial Data Subcommittee*.  https://www.fgdc.gov/standards/projects/cmecs-folder/CMECS_Version_06-2012_FINAL.pdf
 
-Helsel, D.R. and R. M. Hirsch. 2002. "Techniques of Water Resources Investigations" in *Statistical Methods in Water Resources*, Book 4. chapter A3. U.S. Geological Survey. 522 pages.
+Helsel, D.R. and R. M. Hirsch. 2002. "Techniques of Water Resources Investigations" in *Statistical Methods in Water Resources*, Book 4, Chapter A3. U.S. Geological Survey. 522 pages.
 
 Hirsch, R.M. and J.R. Slack. 1984. "A nonparametric trend test for seasonal data with serial dependence." *Water Resources Research* 20(6):727-732.
 
