@@ -51,12 +51,13 @@ wql_sub <- wql_data[wql_data$HUC12 %in% sub_12s, c("AU_Name", "AU_ID", "AU_LenMi
                  'IR_category' = 'Listing Status',
                  'Char_Name' = 'Pollutant',
                  'affected_uses' = 'Affected Uses'))
+
+wql_sub <- wql_sub[grep("Category 5|Category 4A", wql_sub$`Listing Status`, ignore.case = TRUE), 
+                   c('Assessment Unit', 'Miles', 'Pollutant', 'Period', 'Year Assessed', 'Affected Uses', 'Listing Status')] %>% 
+  dplyr::arrange(`Assessment Unit`)
+
 if(nrow(wql_sub) > 0){
-  
-  wql_sub <- wql_sub[grep("Category 5|Category 4A", wql_sub$`Listing Status`, ignore.case = TRUE), 
-                     c('Assessment Unit', 'Miles', 'Pollutant', 'Period', 'Year Assessed', 'Affected Uses', 'Listing Status')] %>% 
-    dplyr::arrange(`Assessment Unit`)
-  
+
   # wql_sub$`Listing Status` <- gsub("Cat 4A: Water quality limited, TMDL approved", "Cat 4A", wql_sub$`Listing Status`)
   # wql_sub[grep("Cat 5", wql_sub$`Listing Status`, ignore.case = TRUE), "Listing Status"] <- "Cat 5"
   
