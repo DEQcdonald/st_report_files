@@ -87,7 +87,8 @@ landuse.huc8.df <- nlcd_huc8_df %>%
                    PerOtherWs = round(sum(VALUE_11,
                                           VALUE_12,
                                           VALUE_31,
-                                          VALUE_95) * 0.001^2 / WsAreaSqKm * 100, 1))
+                                          VALUE_95) * 0.001^2 / WsAreaSqKm * 100, 1)) %>% 
+  dplyr::filter(WsAreaSqKm >= 1)
 
 landuse.huc8.df$HUC_8_NAME <- huc_names[match(landuse.huc8.df$HUC_8_NAME, huc_names$HUC8),]$HUC8_Name
 landuse.huc8.df <- landuse.huc8.df %>% dplyr::filter(!is.na(HUC_8_NAME))
