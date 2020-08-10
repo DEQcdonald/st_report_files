@@ -255,7 +255,7 @@ param_summary <- unique(param_sum$Pollutant)
 
 cat("\n\n")
 
-cat(paste0("The ", name, " is listed for ", length(unique(wql_data$Char_Name)), " parameters among its water bodies. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, ". These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ",
+cat(paste0("Based the 2018/2020 303(d)/305(b) integrated report (DEQ, 2020), assessment units in the ", name, " are water quality limited for ", length(unique(wql_data$Char_Name)), " parameters out of the six parameters assessed in this report. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, ". These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ",
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
@@ -351,7 +351,7 @@ for(i in param_summary){
 
 cat("### Status\n\n")
 
-cat(paste0(tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter.\n\n"))
+cat(paste0("There are ", length(unique(param_sum_au$AU_ID)), " assessment units within the ", name, " containing stations with available data for the parameters included in this report. Assessment units that did not contain stations with targets or sufficient available data are listed as unassessed. ", tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter for the current status period.\n\n"))
 
 au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -376,7 +376,7 @@ ggplot2::ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "S
 
 cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " by parameter."))
 
-cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name,".\n\n"))
+cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," for the current status period.\n\n"))
 
 au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -393,7 +393,7 @@ knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = t
 
 cat("\n\n")
 
-cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter.\n\n"))
+cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter. Stations without targets or without sufficient data to determine attainment are listed as unassessed. The reason for a station's unassessed status can be found in the appendix for this area.\n\n"))
 
 stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
