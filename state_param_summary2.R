@@ -96,7 +96,8 @@ for (name in report_names){
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
   missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
   missing_reachcodes <- stations_AWQMS[is.na(stations_AWQMS$Reachcode),"MLocID"]
-  stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "OrgID")], missing_AUs[,c("MLocID", "OrgID")])
+  stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")], 
+                                       missing_AUs[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")])
   stations_dropped$missing_au <- dplyr::if_else(stations_dropped$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
   stations_dropped$missing_reachcode <- dplyr::if_else(stations_dropped$MLocID %in% missing_reachcodes, TRUE, FALSE)
   stations_AWQMS <- stations_AWQMS %>% dplyr::filter(!is.na(Reachcode))

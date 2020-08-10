@@ -349,9 +349,10 @@ for (name in report_names){
                   "Parameter" = Char_Name,
                   "Sampling Organization ID" = OrgID,
                   "Missing AU ID" = missing_au,
+                  "Missing Reachcode" = missing_reachcode,
                   "No Available Data" = no_data,
-                  "Data Start" = min_date,
-                  "Data End" = max_date,
+                  "Dropped Data Start" = min_date,
+                  "Dropped Data End" = max_date,
                   "Low Grade Observations" = low_grade,
                   "Observations Missing Timestamp" = missing_datetime
     )
@@ -361,6 +362,8 @@ for (name in report_names){
   colnames(drop_summary) <- sapply(colnames(drop_summary), simpleCap, USE.NAMES = FALSE)
 
   # Unassessed status reasoning ---------------------------------------------
+  
+  status_reason$status_period <- gsub("_", "-", status_reason$status_period)
 
   status_reason <- status_reason %>%
     dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
