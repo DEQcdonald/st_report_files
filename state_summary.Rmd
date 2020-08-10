@@ -393,7 +393,7 @@ Bacteria status assessment results are reported and presented in the following w
 
 *	__Not Attaining__: When there is at least one excursion of the 126 *E. coli* organisms per 100 mL geomean criterion, **OR** when there are five or more samples and the number of excursions of the 406 *E. coli* organisms per 100 mL criterion within any 90-day period are greater than 10% of all samples according to the exact binomial test.
 
-*	__Unassessed__: When there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient samples.
+*	__Unassessed__: When there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Results” for insufficient samples.
 
 #####	Coastal water contact recreation
 
@@ -401,7 +401,7 @@ Bacteria status assessment results are reported and presented in the following w
 
 *	__Not Attaining__: When there are five or more a 90-day geometric mean results available and there is any excursion of the 35 *Enterococci* organisms per 100 mL criterion; **OR** when there are 10 or more samples and the number of excursions of the 130 *Enterococci* organisms per 100 mL criterion is greater than 10% of all samples within any 90-day period. When there are only five to nine samples available for a given 90-day period and there are two or more excursions of the 130 *Enterococci* organisms per 100 mL criterion.
 
-*	__Unassessed__: When a geometric mean cannot be calculated because there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient number of samples.
+*	__Unassessed__: When a geometric mean cannot be calculated because there are less than five samples within any 90-day period available. Under these circumstances, the reasons for unassessed status are reported as “No Results” for insufficient number of samples.
 
 #####	Shellfish harvesting
 
@@ -409,7 +409,7 @@ Bacteria status assessment results are reported and presented in the following w
 
 *	__Not Attaining__: When there are five or more fecal coliform samples and the median concentration greater than 14 fecal coliform organisms per 100 mL, **OR** when there are 10 or more samples and the number of excursions of the 43 fecal coliform organisms per 100 mL criterion is greater than 10% of all samples. When there are only five to nine samples available and two or more of the samples are greater than the 43 fecal coliform organisms per 100 mL criterion.
 
-*	__Unassessed__: When there are less than five samples within any 90-day period. Under these circumstances, the reasons for unassessed status are reported as “No Result” for insufficient samples.
+*	__Unassessed__: When there are less than five samples within any 90-day period. Under these circumstances, the reasons for unassessed status are reported as “No Results” for insufficient samples.
 
 ### Dissolved Oxygen
 
@@ -543,7 +543,7 @@ Dissolved oxygen status assessment results are reported and presented in the fol
 
 *	__Not Attaining__: When the number of excursions to the applicable instantaneous criterion within a status period is greater than 10% of all samples within a status period in the time-period of interest (spawning or year-round period) according to the exact binomial test **AND** are less than the percent saturation allowance.
 
-*	__Unassessed__: When there are fewer than five samples available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
+*	__Unassessed__: When there are fewer than five samples available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Results”.
 
 ####	Continuous Dissolved Oxygen Status Definitions
 
@@ -553,7 +553,7 @@ Dissolved oxygen status assessment results are reported and presented in the fol
 
 *	__Not Attaining__: When any of the following are true: For the year-round criteria more than one excursion of the 30-D criterion **AND** for those waterbodies classified as cold water, the corresponding 30-D percent saturation is less than the applicable criterion. More than one excursion of the applicable 7-Mi criterion. If both the year round (30-D and 7-Mi) are attained, more than one excursion of the daily minimum (Min) criteria. During spawning, more than one excursion of the 7-D criteria **AND** the corresponding 7-D percent saturation is less than the applicable criterion. If the year round 7-D metric is attained and there is more than one excursion of the alternate minimum criteria (Min).
 
-*	__Unassessed__: When there are fewer than fifteen 30-D results to assess the year-round criteria during the year-round critical period (July 1 – September 30) **OR** fewer than fifteen 7-D results available during the spawning period **OR** when there are insufficient 30-D or 7-D results available and there are less than five daily minimum (Min) results available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
+*	__Unassessed__: When there are fewer than fifteen 30-D results to assess the year-round criteria during the year-round critical period (July 1 – September 30) **OR** fewer than fifteen 7-D results available during the spawning period **OR** when there are insufficient 30-D or 7-D results available and there are less than five daily minimum (Min) results available within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Results”.
 
 ### pH
 
@@ -602,7 +602,7 @@ pH status assessment results are reported and presented in the following way:
 
 *	__Not Attaining__: When there are five or more samples within a status period, the number of excursions to the minimum or maximum pH criteria is greater than 10% of the samples within that status period according to the exact binomial test.
 
-*	__Unassessed__: When there are fewer than five samples within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Result”.
+*	__Unassessed__: When there are fewer than five samples within a status period. Under these circumstances, the reasons for unassessed status are reported as “No Results”.
 
 ### Temperature
 
@@ -722,7 +722,7 @@ Temperature status assessment results are reported and presented in the followin
 
 *	__Not Attaining__: When there are two or more excursions of the applicable numeric criteria within a three-year period **OR** one or more excursions to the cool water species Upper Klamath and Lost subbasins temperature TMDL target during a status period.
 
-*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Result” for no available results or as “No Target” for no numeric water quality criteria.
+*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for no numeric water quality criteria.
 
 ### Total Phosphorus
 
@@ -838,7 +838,7 @@ Total phosphorus status assessment results are reported and presented in the fol
 
 *	__Not Attaining__: When there is one or more excursion of the applicable TMDL target during a status period.
 
-*	__Unassessed__: When there are no results available or when there are results but no applicable TMDL target to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Result” for no available results or as “No Target” for no TMDL target.
+*	__Unassessed__: When there are no results available or when there are results but no applicable TMDL target to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for no TMDL target.
 
 ### Total Suspended Solids
 
@@ -908,7 +908,7 @@ Total suspended solids status assessment results are reported and presented in t
 
 *	__Not Attaining__: When there is one or more excursion of the applicable TMDL target during a status period.
 
-*	__Unassessed__: When there are no results available or when there are results but no numeric applicable TMDL target to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Result” for no available results or as “No Target” for no TMDL target.
+*	__Unassessed__: When there are no results available or when there are results but no numeric applicable TMDL target to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for no TMDL target.
 
 ## Water Quality Trend Evaluation
 
