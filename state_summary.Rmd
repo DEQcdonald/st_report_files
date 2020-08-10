@@ -722,7 +722,7 @@ Temperature status assessment results are reported and presented in the followin
 
 *	__Not Attaining__: When there are two or more excursions of the applicable numeric criteria within a three-year period **OR** one or more excursions to the cool water species Upper Klamath and Lost subbasins temperature TMDL target during a status period.
 
-*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for no numeric water quality criteria.
+*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for a narrative temperature criterion where no TMDL targets have been developed. 
 
 ### Total Phosphorus
 
