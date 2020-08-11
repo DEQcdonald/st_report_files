@@ -335,9 +335,7 @@ for (name in report_names){
   stations_AWQMS <- bind_rows(stations_AWQMS, missing_au)
   
   drop_summary <- drop_summary %>% 
-    dplyr::select(-OrgID) %>%
     dplyr::left_join(stations_AgWQMA, by="MLocID") %>%
-    dplyr::left_join(stations_AWQMS, by = "MLocID") %>% 
     dplyr::select('Station ID' = MLocID,
                   'Station Name' = StationDes,
                   "Subbasin Name" = HUC8_Name,

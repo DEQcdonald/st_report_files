@@ -36,7 +36,7 @@ start.date = "2000-01-01"
 end.date = "2019-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -101,6 +101,8 @@ for (name in report_names){
   ukl_aus$Reachcode <- ukl_lookup[match(ukl_aus$MLocID, ukl_lookup$MLocID),]$Reachcode_hacked
   missing_AUs <- dplyr::bind_rows(missing_AUs, dplyr::filter(attr(stations_AWQMS, 'missing_AUs'), !MLocID %in% ukl_aus$MLocID))
   missing_reachcodes <- stations_AWQMS[is.na(stations_AWQMS$Reachcode),"MLocID"]
+  stations_AWQMS[is.na(stations_AWQMS$Reachcode), "Reachcode"] <- ukl_lookup[match(stations_AWQMS[is.na(stations_AWQMS$Reachcode), "MLocID"],
+                                                                                ukl_lookup$MLocID),]$Reachcode_hacked
   stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")], 
                                        missing_AUs[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")])
   stations_dropped$missing_au <- dplyr::if_else(stations_dropped$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
@@ -156,7 +158,7 @@ for (name in report_names){
   save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   # add geoID
   # add TMDL ID
-  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary", "ukl_aus", "ukl_lookup")])
+  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary", "stations_dropped", "ukl_aus")])
   gc()
   # Assess various parameters -----------------------------------------------
   
