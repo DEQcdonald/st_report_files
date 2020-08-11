@@ -94,13 +94,19 @@ for (name in report_names){
   hucs <- unique(basin_shp$HUC_8)
 
   stations_AWQMS <- odeqstatusandtrends::get_stations_AWQMS(basin_shp)
-  missing_AUs <- dplyr::bind_rows(missing_AUs, attr(stations_AWQMS, 'missing_AUs'))
+  ukl_lookup <- readxl::read_xlsx("//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/UpperKlamath_Agency_reachcode.xlsx",
+                                  sheet = "true")
+  ukl_aus <- attr(stations_AWQMS, 'missing_AUs') %>% dplyr::filter(MLocID %in% ukl_lookup$MLocID)
+  ukl_aus$AU_ID <- ukl_lookup[match(ukl_aus$MLocID, ukl_lookup$MLocID),]$AUID_hacked
+  ukl_aus$Reachcode <- ukl_lookup[match(ukl_aus$MLocID, ukl_lookup$MLocID),]$Reachcode_hacked
+  missing_AUs <- dplyr::bind_rows(missing_AUs, dplyr::filter(attr(stations_AWQMS, 'missing_AUs'), !MLocID %in% ukl_aus$MLocID))
   missing_reachcodes <- stations_AWQMS[is.na(stations_AWQMS$Reachcode),"MLocID"]
   stations_dropped <- dplyr::bind_rows(stations_AWQMS[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")], 
                                        missing_AUs[,c("MLocID", "StationDes", "HUC8_Name", "HUC8", "AU_ID", "OrgID", "Lat_DD", "Long_DD")])
   stations_dropped$missing_au <- dplyr::if_else(stations_dropped$MLocID %in% missing_AUs$MLocID, TRUE, FALSE)
   stations_dropped$missing_reachcode <- dplyr::if_else(stations_dropped$MLocID %in% missing_reachcodes, TRUE, FALSE)
   stations_AWQMS <- stations_AWQMS %>% dplyr::filter(!is.na(Reachcode))
+  stations_AWQMS <- bind_rows(stations_AWQMS, ukl_aus)
   
   # stations_wqp <- odeqstatusandtrends::get_stations_WQP(polygon = basin_shp, start_date = start.date, end_date = end.date,
   #                                  huc8 = hucs, exclude.tribal.lands = TRUE)
@@ -139,7 +145,7 @@ for (name in report_names){
   
   stations_AWQMS$AU_Name <- au_names[match(stations_AWQMS$AU_ID, au_names$AU_ID), c("AU_Name")]
 
-  stations_dropped$no_data <- dplyr::if_else(!stations_dropped$MLocID %in% unique(data_raw$MLocID) & !stations_dropped$missing_au, TRUE, FALSE)
+  stations_dropped$no_data <- dplyr::if_else(!stations_dropped$MLocID %in% unique(data_raw$MLocID) & !stations_dropped$missing_au, TRUE, NA)
 
   # Clean data and add criteria ---------------------------------------------
   data_dropped <- NULL
@@ -150,7 +156,7 @@ for (name in report_names){
   save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   # add geoID
   # add TMDL ID
-  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary")])
+  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary", "ukl_aus", "ukl_lookup")])
   gc()
   # Assess various parameters -----------------------------------------------
   
