@@ -257,9 +257,11 @@ Monitoring data typically includes results that are reported as "non-detects". N
 
 * When results were reported as greater than the maximum QL, the QL value was used.
 
-Additional QA/QC checks included reviewing for inconsistencies in the station description and station location (latitude and longitude). Any inconsistencies were corrected. If the sampling location could not be determined, or had no assigned assessment unit or reach code, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned.
+Additional QA/QC checks included reviewing for missing sample timestamp and inconsistencies with the station description and station location (latitude and longitude). Any station inconsistencies were corrected. If the sampling location could not be determined, or had no assigned assessment unit or reach code, data at that station were not used. Multiple stations that appear to have the same data were also reviewed and corrected. This can occur when the data is in two different databases with different station IDs assigned. We also made sure all results had a datetime. 
 
 For samples that were taken for the purpose of auditing the field data (often called replicates or duplicates) the field samples were prioritized and the replicates removed if the DQL for both the field sample and duplicate were the same. If the DQLs were different, the sample with the higher DQL was used. For samples that appear to be replicates or samples made at various depths (i.e. the sample date/time, sample location, and sample parameter were the same) but were not labeled as replicates or depth samples, we took the mean of the samples. The samples missing sampling dates were not used. Results in units of ug/L were converted to mg/L and temperature data measured in degrees Fahrenheit were converted to degrees Celsius.
+
+Results were dropped and not used in this analysis when one or more QA/QC requirements were not met or when other issues identified during the QA/QC process could not be resolved. A summary of stations with dropped data are provided in the Appendices. If the data were dropped because of low data quality level grades or missing timestamps the number of dropped results were summarized in addition to the date range when the data were dropped.
 
 [3.2.1]: http://www.oregon.gov/deq/FilterDocs/DataQualMatrix.pdf
 
@@ -722,7 +724,7 @@ Temperature status assessment results are reported and presented in the followin
 
 *	__Not Attaining__: When there are two or more excursions of the applicable numeric criteria within a three-year period **OR** one or more excursions to the cool water species Upper Klamath and Lost subbasins temperature TMDL target during a status period.
 
-*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for no numeric water quality criteria.
+*	__Unassessed__: When there are no results available or when there are results but no numeric water quality criteria to evaluate attainment against. Under these circumstances, the reasons for unassessed status are reported either as “No Results” for no available results or as “No TMDL Target” for a narrative temperature criterion where no TMDL targets have been developed. 
 
 ### Total Phosphorus
 
