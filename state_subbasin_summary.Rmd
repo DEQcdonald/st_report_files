@@ -94,7 +94,7 @@ knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_
   table_style()
 
 ```
-
+  
 
 ```{r status-au-plot, include = TRUE, results = 'asis', fig.cap = cap_list[[1]], eval.after = 'fig.cap'}
 
@@ -148,7 +148,7 @@ knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table
   table_style()
 
 ```
-
+  
 
 ```{r status-stn-plot, include = TRUE, results = 'asis', fig.cap = cap_list[[2]], eval.after = 'fig.cap'}
 
