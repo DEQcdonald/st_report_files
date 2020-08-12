@@ -74,6 +74,10 @@ report_names <- sort(unique(HUC_shp$REPORT))
 
 for (name in report_names){
   
+  drop_summary <- NULL
+  stations_dropped <- NULL
+  missing_AUs <- NULL
+  
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
   
   data_dir <- paste0(top_dir,'/2020-', name)
@@ -207,11 +211,15 @@ for (name in report_names){
     
     data_temp_dmax <- data_clean %>% dplyr::filter(Char_Name == "Temperature, water", Statistical_Base == "Maximum")
     if(any(data_temp_dmax$Reachcode %in% odeqtmdl::tmdl_db[tmdl_db$pollutant_name_AWQMS == "Temperature, water",]$ReachCode)){
+      data_temp_dmax <- odeqstatusandtrends::add_criteria(data_temp_dmax)
       data_temp_dmax <- odeqtmdl::which_target_df(data_temp_dmax, all_obs = FALSE)
       data_temp_dmax <- odeqassessment::Censored_data(data_temp_dmax, criteria = "target_value")
       data_temp_dmax <- odeqtmdl::target_assessment(data_temp_dmax)
+      data_temp <- data_temp %>% dplyr::filter(!MLocID %in% data_temp_dmax[data_temp_dmax$criteria == "TMDL",]$MLocID)
       data_temp <- dplyr::bind_rows(data_temp, data_temp_dmax)
     }
+    
+    data_temp[is.na(data_temp$Spawn_type), "Spawn_type"] <- "Not_Spawn"
     
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
                                                                    periods=4, 
@@ -345,6 +353,7 @@ for (name in report_names){
     data_DO <- odeqstatusandtrends::add_criteria(data_DO)
     data_DO <- odeqassessment::Censored_data(data_DO, criteria = "DO_crit_min")
     data_DO <-  odeqassessment::DO_assessment(data_DO)
+    data_DO[is.na(data_DO$Spawn_type), "Spawn_type"] <- "Not_Spawn"
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
                                                                  periods=4, 
                                                                  year_range = c(start_year, end_year))
