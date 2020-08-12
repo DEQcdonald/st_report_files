@@ -567,8 +567,8 @@ Results for pH from both grab and continuous sample data were compared to the ap
 **pH**
 
 (1)	Unless otherwise specified in OAR 340-041-0101 through 340-041-0350, pH values (Hydrogen ion concentrations) may not fall outside the following ranges:  
-|   (a)	Marine waters: 7.0-8.5;  
-|   (b)	Estuarine and fresh waters: See basin specific criteria (OAR 340-041-0101 through 340-041-0350).
+|  (a)	Marine waters: 7.0-8.5;  
+|  (b)	Estuarine and fresh waters: See basin specific criteria (OAR 340-041-0101 through 340-041-0350).
 
 (2)	Waters impounded by dams existing on January 1, 1996, which have pHs that exceed the criteria are not in violation of the standard, if the Department determines that the exceedance would not occur without the impoundment and that all practicable measures have been taken to bring the pH in the impounded waters into compliance with the criteria.
 
@@ -708,7 +708,7 @@ The year-round fish uses designated for protection of fish and aquatic life are 
 
 In streams designated as salmon and steelhead spawning areas, the salmon & steelhead spawning criterion (13°C) were assessed only during the time periods indicated in tables and figures referenced in OAR 340-041-0101 to 340-041-0340: Tables 101B, and 121B, and Figures 130B, 151B, 160B, 170B, 220B, 230B, 271B, 286B, 300B, 310B, 320B, and 340B. Outside of these designated spawning time periods, the year-round criteria were assessed. 
 
-##### Application of the Cool Water Species narrative criterion for temperature in 340-041-0028 (9)(a). 
+##### Application of the Cool Water Species Narrative Criterion for Temperature in OAR 340-041-0028 (9)(a). 
 
 The Upper Klamath and Lost Subbasins temperature TMDL (DEQ, 2019b) established a numeric benchmark implementing the cool water species narrative as an instream daily maximum temperature target of 28°C. In the Lost River, Lost River Diversion Channel, and Klamath Straits Drain, the instream daily maximum temperature target is 27.9°C to account for the 0.1°C set aside in the TMDL for reserve capacity. In other subbasins where the cool water species narrative criterion applies, there was no assessment of the cool water species criterion.
 
