@@ -44,7 +44,7 @@ report_year <- '2020'
 start.date = "2000-01-01"
 end.date = "2019-12-31"
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # ----

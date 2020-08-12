@@ -158,7 +158,7 @@ for (name in report_names){
   save(drop_summary, file = paste0(data_dir, "/", name, "_drop_summary.RData"))
   # add geoID
   # add TMDL ID
-  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary", "stations_dropped", "ukl_aus")])
+  rm(list = ls()[ls() %in% c("basin_shp", "data_raw", "drop_summary", "stations_dropped", "ukl_aus", "ukl_lookup")])
   gc()
   # Assess various parameters -----------------------------------------------
   

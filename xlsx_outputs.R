@@ -15,7 +15,7 @@ end.date = "2019-12-31"
 year = 2020
 report_name <- paste0(year, " Oregon Statewide Status and Trend Report")
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020-Revision'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
