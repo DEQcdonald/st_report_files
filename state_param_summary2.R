@@ -244,6 +244,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TP'))){
     print("Assessing total phosphorus...")
     data_TP <- data_clean %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'))
+    data_TP <- odeqstatusandtrends::add_criteria(data_TP)
     data_TP <- odeqtmdl::which_target_df(df = data_TP)
     
     data_TP <- data_TP %>%
@@ -256,7 +257,7 @@ for (name in report_names){
     
     data_TP <- odeqassessment::Censored_data(data_TP, criteria = "target_value")
     
-    data_TP <- odeqtmdl::target_assessment(data_TP)
+    data_TP <- odeqtmdl::target_assessment(df=data_TP)
     
     # data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
@@ -282,6 +283,7 @@ for (name in report_names){
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('TSS'))){
     print("Assessing total suspended solids...")
     data_TSS <- data_clean %>% dplyr::filter(Char_Name == "Total suspended solids")
+    data_TSS <- odeqstatusandtrends::add_criteria(data_TSS)
     data_TSS <- odeqtmdl::which_target_df(data_TSS)
     
     data_TSS <- data_TSS %>%
