@@ -215,7 +215,8 @@ for (name in report_names){
   # Total Phosphorus plots --------------------------------------------------
   
   TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'),]$MLocID)
-  seaKen_TP = seaKen %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), trend %in% c("Improving", "Degrading", "Steady"))
+  seaKen_TP = seaKen %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), 
+                                       trend %in% c("Improving", "Degrading", "Steady"))
   TP_plots <- list()
   
   count <- 1
@@ -242,6 +243,7 @@ for (name in report_names){
         } else {
           plot_stat_base <- plot_data %>% dplyr::filter(target_stat_base == t)
         }
+        print(t)
         p <- odeqstatusandtrends::plot_TP(data = plot_stat_base, seaKen = seaKen_TP, station = TP_station, 
                                           max_date = max_plot_date)
         
