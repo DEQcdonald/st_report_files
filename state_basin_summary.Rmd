@@ -255,7 +255,7 @@ param_summary <- unique(param_sum$Pollutant)
 
 cat("\n\n")
 
-cat(paste0("Based the 2018/2020 303(d)/305(b) integrated report (DEQ, 2020), assessment units in the ", name, " are water quality limited for ", length(unique(wql_data$Char_Name)), " parameters out of the six parameters assessed in this report. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, ". These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ",
+cat(paste0("Based the 2018/2020 303(d)/305(b) Integrated Report (DEQ, 2020), assessment units in the ", name, " are water quality limited for ", length(unique(wql_data$Char_Name)), " parameters out of the six parameters assessed in this report. Available data were sufficient to assess status and/or trend at ", length(unique(param_sum$MLocID)), " stations within the ", name, ". These stations were located across ", length(unique(param_sum_au$AU_ID)), " assessment units consisting of '", list_fun(types[1:(n_types - 1)]), "s' and '", list_fun(types[n_types]), "s'. Data for ",
            gsub("'", "", 
                 paste0(paste(parameters[1:(n_params - 1)], collapse = "', '"), "' and '", paste(parameters[n_params], collapse = "', '")
                        , "'")
@@ -286,7 +286,7 @@ for(i in param_summary){
 ```
 
 
-`r paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by current status. The water quality listed streams for each parameter are included in the maps as red lines.")`
+`r paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by the `r paste(complete_years[17], "–", complete_years[20])` status. The water quality listed streams for each parameter are included in the maps as pink lines.")`
 
 
 ```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}
@@ -351,7 +351,7 @@ for(i in param_summary){
 
 cat("### Status\n\n")
 
-cat(paste0("There are ", length(unique(param_sum_au$AU_ID)), " assessment units within the ", name, " containing stations with available data for the parameters included in this report. Assessment units that did not contain stations with targets or sufficient available data are listed as unassessed. ", tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter for the current status period.\n\n"))
+cat(paste0("There are ", length(unique(param_sum_au$AU_ID)), " assessment units within the ", name, " containing stations with available data for the parameters included in this report. Assessment units that did not contain stations with targets or sufficient available data are listed as unassessed. ", tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -361,7 +361,7 @@ au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>%
   dplyr::rename(Pollutant = Char_Name)
 
 knitr::kable(au_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,
-             caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of assessment unit status within the ", name, "."))
+             caption = tbls(name = paste0(name, "_au_sum"), caption = paste0("Summary of the ", complete_years[17], "–", complete_years[20]," assessment unit status within the ", name, "."))
 ) %>% table_style()
 
 cat("\n\n")
@@ -372,11 +372,11 @@ ggplot2::ggplot(reshape2::melt(au_sum, id.vars = "Pollutant", variable.name = "S
   ggplot2::ylab("# of Assessment Units")+
   ggplot2::scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
   ggplot2::theme_bw()+
-  ggplot2::ggtitle("Assessment Unit Attainment Count", subtitle = "Summarized by Pollutant")
+  ggplot2::ggtitle("Count of Assessment Unit Status", subtitle = "Summarized by Parameter")
 
-cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("Summary plot of assessment unit status within the ", name, " by parameter."))
+cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("The number of assessment units in each status category by parameter for the ", complete_years[17], "–", complete_years[20]," status period within the ", name, "."))
 
-cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," for the current status period.\n\n"))
+cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -387,13 +387,13 @@ au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>%
 
 knitr::kable(au_sum_type, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
-             caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0(name, " status summary of assessment units by type."))
+             caption = tbls(name = paste0(name, "_au_type_sum"), caption = paste0("The number of assessment units in each status category by parameter for the ", complete_years[17], "–", complete_years[20]," status period within the ", name,"."))
 ) %>% table_style()
 
 
 cat("\n\n")
 
-cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter. Stations without targets or without sufficient data to determine attainment are listed as unassessed. The reason for a station's unassessed status can be found in the appendix for this area.\n\n"))
+cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter for the ", complete_years[17], "–", complete_years[20]," status period. Stations without targets or without sufficient data to determine attainment are listed as unassessed. The reason for a station's unassessed status can be found in Appendix ", a.letter,"."))
 
 stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>% 
   dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
@@ -403,7 +403,7 @@ stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>%
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format
              ,
-             caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the status of stations within the ", name, "."))
+             caption = tbls(name = paste0(name, "_stn_sum"), caption = paste0("Summary of the ", complete_years[17], "–", complete_years[20]," status at monitoring stations within the ", name, "."))
 ) %>% table_style()
 
 cat("\n\n")
@@ -414,9 +414,9 @@ ggplot2::ggplot(reshape2::melt(stn_sum, id.vars = "Pollutant", variable.name = "
   ggplot2::ylab("# of Stations")+
   ggplot2::scale_fill_manual(values = c("Attaining" = "forestgreen", "Not Attaining" = "orange", "Unassessed" = "gray"))+
   ggplot2::theme_bw()+
-  ggplot2::ggtitle("Station Attainment Count", subtitle = "Summarized by Pollutant")
+  ggplot2::ggtitle("Count of Monitoring Station Status", subtitle = "Summarized by Parameter")
 
-cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of station status within the ", name, " by parameter."))
+cap_list[[2]] <- figs(name = paste0(name, "_stn_sum_plot"), caption = paste0("Summary plot of the ", complete_years[17], "–", complete_years[20]," station status within the ", name, " by parameter."))
 
 cat("\n\n")
 cat("### Trend\n\n")
