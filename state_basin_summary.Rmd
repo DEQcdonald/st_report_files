@@ -286,7 +286,7 @@ for(i in param_summary){
 ```
 
 
-`r paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by the `r paste(complete_years[17], "–", complete_years[20])` status. The water quality listed streams for each parameter are included in the maps as pink lines.")`
+`r paste("The maps in ", figs(paste0(name, "_", param_summary[1], "_map"), display = 'cite')," through ", figs(paste0(name, "_", param_summary[length(param_summary)], "_map"), display = 'cite')," show the stations included in the analysis for each parameter. Stations are color coded by the ", complete_years[17], "–", complete_years[20], " status. The water quality listed streams for each parameter are included in the maps as pink lines.")`
 
 
 ```{r basinStatus, include = TRUE, results = 'asis', fig.height=6, fig.cap = cap_list, eval.after = 'fig.cap'}

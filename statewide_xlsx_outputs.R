@@ -23,7 +23,8 @@ logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-tran
 au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/AssessmentUnits_OR_Dissolve.txt', stringsAsFactors = FALSE)
 
 # ----
-
+options(scipen=999)
+options(digits = 3)
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 
 HUC_shp <- rgdal::readOGR(dsn = gis_dir, layer = 'Report_Units_HUC08',
@@ -224,11 +225,11 @@ for (name in report_names){
       
       excur_stats3 <- excur_stats2 %>%
         dplyr::filter(!is.na(results_n)) %>%
-        dplyr::mutate(results=dplyr::case_when((Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unassessed") ~ paste0("Unassessed N=",results_n," (", min,";", median,";", max,")"),
-                                               (!(Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",excursion_min,";", excursion_median,";", excursion_max,")"),
+        dplyr::mutate(results=dplyr::case_when((Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unassessed") ~ paste0("Unassessed N=",results_n," (", round(min, 3),";", round(median, 3),";", round(max, 3),")"),
+                                               (!(Char_Name %in% c("Total Phosphorus, mixed forms", "Total suspended solids") & status=="Unasssed") & excursions_n > 0) ~ paste0(excursions_n,"/",results_n,"; (",round(excursion_min, 3),";", round(excursion_median, 3),";", round(excursion_max, 3), ")"),
                                                TRUE ~ paste0(excursions_n,"/",results_n))) %>%
         dplyr::select(MLocID, status_period, Char_Name, results) %>%
-        tidyr::pivot_wider(names_from=Char_Name, values_from=results) %>%
+        tidyr::pivot_wider(names_from=Char_Name, values_from=results, id_cols = c(MLocID, status_period)) %>%
         dplyr::left_join(stations_AWQMS_shp, by="MLocID") %>%
         dplyr::select("Station ID" = MLocID,
                       "Station Name" = StationDes,
@@ -250,7 +251,7 @@ for (name in report_names){
                       "Total Phosphorus"=contains("Phosphorus"),
                       "Total Suspended Solids"=matches("Total suspended solids")) %>%
         as.data.frame()
-      
+      excur_stats3 <- excur_stats3 %>% replace(.=="NULL", NA)
     }
     
     excur_stats_all <- dplyr::bind_rows(excur_stats_all, excur_stats3)
