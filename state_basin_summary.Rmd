@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 6)
 
 
-project_dir <- paste0(top_dir, '2020-', name, '/')
+project_dir <- paste0(top_dir, year, "-", name, '/')
 
 load(file = paste0(project_dir, name, "_eval_date.RData"))
 load(paste0(project_dir, name, "_param_summary_by_station.RData"))
@@ -84,16 +84,16 @@ if(name == "Columbia River"){
   )$AU_ID
   
   basin_wql_streams_lines <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Rivers_Coast",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE AU_ID IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Rivers_Coast",
+    query = paste0("SELECT * FROM By_Parameter_Rivers_Coast WHERE AU_ID IN ('",
                    paste(columbia_aus, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
   basin_wql_streams_ws <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Watershed",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE AU_ID IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Watershed",
+    query = paste0("SELECT * FROM By_Parameter_Watershed WHERE AU_ID IN ('",
                    paste(columbia_aus, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
@@ -113,32 +113,32 @@ if(name == "Columbia River"){
   )
   
   basin_wql_streams_lines <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Rivers_Coast",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE AU_ID IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Rivers_Coast",
+    query = paste0("SELECT * FROM By_Parameter_Rivers_Coast WHERE AU_ID IN ('",
                    paste(snake_aus, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
   basin_wql_streams_ws <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Watershed",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE AU_ID IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Watershed",
+    query = paste0("SELECT * FROM By_Parameter_Watershed WHERE AU_ID IN ('",
                    paste(snake_aus, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
   
 } else {
   basin_wql_streams_lines <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Rivers_Coast",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE HUC12 IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Rivers_Coast",
+    query = paste0("SELECT * FROM By_Parameter_Rivers_Coast WHERE HUC12 IN ('",
                    paste(basin_12s, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
   basin_wql_streams_ws <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Watershed",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE HUC12 IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Watershed",
+    query = paste0("SELECT * FROM By_Parameter_Watershed WHERE HUC12 IN ('",
                    paste(basin_12s, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
@@ -354,9 +354,9 @@ cat("### Status\n\n")
 cat(paste0("There are ", length(unique(param_sum_au$AU_ID)), " assessment units within the ", name, " containing stations with available data for the parameters included in this report. Assessment units that did not contain stations with targets or sufficient available data are listed as unassessed. ", tbls(name = paste0(name, "_au_sum"), display = 'cite'), " shows the number of attaining, not attaining, and unassessed assessment units by parameter for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum <- param_sum_au %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   'Not Attaining' = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   'Not Attaining' = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 
@@ -379,9 +379,9 @@ cap_list[[1]] <- figs(name = paste0(name, "_au_sum_plot"), caption = paste0("The
 cat(paste0("\n\n",tbls(name = paste0(name, "_au_type_sum"), display = 'cite')," and ", figs(name = paste0(name, "_au_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type within the ", name," for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum_type <- param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
@@ -396,9 +396,9 @@ cat("\n\n")
 cat(paste0("\n\n", tbls(name = paste0(name, "_stn_sum"), display = 'cite')," and ", figs(name = paste0(name, "_stn_sum_plot"), display = 'cite')," summarizes the number of attaining, not attaining, and unassessed stations by parameter for the ", complete_years[17], "–", complete_years[20]," status period. Stations without targets or without sufficient data to determine attainment are listed as unassessed. The reason for a station's unassessed status can be found in Appendix ", a.letter,"."))
 
 stn_sum <- param_sum %>% dplyr::group_by(Pollutant) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format

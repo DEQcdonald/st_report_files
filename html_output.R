@@ -14,9 +14,9 @@ library(odeqstatusandtrends)
 
 # Inputs ----
 
-report_year <- '2020'
+report_year <- '2021'
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- paste0('//deqhq1/WQNPS/Status_and_Trend_Reports/', report_year)
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 # Web Maps  -------------------------------------------

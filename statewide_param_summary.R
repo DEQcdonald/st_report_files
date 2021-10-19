@@ -32,11 +32,11 @@ library(Rcpp)
 
 # Inputs ----
 
-start.date = "2000-01-01"
-end.date = "2019-12-31"
+start.date = "2001-01-01"
+end.date = "2020-12-31"
 web_output <- TRUE
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2021'
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -69,18 +69,18 @@ state_target_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-#name <- "Willamette"
+name <- "Willamette Basin"
 #name <- "Owyhee"
 
 for (name in report_names){
-  
+  if(name != "Willamette Basin"){
   drop_summary <- NULL
   stations_dropped <- NULL
   missing_AUs <- NULL
   
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
   
-  data_dir <- paste0(top_dir,'/2020-', name)
+  data_dir <- paste0(top_dir,'/2021-', name)
   
   if(dir.exists(data_dir)) {
   } else {dir.create(data_dir)}
@@ -348,13 +348,13 @@ for (name in report_names){
     gc()
   }
   
-  # Dissolved Oxygen ---
+  # Dissolved Oxygen --------
   if(any(unique(data_clean$Char_Name) %in% odeqstatusandtrends::AWQMS_Char_Names('DO'))){
     print("Assessing dissolved oxygen...")
     data_DO <- data_clean %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)", "Dissolved oxygen saturation", "Temperature, water"))
     data_DO <- odeqstatusandtrends::add_criteria(data_DO)
     data_DO <- odeqassessment::Censored_data(data_DO, criteria = "DO_crit_min")
-    data_DO <-  odeqassessment::DO_assessment(data_DO)
+    data_DO <- odeqassessment::DO_assessment(data_DO)
     data_DO[is.na(data_DO$Spawn_type), "Spawn_type"] <- "Not_Spawn"
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
                                                                  periods=4, 
@@ -417,14 +417,14 @@ for (name in report_names){
   
   stn_orgs <- data_assessed %>% 
     dplyr::group_by(MLocID, Char_Name) %>% 
-    dplyr::summarise(Organizations = paste(unique(Org_Name), collapse = ", "))
+    dplyr::summarise(Organizations = paste(unique(org_name), collapse = ", "))
   param_sum_stn <- odeqstatusandtrends::parameter_summary_by_station(status, seaKen, stations_AWQMS)
   param_sum_stn <- merge(param_sum_stn, stn_orgs, by = c("Char_Name", "MLocID"), all.x = TRUE, all.y = FALSE)
   
   au_orgs <- data_assessed %>% 
     dplyr::group_by(AU_ID, Char_Name) %>% 
     dplyr::summarise(Stations = paste(unique(MLocID), collapse = ", "),
-                     Organizations = paste(unique(Org_Name), collapse = ", "))
+                     Organizations = paste(unique(org_name), collapse = ", "))
   param_sum_au <- odeqstatusandtrends::parameter_summary_by_au(status, seaKen, stations_AWQMS)
   param_sum_au <- merge(param_sum_au, au_orgs, by = c("Char_Name", "AU_ID"), all.x = TRUE, all.y = FALSE)
   
@@ -446,6 +446,7 @@ for (name in report_names){
   
   rm(list = ls()[ls() %in% c("data_assessed", "seaken_data", "param_sum_stn", "param_sum_au", "owri_summary", "stn_orgs", "au_orgs")])
   gc()
+  }
 }
 
 save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	

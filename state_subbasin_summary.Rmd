@@ -81,9 +81,9 @@ There are `r length(unique(par_sum_au$AU_ID))` assessment units within the `r su
 ```{r status-au-table-sum, include = TRUE, results = 'asis'}
 
 au_sum <- par_sum_au %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 
@@ -118,9 +118,9 @@ Oregon DEQ groups assessment units into five types: "Stream", "Watershed Unit", 
 ```{r status-au-table-type, include = TRUE, results = 'asis'}
 
 au_sum_type <- par_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
@@ -136,9 +136,9 @@ There are `r length(unique(par_sum$MLocID))` stations within the `r subbasin_nam
 ```{r status-stn-table-sum, include = TRUE, results = 'asis'}
 
 stn_sum <- par_sum %>% dplyr::group_by(Pollutant) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Pollutant = sapply(Pollutant, simpleCap, USE.NAMES = FALSE))
 
 knitr::kable(stn_sum, padding = 0, digits = 1, row.names = FALSE, format = table_format,

@@ -5,8 +5,8 @@ library(sf)
 library(htmltools)
 library(htmlwidgets)
 
-
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+report_year <- 2021
+top_dir <- paste0('//deqhq1/WQNPS/Status_and_Trend_Reports/', report_year)
 
 report_areas <- sf::st_read(
   dsn = '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS',
@@ -66,6 +66,7 @@ map_name_abr <- list("Black Rock Desert Basin"="blackrock",
                      "Willamette-Santiam-Upper"="will_san_upper",
                      "Willamette-Tualatin"="will_tualatin")
 
+sf::sf_use_s2(FALSE)
 basin_shp <- report_areas %>% dplyr::group_by(REPORT) %>% dplyr::summarise(basin = unique(REPORT))
 map_shp <- report_areas %>% dplyr::group_by(MAP) %>% dplyr::summarise(basin = unique(REPORT),
                                                                       subbasins = paste(unique(HU_8_NAME), collapse = "<br>"))

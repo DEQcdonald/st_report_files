@@ -72,9 +72,11 @@ library(lubridate)
 # hucs <- params$hucs
 # table_format <- params$table_format
 # name <- "Willamette"
-year <- "2020"
-start.date = "2000-01-01"
-end.date = "2019-12-31"
+year <- lubridate::year(Sys.Date())
+start.year = year-21
+end.year = year-1
+start.date = paste0(start.year, "-01-01")
+end.date = paste0(end.year, "-12-31")
 complete_years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
 top_dir <- paste0("N:/Status_and_Trend_Reports/", year,"/")
 
@@ -152,16 +154,16 @@ basin_intro <- FALSE
 load(file = "//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/huc_crosswalk.RData")
 huc_12s <- hucs[hucs$HUC_8 %in% unique(state_param_sum_stn$HUC8),]$HUC_12
 state_wql_streams_lines <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Rivers_Coast",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Rivers_Coast WHERE HUC12 IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Rivers_Coast",
+    query = paste0("SELECT * FROM By_Parameter_Rivers_Coast WHERE HUC12 IN ('",
                    paste(huc_12s, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
 state_wql_streams_ws <- sf::st_read(
-    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_2018_IntegratedReport/WQ_Assessment_2018_20.gdb",
-    layer = "Impaired_Pollutant_Watershed",
-    query = paste0("SELECT * FROM Impaired_Pollutant_Watershed WHERE HUC12 IN ('",
+    dsn = "//deqhq1/GISLIBRARY/Base_Data/DEQ_Data/Water_Quality/WQ_Assessment/WQ_2018_20_IntegratedReport_FINAL/WQ_Assessment_2018_20.gdb",
+    layer = "By_Parameter_Watershed",
+    query = paste0("SELECT * FROM By_Parameter_Watershed WHERE HUC12 IN ('",
                    paste(huc_12s, collapse = "', '"), "')"),
     stringsAsFactors = FALSE
   )
@@ -784,7 +786,7 @@ for (i in 1:length(tmdls.name.tp)){
     dplyr::filter(pollutant_name_AWQMS == "Total Phosphorus, mixed forms") %>%  
     dplyr::filter(TMDL_name == tmdls.name.tp[i])
   
-  year <- unique(tmdls.doc.df_1$TMDL_issue_year)
+  tmdl.year <- unique(tmdls.doc.df_1$TMDL_issue_year)
   
   tmdls.doc.df_2_tp <- tmdls.doc.df_1 %>% 
     dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
@@ -797,7 +799,7 @@ for (i in 1:length(tmdls.name.tp)){
   if(NROW(tmdls.doc.df_2_tp) > 0){
   print(knitr::kable(tmdls.doc.df_2_tp, format = "pandoc", padding = 2, 
                      caption = tbls(name = paste0("tmdls.doc.df_2_tp", tmdls.name.tp[i]),
-                                    caption = paste0("Total phosphorus targets in ", tmdls.name.tp[i], " (DEQ, ", year, ")."))))
+                                    caption = paste0("Total phosphorus targets in ", tmdls.name.tp[i], " (DEQ, ", tmdl.year, ")."))))
   }
 }
 
@@ -881,7 +883,7 @@ for (i in 1:length(tmdls.name.tss)){
     dplyr::filter(pollutant_name_AWQMS == "Total suspended solids") %>%  
     dplyr::filter(TMDL_name == tmdls.name.tss[i])
   
-  year <- unique(tmdls.doc.df_1$TMDL_issue_year)
+  tmdl.year <- unique(tmdls.doc.df_1$TMDL_issue_year)
   
   tmdls.doc.df_2_tss <- tmdls.doc.df_1 %>% 
     dplyr::select(geo_description, wq_limited_parameters, target_text, target_stat_base, period) %>% 
@@ -894,7 +896,7 @@ for (i in 1:length(tmdls.name.tss)){
   if(NROW(tmdls.doc.df_2_tss) > 0){
   print(knitr::kable(tmdls.doc.df_2_tss, format = "pandoc", padding = 2, 
                      caption = tbls(name = paste0("tmdls.doc.df_2_tss", tmdls.name.tss[i]),
-                                    caption = paste0("Total suspended solids targets in ", tmdls.name.tss[i], " (DEQ ", year, ")."))))
+                                    caption = paste0("Total suspended solids targets in ", tmdls.name.tss[i], " (DEQ ", tmdl.year, ")."))))
 
   }
 } 
@@ -1067,9 +1069,9 @@ cat("### Status\n\n")
 cat(paste0(tbls("au_sum", display = 'cite')," shows the number of attaining, not attaining, and unassessed assessment units by parameter for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum <- state_param_sum_au %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   'Not Attaining' = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   'Not Attaining' = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 
@@ -1099,9 +1101,9 @@ cap_list[[1]] <- figs(name = paste0("state_au_sum_plot"), caption = paste0("Summ
 cat(paste0("\n\n", tbls("au_type_sum", display = 'cite')," contains a summary of the number of attaining, not attaining, and unassessed assessment units by parameter and assessment unit type for the ", complete_years[17], "–", complete_years[20]," status period.\n\n"))
 
 au_sum_type <- state_param_sum_au %>% dplyr::group_by(AU_Type, Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
-                   'Not Attaining' = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed")) %>% 
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
+                   'Not Attaining' = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed")) %>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename("AU Type" = AU_Type, Pollutant = Char_Name)
 
@@ -1117,10 +1119,10 @@ cat("\n\n")
 cat(paste0("\n\n", tbls("stn_sum", display = 'cite') ," summarizes the number of attaining, not attaining, and unassessed stations by parameter for the ", complete_years[17], "–", complete_years[20], " status period across the state.\n\n"))
 
 stn_sum <- state_param_sum_stn %>% dplyr::group_by(Char_Name) %>% 
-  dplyr::summarise(Attaining = sum(status_2016_2019 == "Attaining"),
+  dplyr::summarise(Attaining = sum(status_2017_2020 == "Attaining"),
                    
-                   "Not Attaining" = sum(status_2016_2019 == "Not Attaining"),
-                   Unassessed = sum(status_2016_2019 == "Unassessed"))%>% 
+                   "Not Attaining" = sum(status_2017_2020 == "Not Attaining"),
+                   Unassessed = sum(status_2017_2020 == "Unassessed"))%>% 
   dplyr::mutate(Char_Name = sapply(Char_Name, simpleCap, USE.NAMES = FALSE)) %>% 
   dplyr::rename(Pollutant = Char_Name)
 

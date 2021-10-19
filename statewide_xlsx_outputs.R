@@ -10,12 +10,12 @@ library(sf)
 library(base64enc)
 
 # Inputs ----
-start.date = "2000-01-01"
-end.date = "2019-12-31"
-year = 2020
+start.date = "2001-01-01"
+end.date = "2020-12-31"
+year = 2021
 report_name <- paste0(year, " Oregon Statewide Status and Trend Report")
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2020'
+top_dir <- paste0('//deqhq1/WQNPS/Status_and_Trend_Reports/', year)
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 
 logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-transp71x107.png"
@@ -23,6 +23,9 @@ logo <- "//deqhq1/WQNPS/Status_and_Trend_Reports/Figures/DEQ-logo-color-non-tran
 au_names <- read.csv('//deqhq1/WQNPS/Status_and_Trend_Reports/Lookups_Statewide/AssessmentUnits_OR_Dissolve.txt', stringsAsFactors = FALSE)
 
 # ----
+
+if(dir.exists(paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/", year, "/Statewide Report"))) {
+} else {dir.create(paste0("//deqhq1/WQNPS/Status_and_Trend_Reports/", year, "/Statewide Report"))}
 options(scipen=999)
 options(digits = 3)
 complete.years <- c(as.integer(substr(start.date, start = 1, stop = 4)):as.integer(substr(end.date, start = 1, stop = 4)))
@@ -216,9 +219,9 @@ for (name in report_names){
       excur_stats2 <- excur_stats1 %>%
         dplyr::rename(status=tidyr::contains("status")) %>%
         dplyr::mutate(status_period=gsub(gsub(bins[i], pattern="status_", replacement = ""),pattern="_", replacement = "-"),
-                      excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), excursion_min),
-                      excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), excursion_median),
-                      excursion_max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), excursion_max),
+                      excursion_min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_min, 1), round(excursion_min, 1)),
+                      excursion_median=ifelse(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_median, 1), round(excursion_median, 1)),
+                      excursion_max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(excursion_max, 1), round(excursion_max, 1)),
                       min=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(min, 1), min),
                       median=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(median, 1), median),
                       max=if_else(grepl("Temperature|Dissolved oxygen", Char_Name), round(max, 1), max))
@@ -302,7 +305,7 @@ for (name in report_names){
   
   org_sums <- data_assessed %>%
     dplyr::mutate(Basin = name) %>%
-    dplyr::group_by(Org_Name, Basin) %>%
+    dplyr::group_by(org_name, Basin) %>%
     dplyr::summarise('Unique Stations' = length(unique(MLocID)),
                      'Temperature Results' = sum(Char_Name == "Temperature, water"),
                      'DO Results' = sum(Char_Name == "Dissolved oxygen (DO)"),
@@ -312,7 +315,7 @@ for (name in report_names){
                      'E. Coli Results' = sum(Char_Name == "Escherichia coli"),
                      'Fecal Coliform Results' = sum(Char_Name == "Fecal Coliform"),
                      'Enterococcus Results' = sum(Char_Name == "Enterococcus")) %>%
-    dplyr::rename('Sampling Organization' = Org_Name)
+    dplyr::rename('Sampling Organization' = org_name)
   
   #-- Results by Year ---------------------  
   
