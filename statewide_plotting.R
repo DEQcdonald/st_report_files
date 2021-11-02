@@ -132,7 +132,9 @@ for (name in report_names){
   # Temperature plots -------------------------------------------------------
   
   temp_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Temperature, water",]$MLocID)
-  seaKen_temp = seaKen %>% dplyr::filter(Char_Name == "Temperature, water", trend %in% c("Improving", "Degrading", "Steady"))
+  if(NROW(seaKen) > 0){
+    seaKen_temp = seaKen %>% dplyr::filter(Char_Name == "Temperature, water", trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_temp <- data.frame()}
   temp_plots <- list()
   
   count <- 1
@@ -184,7 +186,9 @@ for (name in report_names){
   # pH Plots ----------------------------------------------------------------
   
   pH_stations <- unique(c(param_sum_stn[param_sum_stn$Char_Name == "pH",]$MLocID))
-  seaKen_pH = seaKen %>% dplyr::filter(Char_Name == "pH", trend %in% c("Improving", "Degrading", "Steady"))
+  if(NROW(seaKen) > 0){
+    seaKen_pH = seaKen %>% dplyr::filter(Char_Name == "pH", trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_pH <- data.frame()}
   pH_plots <- list()
   
   count <- 1
@@ -215,8 +219,11 @@ for (name in report_names){
   # Total Phosphorus plots --------------------------------------------------
   
   TP_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'),]$MLocID)
+  if(NROW(seaKen) > 0){
   seaKen_TP = seaKen %>% dplyr::filter(Char_Name == odeqstatusandtrends::AWQMS_Char_Names('TP'), 
                                        trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_TP <- data.frame()}
+  
   TP_plots <- list()
   
   count <- 1
@@ -262,7 +269,10 @@ for (name in report_names){
   # Total suspended solids plots --------------------------------------------
   
   TSS_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Total suspended solids",]$MLocID)
-  seaKen_TSS = seaKen %>% dplyr::filter(Char_Name == "Total suspended solids", trend %in% c("Improving", "Degrading", "Steady"))
+  if(NROW(seaKen) > 0){
+    seaKen_TSS = seaKen %>% dplyr::filter(Char_Name == "Total suspended solids", trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_TSS <- data.frame()}
+  
   TSS_plots <- list()
   
   count <- 1
@@ -305,7 +315,10 @@ for (name in report_names){
   # Bacteria plots ----------------------------------------------------------
   
   data_bact <- data_assessed %>% dplyr::filter(Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names("bacteria"))
+  if(NROW(seaKen) > 0){
   seaKen_bact = seaKen %>% dplyr::filter(Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names("bacteria"), trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_bact <- data.frame()}
+  
   bact_stations <- unique(param_sum_stn[param_sum_stn$Char_Name %in% odeqstatusandtrends::AWQMS_Char_Names("bacteria"),]$MLocID)
   bact_plots <- list()
   bact_params <- odeqstatusandtrends::AWQMS_Char_Names('bacteria')[odeqstatusandtrends::AWQMS_Char_Names('bacteria') %in% unique(c(param_sum_stn$Char_Name, as.character(seaKen$Char_Name)))]
@@ -357,7 +370,10 @@ for (name in report_names){
   # Dissolved oxygen plots -------------------------------------------------------
   
   data_DO <- data_assessed %>% dplyr::filter(Char_Name %in% c("Dissolved oxygen (DO)"))
+  if(NROW(seaKen) > 0){
   seaKen_DO = seaKen %>% dplyr::filter(Char_Name == "Dissolved oxygen (DO)", trend %in% c("Improving", "Degrading", "Steady"))
+  } else {seaKen_DO <- data.frame()}
+  
   DO_stations <- unique(param_sum_stn[param_sum_stn$Char_Name == "Dissolved oxygen (DO)",]$MLocID)
   # DO_stations <- unique((data_DO %>% dplyr::filter(is.na(Statistical_Base), MLocID %in% DO_stations))$MLocID)
   DO_plots <- list()

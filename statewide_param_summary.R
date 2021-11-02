@@ -2,15 +2,15 @@ library(devtools)
 library(rgdal)
 #library(RODBC)
 library(dplyr)
-# devtools::install_github('donco/odeqstatusandtrends', host = 'https://api.github.com', force = TRUE, upgrade='never')
+# devtools::install_github('DEQcdonald/odeqstatusandtrends', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(odeqstatusandtrends)
-# devtools::install_github('donco/odeqassessment', host = 'https://api.github.com', force = TRUE, upgrade='never')
+# devtools::install_github('DEQcdonald/odeqassessment', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(odeqassessment)
-# devtools::install_github('donco/odeqtmdl', host = 'https://api.github.com', force = TRUE, upgrade='never')
+# devtools::install_github('DEQcdonald/odeqtmdl', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(odeqtmdl)
-# devtools::install_github('rmichie/wqdb/wqdb', host = 'https://api.github.com', force = TRUE, upgrade='never')
+# devtools::install_github('DEQrmichie/wqdb/wqdb', host = 'https://api.github.com', force = TRUE, upgrade='never')
 # library(wqdb)
-# devtools::install_github('rmichie/owri/owri', host = 'https://api.github.com', upgrade='never')
+# devtools::install_github('DEQrmichie/owri', host = 'https://api.github.com', force = TRUE, upgrade='never')
 library(owri)
 
 # devtools::install_github('TravisPritchardODEQ/AWQMSdata', host = 'https://api.github.com', force = TRUE, upgrade='never')
@@ -32,11 +32,12 @@ library(Rcpp)
 
 # Inputs ----
 
-start.date = "2001-01-01"
-end.date = "2020-12-31"
+start.date = "2000-01-01"
+end.date = "2019-12-31"
 web_output <- TRUE
+year <- 2021
 
-top_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/2021'
+top_dir <- paste0('//deqhq1/WQNPS/Status_and_Trend_Reports/', year)
 gis_dir <- '//deqhq1/WQNPS/Status_and_Trend_Reports/GIS'
 # gis_dir <- '//deqhq1/dwp-public/SpecialProjects/NRCS_NWQI'
 
@@ -69,18 +70,19 @@ state_target_data <- NULL
 
 report_names <- sort(unique(HUC_shp$REPORT))
 
-name <- "Willamette Basin"
+# name <- "Willamette Basin"
 #name <- "Owyhee"
+# name <- "John Day Basin"
 
 for (name in report_names){
-  if(name != "Willamette Basin"){
+  # if(name != "Willamette Basin"){
   drop_summary <- NULL
   stations_dropped <- NULL
   missing_AUs <- NULL
   
   print(paste0("Creating parameter summary table for the ", name, " Basin..."))
   
-  data_dir <- paste0(top_dir,'/2021-', name)
+  data_dir <- paste0(top_dir,'/', year, '-', name)
   
   if(dir.exists(data_dir)) {
   } else {dir.create(data_dir)}
@@ -182,7 +184,7 @@ for (name in report_names){
     data_pH <- odeqassessment::Censored_data(data_pH, criteria = 'pH_Min')
     data_pH <- odeqassessment::pH_assessment(data_pH)
     data_pH$status_period <- odeqstatusandtrends::status_periods(datetime = data_pH$sample_datetime, 
-                                                                 periods=4, 
+                                                                 periods=5, 
                                                                  year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_pH)
     
@@ -222,7 +224,7 @@ for (name in report_names){
     data_temp[is.na(data_temp$Spawn_type), "Spawn_type"] <- "Not_Spawn"
     
     data_temp$status_period <- odeqstatusandtrends::status_periods(datetime = data_temp$sample_datetime, 
-                                                                   periods=4, 
+                                                                   periods=5, 
                                                                    year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_temp)
     
@@ -261,7 +263,7 @@ for (name in report_names){
     
     # data_TP <- odeqassessment::TP_assessment(data_TP)
     data_TP$status_period <- odeqstatusandtrends::status_periods(datetime = data_TP$sample_datetime, 
-                                                                 periods=4, 
+                                                                 periods=5, 
                                                                  year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TP)
     
@@ -300,7 +302,7 @@ for (name in report_names){
     
     # data_TSS <- odeqassessment::TSS_assessment(data_TSS)
     data_TSS$status_period <- odeqstatusandtrends::status_periods(datetime = data_TSS$sample_datetime, 
-                                                                  periods=4, 
+                                                                  periods=5, 
                                                                   year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_TSS)
     
@@ -330,7 +332,7 @@ for (name in report_names){
     data_shell <- odeqassessment::Shell_Harvest(data_bact)
     data_bact <- dplyr::bind_rows(data_ent, data_eco, data_shell)
     data_bact$status_period <- odeqstatusandtrends::status_periods(datetime = data_bact$sample_datetime, 
-                                                                   periods=4, 
+                                                                   periods=5, 
                                                                    year_range = c(start_year,end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_bact)
     
@@ -357,7 +359,7 @@ for (name in report_names){
     data_DO <- odeqassessment::DO_assessment(data_DO)
     data_DO[is.na(data_DO$Spawn_type), "Spawn_type"] <- "Not_Spawn"
     data_DO$status_period <- odeqstatusandtrends::status_periods(datetime = data_DO$sample_datetime, 
-                                                                 periods=4, 
+                                                                 periods=5, 
                                                                  year_range = c(start_year, end_year))
     data_assessed <- dplyr::bind_rows(data_assessed, data_DO)
     
@@ -446,7 +448,7 @@ for (name in report_names){
   
   rm(list = ls()[ls() %in% c("data_assessed", "seaken_data", "param_sum_stn", "param_sum_au", "owri_summary", "stn_orgs", "au_orgs")])
   gc()
-  }
+  # }
 }
 
 save(state_param_sum_stn, file = paste0(top_dir, "/Oregon_param_summary_by_station.RData"))	
